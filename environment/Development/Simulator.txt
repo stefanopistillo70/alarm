@@ -1,0 +1,12 @@
+----- Install -----
+
+wget http://www.dest-unreach.org/socat/download/socat-2.0.0-b9.tar.gz
+tar -xvf socat-2.0.0-b9.tar.gz
+cd socat-2.0.0-b9/
+./configure
+make
+sudo make install
+
+
+--- Create Psueudo Serial Com -----
+socat -d -d pty,raw,echo=0 pty,raw,echo=0
