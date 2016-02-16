@@ -4,9 +4,8 @@
 
 const gwType = 'Serial';
 const gwPort = '\\\\.\\COM4';
-//const gwPort = '/dev/ttyAMA0';
-//const gwBaud = 115200;
-const gwBaud = 9600;
+//const gwPort = '/dev/pts/4';
+const gwBaud = 115200;
 
 const dbAddress						= '127.0.0.1';
 const dbPort						= 27017;
