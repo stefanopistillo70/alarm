@@ -5,6 +5,7 @@ var vm = require('vm')
 console.log("Start");
 
 vm.runInThisContext(fs.readFileSync(__dirname + "/sensor.js"))
+vm.runInThisContext(fs.readFileSync(__dirname + "/gateway.js"))
 //require('./sensor.js').sensor();
 
 var s = new Sensor(-1,"prova");
@@ -31,7 +32,6 @@ var controller = {
 	console.log('Connected to database at mongodb://' + dbAddress + ':' + dbPort + '/' + dbName);
 	db.createCollection('node', function(err, collection) { });
 	db.createCollection('firmware', function(err, collection) { });
-
 	
 */	
 	start : function(){
@@ -44,6 +44,7 @@ var controller = {
 		}).on('data', function(rd) {
 			console.log('DATA ->'+rd.toString());
 			//appendData(rd.toString(), db, gw);
+			var msg = gateway.parseMsg(rd.toString());
 			
 		}).on('end', function() {
 			console.log('disconnected from gateway');
@@ -54,9 +55,7 @@ var controller = {
 			//gw.open();
 		});
 	}
-
 };
-
 
 controller.start();
 
