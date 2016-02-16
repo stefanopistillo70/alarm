@@ -8,11 +8,13 @@ vm.runInThisContext(fs.readFileSync(__dirname + "/sensor.js"))
 vm.runInThisContext(fs.readFileSync(__dirname + "/gateway.js"))
 //require('./sensor.js').sensor();
 
-var s = new Sensor(-1,"prova");
-s.name = "prova2";
-console.log("name: " + s.name);
+var msg = gateway.parseMsg("12;6;0;0;3;My Light\n");
+console.log("MSG -> " + msg.toString());
 
-console.log(s);
+//var s = new Sensor(-1,"prova");
+//s.name = "prova2";
+//console.log("name: " + s.name);
+//console.log(s);
 
 
 var controller = {
