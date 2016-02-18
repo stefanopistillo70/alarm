@@ -251,3 +251,7 @@ gateway.Msg = function(sender, sensor, command, ack, type, rawpayload) {
 		}
 }
 
+
+module.exports = gateway;
+
+

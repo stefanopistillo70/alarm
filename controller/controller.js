@@ -4,9 +4,12 @@ var fs = require("fs")
 var vm = require('vm')
 console.log("Start");
 
-vm.runInThisContext(fs.readFileSync(__dirname + "/sensor.js"))
-vm.runInThisContext(fs.readFileSync(__dirname + "/gateway.js"))
+//vm.runInThisContext(fs.readFileSync(__dirname + "/sensor.js"))
+//vm.runInThisContext(fs.readFileSync(__dirname + "/gateway.js"))
 //require('./sensor.js').sensor();
+
+
+var gateway = require('./gateway.js')
 
 var msg = gateway.parseMsg("12;6;0;0;3;My Light\n");
 console.log("MSG -> " + msg.toString());
