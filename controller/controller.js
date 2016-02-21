@@ -62,5 +62,21 @@ var controller = {
 	}
 };
 
-controller.start();
+//controller.start();
+
+//var nm = require('./NodeManager.js')
+//console.log(nm);
+//var nmInstance = nm.getInstance();
+//console.log(nmInstance);
+
+
+var Repository = require('./Repository.js');
+var r = new Repository();
+//console.log(r);
+
+r.addNewNode("ciao");
+r.addNewNode("ciao");
+r.addNewNode("pippo");
+
+
 
