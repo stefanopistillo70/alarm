@@ -20,11 +20,11 @@ console.log("MSG -> " + msg.toString());
 //console.log(s);
 
 
-var controller = {
+//var controller = {
 
 	//gwPort : '\\\\.\\COM4',
-	gwPort : '/dev/pts/4',
-	gwBaud : 115200,
+//	gwPort : '/dev/pts/4',
+//	gwBaud : 115200,
  
 
 /*
@@ -39,7 +39,7 @@ var controller = {
 	db.createCollection('firmware', function(err, collection) { });
 	
 */	
-	start : function(){
+/*	start : function(){
 		var SerialPort = require('serialport').SerialPort;
 		gw = new SerialPort(this.gwPort, { baudrate: this.gwBaud }, false);
 		
@@ -61,7 +61,7 @@ var controller = {
 		});
 	}
 };
-
+*/
 //controller.start();
 
 //var nm = require('./NodeManager.js')
@@ -72,13 +72,9 @@ var controller = {
 
 var Repository = require('./Repository.js');
 var r = new Repository();
-//console.log(r);
-
 
 r.addNewNode(Repository.createNode(1,"node1"));
 r.addNewNode(Repository.createNode(2,"node2"));
-//r.addNewNode("ciao");
-//r.addNewNode("pippo");
 
 
 

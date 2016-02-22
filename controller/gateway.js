@@ -1,5 +1,30 @@
 
-var gateway = {}
+var gateway = {
+	
+		var gwPort = '/dev/pts/4';
+		var gwBaud = 115200;
+		
+		var SerialPort = require('serialport').SerialPort;
+		gw = new SerialPort(this.gwPort, { baudrate: this.gwBaud }, false);
+		
+		gw.open();
+		gw.on('open', function() {
+			console.log('connected to serial gateway at ' + this.gwPort);
+		}).on('data', function(rd) {
+			console.log('DATA ->'+rd.toString());
+			//appendData(rd.toString(), db, gw);
+			var msg = gateway.parseMsg(rd.toString());
+			
+		}).on('end', function() {
+			console.log('disconnected from gateway');
+		}).on('error', function(error) {
+			console.log('failed to open: '+error);
+			console.log('trying to reconnect');
+			setTimeout(function(){gw.open()}, 5 * 1000);
+			//gw.open();
+		});
+	
+}
 
 gateway.Cmd = {
 		MIN				: 0,
@@ -250,6 +275,36 @@ gateway.Msg = function(sender, sensor, command, ack, type, rawpayload) {
 			throw new Error("Wrong correlation commnad  : " + command + "   type : " + type);
 		}
 }
+
+
+
+
+
+
+gateway.prototype.start : function(){
+		var SerialPort = require('serialport').SerialPort;
+		gw = new SerialPort(this.gwPort, { baudrate: this.gwBaud }, false);
+		
+		gw.open();
+		gw.on('open', function() {
+			console.log('connected to serial gateway at ' + this.gwPort);
+		}).on('data', function(rd) {
+			console.log('DATA ->'+rd.toString());
+			//appendData(rd.toString(), db, gw);
+			var msg = gateway.parseMsg(rd.toString());
+			
+		}).on('end', function() {
+			console.log('disconnected from gateway');
+		}).on('error', function(error) {
+			console.log('failed to open: '+error);
+			console.log('trying to reconnect');
+			setTimeout(function(){gw.open()}, 5 * 1000);
+			//gw.open();
+		});
+	}
+};
+
+
 
 
 module.exports = gateway;
