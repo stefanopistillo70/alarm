@@ -1,12 +1,14 @@
 
 
+var logger = require('./logger.js')('Controller');
+
 var controller = {}
 
 controller.repository ;
 
 controller.start = function(){
 	
-	console.log("Start");
+	logger.log('info','Start');
 
 	var gateway = require('./gateway.js');
 
@@ -20,7 +22,6 @@ controller.start = function(){
 	var Repository = require('./Repository.js');
 	controller.repository = new Repository();
 	
-	
 	controller.checkForZoneAlarm();
 
 	controller.repository.addNewNode(Repository.createNode(1,"node1"));
@@ -30,10 +31,13 @@ controller.start = function(){
 
 controller.checkForZoneAlarm = function() {
 	
-	console.log('Check for Zone alarm');
+	logger.log('info','Check for Zone alarm');
 	var zones = controller.repository.zones;
-	
-	zones.forEach(new function(){
+	console.log(zones);
+		
+	zones.forEach(function(zone) {
+		zone.nodes.forEach(function(node) {
+		});
 		
 	});
 	
