@@ -1,33 +1,47 @@
 
 
-var fs = require("fs")
-var vm = require('vm')
-console.log("Start");
+var controller = {}
 
-//vm.runInThisContext(fs.readFileSync(__dirname + "/sensor.js"))
-//vm.runInThisContext(fs.readFileSync(__dirname + "/gateway.js"))
-//require('./sensor.js').sensor();
+controller.repository ;
 
+controller.start = function(){
+	
+	console.log("Start");
 
-var gateway = require('./gateway.js')
+	var gateway = require('./gateway.js');
 
-var g = new gateway();
+	var g = gateway.getInstance();
+	console.log(g);
 
-var msg = gateway.parseMsg("12;6;0;0;3;My Light\n");
-console.log("MSG -> " + msg.toString());
-
-
-//var nm = require('./NodeManager.js')
-//console.log(nm);
-//var nmInstance = nm.getInstance();
-//console.log(nmInstance);
+	//var msg = gateway.parseMsg("12;6;0;0;3;My Light\n");
+	//console.log("MSG -> " + msg.toString());
 
 
-var Repository = require('./Repository.js');
-var r = new Repository();
+	var Repository = require('./Repository.js');
+	controller.repository = new Repository();
+	
+	
+	controller.checkForZoneAlarm();
 
-r.addNewNode(Repository.createNode(1,"node1"));
-r.addNewNode(Repository.createNode(2,"node2"));
+	controller.repository.addNewNode(Repository.createNode(1,"node1"));
+	controller.repository.addNewNode(Repository.createNode(2,"node2"));
+
+}
+
+controller.checkForZoneAlarm = function() {
+	
+	console.log('Check for Zone alarm');
+	var zones = controller.repository.zones;
+	
+	zones.forEach(new function(){
+		
+	});
+	
+	setTimeout(controller.checkForZoneAlarm,10000);
+
+}
+
+controller.start();
 
 
 
