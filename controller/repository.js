@@ -1,5 +1,26 @@
 
 
+var Node = function(id_in,name_in,sensors_in){
+	
+	this.id = "";
+	this.name = "";
+	this.sensors = [];
+	
+	if(id_in != undefined) this.id = id_in;
+	if(name_in != undefined) this.name = name_in;
+	if(sensors_in != undefined) this.sensors = sensors_in;
+	
+}
+
+var Zone = function(){
+	
+	this.id = "";
+	this.name = "";
+	this.armed = false;
+	this.nodes = [];
+	
+}
+
 var Repository = function() {
 	
 	this.nodes = [];
@@ -13,7 +34,7 @@ var Repository = function() {
 
 Repository.prototype.addNewNode = function(node_in){
 		
-		console.log("Node _in  ->"+node_in);
+		console.log("Node_in  ->"+node_in);
 		
 		function exists(element) {
 			console.log("Element ->"+element);
@@ -37,7 +58,6 @@ Repository.prototype.addNewNode = function(node_in){
 Repository.prototype.checkForRemoteUpdate = function(){
 	
 	console.log('Start remote update');
-	console.log(this);
 	var nodesTmp = this.getNodes();
 	if(nodesTmp != undefined){
 		this.nodes = nodesTmp;
@@ -47,7 +67,7 @@ Repository.prototype.checkForRemoteUpdate = function(){
 	if(zonesTmp != undefined){
 		this.zones = zonesTmp;
 	}
-	
+	console.log(this.nodes);
 	setTimeout(Repository.prototype.checkForRemoteUpdate.bind(this),10000);
 }
 
@@ -60,9 +80,17 @@ Repository.prototype.getZones = function(){
 }
 
 
+Repository.createNode = function(id_in,name_in,sensors_in){
+	return new Node(id_in,name_in,sensors_in);
+}
+
+Repository.createZone = function(){
+	return new Zone();	
+}
 
 
 module.exports = Repository; 
+
 
 
 

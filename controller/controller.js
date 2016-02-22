@@ -74,9 +74,11 @@ var Repository = require('./Repository.js');
 var r = new Repository();
 //console.log(r);
 
-r.addNewNode("ciao");
-r.addNewNode("ciao");
-r.addNewNode("pippo");
+
+r.addNewNode(Repository.createNode(1,"node1"));
+r.addNewNode(Repository.createNode(2,"node2"));
+//r.addNewNode("ciao");
+//r.addNewNode("pippo");
 
 
 
