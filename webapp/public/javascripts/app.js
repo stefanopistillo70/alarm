@@ -1,5 +1,5 @@
 
-var app = angular.module('myApp', ['sensorLogControllers','pollServices']);
+var app = angular.module('myApp', ['ngRoute','sensorLogControllers','pollServices']);
 
 app.config(['$routeProvider', function($routeProvider) {
             $routeProvider.

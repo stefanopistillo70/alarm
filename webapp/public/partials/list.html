@@ -1,21 +1,19 @@
 <div class="page-header">
           <h1>List</h1>
         </div>
-        <div class="row">
-          <div class="col-xs-5">
-            <a href="#/new" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> New Poll</a>
-          </div>
-        </div>
         <div class="row"><div class="col-xs-12">
 <hr></div></div>
-        <div class="row" ng-switch on="polls.length">
+        <div class="row" ng-switch on="sensorLog.length">
           <ul ng-switch-when="0">
-            <li><em>No polls in database</li>
+            <li><em>No logs in database</li>
           </ul>
           <ul ng-switch-default>
-            <li ng-repeat="poll in polls | filter:query">
-              <a href="#/poll/{{poll._id}}">{{poll.question}}</a>
-            </li>
+            <table>
+			  <tr ng-repeat="x in sensorLog">
+				<td>{{ x.Name }}</td>
+				<td>{{ x.Country }}</td>
+			  </tr>
+			</table>
           </ul>
         </div>
         <p>&nbsp;</p>
