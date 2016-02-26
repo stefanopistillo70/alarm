@@ -5,7 +5,8 @@ var gateway = (function() {
 		
 		function init() {
 			
-			var gwPort = '/dev/pts/4';
+			const gwPort = '\\\\.\\COM10';
+			//var gwPort = '/dev/pts/4';
 			var gwBaud = 115200;
 		
 			var SerialPort = require('serialport').SerialPort;
@@ -289,7 +290,7 @@ Msg = function(sender, sensor, command, ack, type, rawpayload) {
 		} else if ( (command  == Cmd.C_SET) || (command  == Cmd.C_GET) ) {
 			
 		} else if ( command  == Cmd.C_INTERNAL) {
-			if ( (type < InternalType.MIN ) || (type < InternalType.MAX )) throw new Error("Wrong correlation commnad  : " + command + "   internal type : " + type);
+			if ( (type < InternalType.MIN ) || (type > InternalType.MAX )) throw new Error("Wrong correlation commnad  : " + command + "   internal type : " + type);
 		} else {
 			throw new Error("Wrong correlation commnad  : " + command + "   type : " + type);
 		}
