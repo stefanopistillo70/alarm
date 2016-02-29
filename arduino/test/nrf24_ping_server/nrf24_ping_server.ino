@@ -16,7 +16,7 @@ NRF24 nrf24;
 
 void setup() 
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   while (!Serial) 
     ; // wait for serial port to connect. Needed for Leonardo only
   if (!nrf24.init())
@@ -29,7 +29,7 @@ void setup()
     Serial.println("setThisAddress failed");
   if (!nrf24.setPayloadSize(sizeof(unsigned long)))
     Serial.println("setPayloadSize failed");
-  if (!nrf24.setRF(NRF24::NRF24DataRate250kbps, NRF24::NRF24TransmitPower0dBm))
+  if (!nrf24.setRF(NRF24::NRF24DataRate1Mbps, NRF24::NRF24TransmitPower0dBm))
     Serial.println("setRF failed");    
   Serial.println("initialised");
 }

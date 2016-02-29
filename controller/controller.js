@@ -19,13 +19,13 @@ controller.start = function(){
 	//console.log("MSG -> " + msg.toString());
 
 
-	var Repository = require('./Repository.js');
-	controller.repository = new Repository();
+	//var Repository = require('./Repository.js');
+	//controller.repository = new Repository();
 	
-	controller.checkForZoneAlarm();
+	//controller.checkForZoneAlarm();
 
-	controller.repository.addNewNode(Repository.createNode(1,"node1"));
-	controller.repository.addNewNode(Repository.createNode(2,"node2"));
+	//controller.repository.addNewNode(Repository.createNode(1,"node1"));
+	//controller.repository.addNewNode(Repository.createNode(2,"node2"));
 
 }
 
