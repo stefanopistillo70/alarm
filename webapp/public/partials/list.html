@@ -1,19 +1,19 @@
-<div class="page-header">
-          <h1>List</h1>
-        </div>
-        <div class="row"><div class="col-xs-12">
-<hr></div></div>
-        <div class="row" ng-switch on="sensorLog.length">
-          <ul ng-switch-when="0">
-            <li><em>No logs in database</li>
-          </ul>
-          <ul ng-switch-default>
-            <table>
-			  <tr ng-repeat="x in sensorLog">
-				<td>{{ x.id }}</td>
-				<td>{{ x.status }}</td>
-			  </tr>
-			</table>
-          </ul>
-        </div>
-        <p>&nbsp;</p>
+<div class="panel-heading">Panel heading</div>
+<div class="row" ng-switch on="sensorLog.length">
+	<ul ng-switch-when="0">
+		<li><em>No logs in database</li>
+	</ul>
+	<ul ng-switch-default>
+		<table class="table table-bordered">
+			<tr>
+				<th>Firstname</th>
+				<th>Lastname</th> 
+			</tr>
+			<tr ng-repeat="x in sensorLog">
+			<td>{{ x.id }}</td>
+			<td>{{ x.status }}</td>
+			</tr>
+		</table>
+	</ul>
+</div>
+<p>&nbsp;</p>
