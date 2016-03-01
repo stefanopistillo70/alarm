@@ -109,7 +109,7 @@
 /**********************************
 *  NRF24L01 Driver Defaults
 ***********************************/
-#define RF24_CE_PIN		   9
+#define RF24_CE_PIN		   8
 #define RF24_CS_PIN		   10
 #define RF24_PA_LEVEL 	   RF24_PA_MAX
 #define RF24_PA_LEVEL_GW   RF24_PA_LOW
