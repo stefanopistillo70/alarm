@@ -33,7 +33,7 @@
 int BATTERY_SENSE_PIN = A0;  // select the input pin for the battery sense point
 
 MySensor gw;
-unsigned long SLEEP_TIME = 900000;  // sleep time between reads (seconds * 1000 milliseconds)
+unsigned long SLEEP_TIME = 5000;  // sleep time between reads (seconds * 1000 milliseconds)
 int oldBatteryPcnt = 0;
 
 void setup()  
@@ -44,7 +44,8 @@ void setup()
 #else
    analogReference(INTERNAL);
 #endif
-   gw.begin();
+   //gw.begin();
+   gw.begin(NULL, 7, false, AUTO);
 
    // Send the sketch version information to the gateway and Controller
    gw.sendSketchInfo("Battery Meter", "1.0");
