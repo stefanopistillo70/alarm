@@ -67,15 +67,19 @@ MyTransportNRF24 transport(RF24_CE_PIN, RF24_CS_PIN, RF24_PA_LEVEL_GW);
 //MySigningAtsha204Soft signer;
 //MySigningAtsha204 signer;
 
+// Change the soft_serial value to an arbitrary value for proper security
+//uint8_t soft_serial[SHA204_SERIAL_SZ] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09};
+MySigningAtsha204Soft signer;
+
 // Hardware profile 
 MyHwATMega328 hw;
 
 // Construct MySensors library (signer needed if MY_SIGNING_FEATURE is turned on in MyConfig.h)
 // To use LEDs blinking, uncomment WITH_LEDS_BLINKING in MyConfig.h
 #ifdef WITH_LEDS_BLINKING
-MySensor gw(transport, hw /*, signer*/, RADIO_RX_LED_PIN, RADIO_TX_LED_PIN, RADIO_ERROR_LED_PIN);
+MySensor gw(transport, hw , signer, RADIO_RX_LED_PIN, RADIO_TX_LED_PIN, RADIO_ERROR_LED_PIN);
 #else
-MySensor gw(transport, hw /*, signer*/);
+MySensor gw(transport, hw , signer);
 #endif
 
 char inputString[MAX_RECEIVE_LENGTH] = "";    // A string to hold incoming commands from serial/ethernet interface

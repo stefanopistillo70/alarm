@@ -29,10 +29,19 @@
 
 #include <SPI.h>
 #include <MySensor.h>
+#include <MySigningAtsha204Soft.h>
 
 int BATTERY_SENSE_PIN = A0;  // select the input pin for the battery sense point
 
-MySensor gw;
+MyTransportNRF24 transport;
+
+//signature
+MySigningAtsha204Soft signer;
+
+// Hardware profile 
+MyHwATMega328 hw;
+
+MySensor gw(transport, hw , signer);
 unsigned long SLEEP_TIME = 5000;  // sleep time between reads (seconds * 1000 milliseconds)
 int oldBatteryPcnt = 0;
 
