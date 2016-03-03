@@ -58,6 +58,9 @@
 #define RADIO_RX_LED_PIN    6  // Receive led pin
 #define RADIO_TX_LED_PIN    5  // the PCB, on board LED
 
+//#define USE_SIGNATURE // use sign
+
+#ifdef USE_SIGNATURE
 // NRFRF24L01 radio driver (set low transmit power by default) 
 MyTransportNRF24 transport(RF24_CE_PIN, RF24_CS_PIN, RF24_PA_LEVEL_GW);
 //MyTransportRFM69 transport;
@@ -79,13 +82,18 @@ MySigningAtsha204Soft signer(false,0,NULL,soft_serial,MY_RANDOMSEED_PIN);
 
 // Hardware profile 
 MyHwATMega328 hw;
+#endif
 
 // Construct MySensors library (signer needed if MY_SIGNING_FEATURE is turned on in MyConfig.h)
 // To use LEDs blinking, uncomment WITH_LEDS_BLINKING in MyConfig.h
 #ifdef WITH_LEDS_BLINKING
-MySensor gw(transport, hw , signer, RADIO_RX_LED_PIN, RADIO_TX_LED_PIN, RADIO_ERROR_LED_PIN);
+	MySensor gw(transport, hw , signer, RADIO_RX_LED_PIN, RADIO_TX_LED_PIN, RADIO_ERROR_LED_PIN);
 #else
-MySensor gw(transport, hw , signer);
+	#ifdef USE_SIGNATURE
+		MySensor gw(transport, hw, signer);
+	#else
+		MySensor gw;
+	#endif
 #endif
 
 char inputString[MAX_RECEIVE_LENGTH] = "";    // A string to hold incoming commands from serial/ethernet interface
@@ -103,11 +111,17 @@ void output(const char *fmt, ... ) {
 }
 
   
-void setup()  
-{ 
-  gw.begin(incomingMessage, 0, true, 0);
+void setup() {
 
-  setupGateway(INCLUSION_MODE_PIN, INCLUSION_MODE_TIME, output);
+	gw.begin(incomingMessage, 0, true, 0);
+
+#ifdef USE_SIGNATURE
+	Serial.println("MySensor Gateway setup (with signature)");
+#else
+	Serial.println("MySensor Gateway setup");
+#endif
+
+	setupGateway(INCLUSION_MODE_PIN, INCLUSION_MODE_TIME, output);
 
   // Add interrupt for inclusion button to pin
   PCintPort::attachInterrupt(pinInclusion, startInclusionInterrupt, RISING);
@@ -117,8 +131,7 @@ void setup()
   serial(PSTR("0;0;%d;0;%d;Gateway startup complete.\n"),  C_INTERNAL, I_GATEWAY_READY);
 }
 
-void loop()  
-{ 
+void loop() {
   gw.process();
 
   checkButtonTriggeredInclusion();
