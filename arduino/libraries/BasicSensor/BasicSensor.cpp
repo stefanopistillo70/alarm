@@ -1,8 +1,5 @@
 
-#include <EEPROM.h>  
-#include <MySensor.h>
-#include <MySigningAtsha204Soft.h>
-//#include <PinChangeInt.h>
+
 
 #include "BasicSensor.h"
 
@@ -10,11 +7,10 @@
 //#define USE_BATTERY_METER
 
 
-boolean BasicSensor::buttonClearEEprom = false;
-
-
 int BasicSensor::init() {
-	Serial.println("##########  init  ##########");
+	Serial.println("##########  BasicSensor::init  ##########");
+
+	checkCleanEEPROM();
 
 #ifdef USE_SIGNATURE
 		MyTransportNRF24 transport;
@@ -114,11 +110,17 @@ void BasicSensor::sendBatteryPower() {
 
 
 
-void BasicSensor::cleanEEPROM() {
-	Serial.println("Started clearing. Please wait...");
-	for (int i=0;i<512;i++) {
-		EEPROM.write(i, 0xff);
-	}
-	Serial.println("Clering done. You're ready to go!");
-}
+void BasicSensor::checkCleanEEPROM() {
+	// set up the pin
+	pinMode(cleanEEPROM_pin, INPUT);
+	digitalWrite(cleanEEPROM_pin, HIGH);
+	delay(20); // Just to get a solid reading on the pin
 
+	if (!digitalRead(cleanEEPROM_pin)) {
+		Serial.println("Started clearing. Please wait...");
+		for (int i=0;i<512;i++) {
+			EEPROM.write(i, 0xff);
+		}
+		Serial.println("Clering done. You're ready to go!");
+	}
+}

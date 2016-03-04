@@ -3,11 +3,14 @@
 #define BasicSensor_h
 
 
+#include <EEPROM.h>  
+#include <MySensor.h>
+#include <MySigningAtsha204Soft.h>
+
 class BasicSensor {
 	public:
 	
-		BasicSensor(int cleanEEPROMPin_in = 3, int batteryPin_in = A0) : cleanEEPROMPin(cleanEEPROMPin_in), batteryPin(batteryPin_in){
-			
+		BasicSensor(int cleanEEPROMPin_in = 3, int batteryPin_in = A0) : cleanEEPROM_pin(cleanEEPROMPin_in), batteryPin(batteryPin_in) {
 		};
 
 		int init();
@@ -22,19 +25,14 @@ class BasicSensor {
 	int oldBatteryPcnt = 0;
 	MySensor *gw;
 	
-	int cleanEEPROMPin =  3;
+	int cleanEEPROM_pin =  3;
+
 	int batteryPin = A0;
 	
-	static boolean buttonClearEEprom; 
-
 	
 	void sendBatteryPower();
 	
-	static void pressButtonCleanEEPROM(){
-		buttonClearEEprom = true;
-	}
-	
-	void cleanEEPROM();
+	void checkCleanEEPROM();
 
 protected:
 
