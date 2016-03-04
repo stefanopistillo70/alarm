@@ -56,7 +56,7 @@
 // but now can be used in any sensor node. Also the LEDs can now be
 // disabled in the gateway.
 
-// #define WITH_LEDS_BLINKING
+#define WITH_LEDS_BLINKING
 
 // The following setting allows you to inverse the blinking feature WITH_LEDS_BLINKING
 // When WITH_LEDS_BLINKING_INVERSE is enabled LEDSs are normally turned on and switches
@@ -79,7 +79,7 @@
 *  Message Signing Settings
 ***********************************/
 // Disable to completly disable signing functionality in library
-//#define MY_SIGNING_FEATURE
+#define MY_SIGNING_FEATURE
 
 // Define a suitable timeout for a signature verification session
 // Consider the turnaround from a nonce being generated to a signed message being received
@@ -95,7 +95,7 @@
 // Note that a node can still transmit a non-salted message (i.e. have whitelisting disabled)
 // to a node that has whitelisting enabled (assuming the receiver does not have a matching entry
 // for the sender in it's whitelist)
-//#define MY_SECURE_NODE_WHITELISTING
+#define MY_SECURE_NODE_WHITELISTING
 
 // MySigningAtsha204 default setting
 #define MY_ATSHA204_PIN 17 // A3 - pin where ATSHA204 is attached

@@ -3,7 +3,7 @@
 #include <EEPROM.h>  
 #include <MySensor.h>
 #include <MySigningAtsha204Soft.h>
-//#include <PinChangeInt.h>
+#include <PinChangeInt.h>
 
 #include "BasicSensor.h"
 
@@ -31,6 +31,7 @@ TestSensor sensor(3,A0);
 
 
 void setup() {
+	Serial.begin(115200);
 	Serial.println("##########  setup  ##########");
 	sensor.init();
 }

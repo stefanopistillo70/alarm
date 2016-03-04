@@ -58,7 +58,7 @@
 #define RADIO_RX_LED_PIN    6  // Receive led pin
 #define RADIO_TX_LED_PIN    5  // the PCB, on board LED
 
-//#define USE_SIGNATURE // use sign
+#define USE_SIGNATURE // use sign
 
 #ifdef USE_SIGNATURE
 // NRFRF24L01 radio driver (set low transmit power by default) 

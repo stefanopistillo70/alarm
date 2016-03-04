@@ -4,7 +4,7 @@
 #include "BasicSensor.h"
 
 //#define USE_SIGNATURE
-//#define USE_BATTERY_METER
+#define USE_BATTERY_METER
 
 
 int BasicSensor::init() {
@@ -99,7 +99,7 @@ void BasicSensor::sendBatteryPower() {
 	if (oldBatteryPcnt != batteryPcnt) {
 		Serial.println("sending...");
 		// Power up radio after sleep
-		gw->sendBatteryLevel(batteryPcnt,true);
+		gw->sendBatteryLevel(batteryPcnt);
 		oldBatteryPcnt = batteryPcnt;
 	}
 
