@@ -16,6 +16,7 @@ void setup()
  
 void loop()
 {
-     gw.send(msg.set(OPEN)); 
-     delay(5000); // Wait 5 seconds
+     gw.send(msg.set(OPEN),true); 
+	 //gw.sendBatteryLevel(0,true);
+     delay(2000); // Wait 5 seconds
 }
