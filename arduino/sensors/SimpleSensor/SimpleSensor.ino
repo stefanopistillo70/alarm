@@ -8,15 +8,17 @@
 MySensor gw;
 MyMessage msg(ID, V_TRIPPED);
  
-void setup() 
-{ 
+void setup() { 
   gw.begin();
   gw.present(ID, S_DOOR); 
 }
  
-void loop()
-{
-     gw.send(msg.set(OPEN),true); 
-	 //gw.sendBatteryLevel(0,true);
+void loop() {
+
+     gw.send(msg.set(OPEN)); 
+//     gw.send(msg.set(OPEN), true); 
+
+	 gw.sendBatteryLevel(0);
+
      delay(2000); // Wait 5 seconds
 }

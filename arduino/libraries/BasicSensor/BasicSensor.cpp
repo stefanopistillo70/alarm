@@ -1,11 +1,17 @@
 
+#include <EEPROM.h>  
 #include <MySensor.h>
 #include <MySigningAtsha204Soft.h>
+//#include <PinChangeInt.h>
 
 #include "BasicSensor.h"
 
 //#define USE_SIGNATURE
 //#define USE_BATTERY_METER
+
+
+boolean BasicSensor::buttonClearEEprom = false;
+
 
 int BasicSensor::init() {
 	Serial.println("##########  init  ##########");
@@ -50,6 +56,9 @@ int BasicSensor::init() {
 
 		// Send the sketch version information to the gateway and Controller
 		gw->sendSketchInfo("Battery Meter", "1.0");
+		
+		// Add interrupt for inclusion button to pin
+		//PCintPort::attachInterrupt(cleanEEPROMPin, BasicSensor::pressButtonCleanEEPROM, RISING);
 
 };
 
@@ -100,3 +109,16 @@ void BasicSensor::sendBatteryPower() {
 
 };
 #endif
+
+
+
+
+
+void BasicSensor::cleanEEPROM() {
+	Serial.println("Started clearing. Please wait...");
+	for (int i=0;i<512;i++) {
+		EEPROM.write(i, 0xff);
+	}
+	Serial.println("Clering done. You're ready to go!");
+}
+

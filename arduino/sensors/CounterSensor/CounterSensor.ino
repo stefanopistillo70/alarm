@@ -1,7 +1,9 @@
 
 #include <SPI.h>
+#include <EEPROM.h>  
 #include <MySensor.h>
 #include <MySigningAtsha204Soft.h>
+//#include <PinChangeInt.h>
 
 #include "BasicSensor.h"
 
@@ -10,8 +12,10 @@
 class TestSensor : public BasicSensor {
 	unsigned long counter = 0;
 	public:
+	TestSensor(int cleanEEPROMPin_in , int batteryPin_in ) :  BasicSensor(cleanEEPROMPin_in, batteryPin_in){};
 	void processSensor(MySensor * gw);
 };
+
 
 void TestSensor::processSensor(MySensor * gw) {
 	Serial.println("Sending counter ...");
@@ -23,7 +27,7 @@ void TestSensor::processSensor(MySensor * gw) {
 }
 
 
-TestSensor sensor;
+TestSensor sensor(3,A0);
 
 
 void setup() {
