@@ -95,7 +95,7 @@
 // Note that a node can still transmit a non-salted message (i.e. have whitelisting disabled)
 // to a node that has whitelisting enabled (assuming the receiver does not have a matching entry
 // for the sender in it's whitelist)
-#define MY_SECURE_NODE_WHITELISTING
+//#define MY_SECURE_NODE_WHITELISTING
 
 // MySigningAtsha204 default setting
 #define MY_ATSHA204_PIN 17 // A3 - pin where ATSHA204 is attached

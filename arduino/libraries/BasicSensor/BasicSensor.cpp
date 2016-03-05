@@ -3,7 +3,7 @@
 
 #include "BasicSensor.h"
 
-//#define USE_SIGNATURE
+#define USE_SIGNATURE
 #define USE_BATTERY_METER
 
 
@@ -18,14 +18,15 @@ int BasicSensor::init() {
 		// Hardware profile 
 		MyHwATMega328 hw;
 
+		/*	
 		uint8_t soft_serial[SHA204_SERIAL_SZ] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09};
-		/*whitelist_entry_t node_whitelist[] = {
+		whitelist_entry_t node_whitelist[] = {
 		  { .nodeId = 0, // Just some value, this need to be changed to the NodeId of the trusted node
 			.serial = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09} } // This need to change to the serial of the trusted node
 		};
 		MySigningAtsha204Soft signer(true,1,node_whitelist,soft_serial,MY_RANDOMSEED_PIN);
 		*/
-		MySigningAtsha204Soft signer(true, 0, NULL, soft_serial, MY_RANDOMSEED_PIN);
+		MySigningAtsha204Soft signer(true, MY_RANDOMSEED_PIN);
 
 		gw = new MySensor(transport, hw, signer);
 #else
