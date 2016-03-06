@@ -3,10 +3,29 @@ var gateway = (function() {
 	
 		var instance;
 		
+		function onMsg(gw, msg){
+			
+			var replayMsg;
+			if(msg.command == Cmd.C_INTERNAL){
+				if(msg.type == InternalType.I_ID_REQUEST){
+					replayMsg = new Msg(255,0,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,"11");
+				};
+			};
+			
+			if(replayMsg){
+				console.log("SENDING -> "+replayMsg.stringify());
+				gw.write(replayMsg.stringify(), function(err, results) {
+							if(err) console.log('err ' + err);
+							else console.log('SENT ' + results + ' bytes');
+				});
+			}
+			
+		};
+		
 		function init() {
 			
-			const gwPort = '\\\\.\\COM10';
-			//var gwPort = '/dev/pts/4';
+			//const gwPort = '\\\\.\\COM10';
+			var gwPort = '/dev/pts/2';
 			var gwBaud = 115200;
 		
 			var SerialPort = require('serialport').SerialPort;
@@ -16,10 +35,14 @@ var gateway = (function() {
 			gw.on('open', function() {
 				console.log('connected to serial gateway at ' + this.gwPort);
 			}).on('data', function(rd) {
-				console.log('DATA ->'+rd.toString());
+				console.log('RECIEVING ->'+rd.toString());
 				//appendData(rd.toString(), db, gw);
-				var msg = Msg.builder(rd.toString());
-				onMsg(msg);
+				try{
+					var msg = msgBuilder(rd.toString());
+					onMsg(gw,msg);
+				}catch(err){
+					console.log(err.message);
+				}
 				
 			}).on('end', function() {
 				console.log('disconnected from gateway');
@@ -47,20 +70,6 @@ var gateway = (function() {
  
 })();
 
-
-gateway.onMsg = function(msg){
-	
-	if(msg.command == Cmd.C_INTERNAL){
-			if(msg.type == InternalType.I_ID_REQUEST){
-				var msgToSend = new Msg(255,0,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,"11");
-				
-				gw.write(Msg.stringify(msgToSend), function(err, results) {
-					console.log('err ' + err);
-					console.log('results ' + results);
-				});
-			}
-	}
-};
 
 Cmd = {
 		MIN				: 0,
@@ -294,24 +303,29 @@ Msg = function(sender, sensor, command, ack, type, rawpayload) {
 		} else {
 			throw new Error("Wrong correlation commnad  : " + command + "   type : " + type);
 		}
+		
+		
+		
 }
 
-Msg.prototype.builder = function(data) {
-	var datas = data.toString().split(";");
-	var sender = +datas[0];
-	var sensor = +datas[1];
-	var command = +datas[2];
-	var ack = +datas[3];
-	var type = +datas[4];
-	var rawpayload="";
-	if (datas[5]) {
-		rawpayload = datas[5].trim();
-	}
-	return new Msg(sender, sensor, command, ack, type, rawpayload);
-}
 
-Msg.prototype.stringify = function(data){
-	return sender +';'+ sensor +';'+ command +';'+ ack +';'+ type +';'+ rawpayload;
+var msgBuilder = function(data) {
+			var datas = data.toString().split(";");
+			var sender = +datas[0];
+			var sensor = +datas[1];
+			var command = +datas[2];
+			var ack = +datas[3];
+			var type = +datas[4];
+			var rawpayload="";
+			if (datas[5]) {
+				rawpayload = datas[5].trim();
+			}
+			return new Msg(sender, sensor, command, ack, type, rawpayload);
+		}
+
+
+Msg.prototype.stringify = function(){
+	return this.sender +';'+ this.sensor +';'+ this.command +';'+ this.ack +';'+ this.type +';'+ this.rawpayload;
 }
 
 

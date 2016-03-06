@@ -10,3 +10,14 @@ sudo make install
 
 --- Create Psueudo Serial Com -----
 socat -d -d pty,raw,echo=0 pty,raw,echo=0
+
+
+
+echo -ne 'ciao' > /dev/pts/3
+
+cat -v < /dev/pts/3
+
+
+
+
+255;0;3;0;3;ciao
