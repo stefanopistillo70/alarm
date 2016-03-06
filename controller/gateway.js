@@ -1,4 +1,7 @@
 
+var logger = require('./logger.js')('Gateway');
+
+
 var gateway = (function() {
 	
 		var instance;
@@ -13,10 +16,10 @@ var gateway = (function() {
 			};
 			
 			if(replayMsg){
-				console.log("SENDING -> "+replayMsg.stringify());
+				logger.log('info','SENDING -> '+replayMsg.stringify());
 				gw.write(replayMsg.stringify(), function(err, results) {
-							if(err) console.log('err ' + err);
-							else console.log('SENT ' + results + ' bytes');
+							if(err) logger.log('error','err ' + err);
+							else logger.log('info','SENT ' + results + ' bytes');
 				});
 			}
 			
@@ -33,24 +36,23 @@ var gateway = (function() {
 		
 			gw.open();
 			gw.on('open', function() {
-				console.log('connected to serial gateway at ' + this.gwPort);
+				logger.log('info','connected to serial gateway at ' + this.gwPort);
 			}).on('data', function(rd) {
-				console.log('RECIEVING ->'+rd.toString());
+				logger.log('info','RECIEVING ->'+rd.toString());
 				//appendData(rd.toString(), db, gw);
 				try{
 					var msg = msgBuilder(rd.toString());
 					onMsg(gw,msg);
 				}catch(err){
-					console.log(err.message);
+					logger.log('error',err.message);
 				}
 				
 			}).on('end', function() {
-				console.log('disconnected from gateway');
+				logger.log('error','disconnected from gateway');
 			}).on('error', function(error) {
-				console.log('failed to open: '+error);
-				console.log('trying to reconnect');
+				logger.log('error','failed to open: '+error);
+				logger.log('error','trying to reconnect');
 				setTimeout(function(){gw.open()}, 5 * 1000);
-				//gw.open();
 			});
 						
 			return {}
@@ -60,9 +62,9 @@ var gateway = (function() {
 			getInstance: function () {
 		 
 			  if ( !instance ) {
-				console.log('Initialize Serial Gataway...')  
+				logger.log('info','Initialize Serial Gataway...')  
 				instance = init();
-				console.log('Done') 
+				logger.log('info','Done') 
 			  }
 			  return instance;
 			}

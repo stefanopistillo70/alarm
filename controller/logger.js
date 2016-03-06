@@ -9,19 +9,23 @@ var myFormatter = function(module,options){
 
 
 //Default Config
-var options = {
-  colorize: true,
-  timestamp: function() {
-		var now = new Date();
-        return now.getFullYear()+'-'+now.getMonth()+'-'+now.getDay()+' '+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+'.'+now.getMilliseconds();
-  },
-  formatter: function(options) {
-        // Return string will be passed to logger. 
-        return myFormatter('',options);
-  },
-  level: 'verbose'
+var buildOptions = function(){
+	
+	return {
+	  colorize: true,
+	  timestamp: function() {
+			var now = new Date();
+			return now.getFullYear()+'-'+now.getMonth()+'-'+now.getDay()+' '+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+'.'+now.getMilliseconds();
+	  },
+	  formatter: function(options) {
+			// Return string will be passed to logger. 
+			return myFormatter('',options);
+	  },
+	  level: 'verbose'
+	}
 };
-var transport = new winston.transports.Console(options);
+
+var transport = new winston.transports.Console(buildOptions());
  
 // configure default transports for all loggers in default container 
 winston.loggers.options.transports = [transport];
@@ -32,13 +36,22 @@ winston.loggers.options.transports = [transport];
 
 //Control Config
 
-var optController = options;
+var optController = buildOptions();
 optController.formatter = function(options) {
         return myFormatter('Controller',options);
 }
 
+var optGateway = buildOptions();
+optGateway.formatter = function(options) {
+        return myFormatter('Gateway',options);
+}
+
 winston.loggers.add('Controller', {
 		transports: [new winston.transports.Console(optController)]
+});
+
+winston.loggers.add('Gateway', {
+		transports: [new winston.transports.Console(optGateway)]
 });
 
 
