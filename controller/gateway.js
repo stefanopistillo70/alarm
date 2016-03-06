@@ -18,7 +18,8 @@ var gateway = (function() {
 			}).on('data', function(rd) {
 				console.log('DATA ->'+rd.toString());
 				//appendData(rd.toString(), db, gw);
-				var msg = parseMsg(rd.toString());
+				var msg = Msg.builder(rd.toString());
+				onMsg(msg);
 				
 			}).on('end', function() {
 				console.log('disconnected from gateway');
@@ -45,6 +46,21 @@ var gateway = (function() {
 		};
  
 })();
+
+
+gateway.onMsg = function(msg){
+	
+	if(msg.command == Cmd.C_INTERNAL){
+			if(msg.type == InternalType.I_ID_REQUEST){
+				var msgToSend = new Msg(255,0,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,"11");
+				
+				gw.write(Msg.stringify(msgToSend), function(err, results) {
+					console.log('err ' + err);
+					console.log('results ' + results);
+				});
+			}
+	}
+};
 
 Cmd = {
 		MIN				: 0,
@@ -248,22 +264,6 @@ SensorType.toString = function(value) {
 }
 
 
-
-parseMsg = function(data) {
-	var datas = data.toString().split(";");
-	var sender = +datas[0];
-	var sensor = +datas[1];
-	var command = +datas[2];
-	var ack = +datas[3];
-	var type = +datas[4];
-	var rawpayload="";
-	if (datas[5]) {
-		rawpayload = datas[5].trim();
-	}
-	return new Msg(sender, sensor, command, ack, type, rawpayload);
-}
-
-	
 	
 Msg = function(sender, sensor, command, ack, type, rawpayload) {
 		this.sender = sender;
@@ -294,6 +294,24 @@ Msg = function(sender, sensor, command, ack, type, rawpayload) {
 		} else {
 			throw new Error("Wrong correlation commnad  : " + command + "   type : " + type);
 		}
+}
+
+Msg.prototype.builder = function(data) {
+	var datas = data.toString().split(";");
+	var sender = +datas[0];
+	var sensor = +datas[1];
+	var command = +datas[2];
+	var ack = +datas[3];
+	var type = +datas[4];
+	var rawpayload="";
+	if (datas[5]) {
+		rawpayload = datas[5].trim();
+	}
+	return new Msg(sender, sensor, command, ack, type, rawpayload);
+}
+
+Msg.prototype.stringify = function(data){
+	return sender +';'+ sensor +';'+ command +';'+ ack +';'+ type +';'+ rawpayload;
 }
 
 
