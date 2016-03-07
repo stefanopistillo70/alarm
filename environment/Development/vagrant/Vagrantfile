@@ -14,8 +14,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 	config.vm.synced_folder "../../../", "/git", type: "virtualbox"
 	
-	config.vm.network "public_network",use_dhcp_assigned_default_route: true
-	#config.vm.network "forwarded_port", guest: 27017, host: 27017, auto_correct: true				# mongodb
+	#config.vm.network "public_network",use_dhcp_assigned_default_route: true
+	config.vm.network "forwarded_port", guest: 27017, host: 27017, auto_correct: true				# mongodb
 	
 	
 	config.vm.provider "virtualbox" do |v|
