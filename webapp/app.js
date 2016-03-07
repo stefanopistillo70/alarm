@@ -9,6 +9,19 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 var sensorLog = require('./routes/sensorLog');
 
+
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://127.0.0.1:27017/MySensorsDb', function(err) {
+    if(err) {
+        console.log('connection error', err);
+    } else {
+        console.log('connection successful');
+    }
+});
+
+
+
 var app = express();
 
 // view engine setup
