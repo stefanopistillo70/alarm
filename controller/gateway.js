@@ -41,12 +41,13 @@ var gateway = (function() {
 				logger.log('info','connected to serial gateway at ' + this.gwPort);
 			}).on('data', function(rd) {
 				logger.log('info','RECIEVING ->'+rd.toString());
-				//appendData(rd.toString(), db, gw);
-				try{
-					var msg = msgBuilder(rd.toString());
-					onMsg(gw,msg);
-				}catch(err){
-					logger.log('error',err.message);
+				if(rd.toString().indexOf(';') > 0 ){
+					try{
+						var msg = msgBuilder(rd.toString());
+						onMsg(gw,msg);
+					}catch(err){
+						logger.log('error',err.message);
+					}
 				}
 				
 			}).on('end', function() {
@@ -273,7 +274,20 @@ SensorType = {
 		S_IR					: 20,
 		S_WATER					: 21,
 		S_AIR_QUALITY			: 22,
-		MAX						: 22
+		S_CUSTOM				: 23,
+		S_DUST					: 24,
+		S_SCENE_CONTROLLER		: 25,
+		S_RGB_LIGHT				: 26,
+		S_RGBW_LIGHT			: 27,
+		S_COLOR_SENSOR			: 28,
+		S_HVAC					: 29,
+		S_MULTIMETER			: 30,
+		S_SPRINKLER				: 31,
+		S_WATER_LEAK			: 32,
+		S_SOUND					: 33,
+		S_VIBRATION				: 34,
+		S_MOISTURE				: 35,
+		MAX						: 35
 }
 
 SensorType.toString = function(value) {
@@ -301,6 +315,43 @@ SensorType.toString = function(value) {
 		case SensorType.S_IR: 						return "S_IR";
 		case SensorType.S_WATER: 					return "S_WATER";
 		case SensorType.S_AIR_QUALITY: 				return "S_AIR_QUALITY";
+		case SensorType.S_CUSTOM:					return "S_CUSTOM";
+		case SensorType.S_DUST:						return "S_DUST";
+		case SensorType.S_SCENE_CONTROLLER:			return "S_SCENE_CONTROLLER";
+		case SensorType.S_RGB_LIGHT:				return "S_RGB_LIGHT";
+		case SensorType.S_RGBW_LIGHT:				return "S_RGBW_LIGHT";
+		case SensorType.S_COLOR_SENSOR:				return "S_COLOR_SENSOR";
+		case SensorType.S_HVAC:						return "S_HVAC";
+		case SensorType.S_MULTIMETER:				return "S_MULTIMETER";
+		case SensorType.S_SPRINKLER:				return "S_SPRINKLER";
+		case SensorType.S_WATER_LEAK:				return "S_WATER_LEAK";
+		case SensorType.S_SOUND:					return "S_SOUND";
+		case SensorType.S_VIBRATION:				return "S_VIBRATION";
+		case SensorType.S_MOISTURE:					return "S_MOISTURE";
+		
+	}
+}
+
+
+StreamType = {
+		MIN								: 0,
+		ST_FIRMWARE_CONFIG_REQUEST		: 0,
+		ST_FIRMWARE_CONFIG_RESPONSE		: 1,
+		ST_FIRMWARE_REQUEST				: 2,
+		ST_FIRMWARE_RESPONSE			: 3,
+		ST_SOUND						: 4,
+		ST_IMAGE						: 5,
+		MAX								: 5
+}
+
+StreamType.toString = function(value) {
+	switch (value) {
+		case StreamType.ST_FIRMWARE_CONFIG_REQUEST: 	return "ST_FIRMWARE_CONFIG_REQUEST";
+		case StreamType.ST_FIRMWARE_CONFIG_RESPONSE: 	return "ST_FIRMWARE_CONFIG_RESPONSE";
+		case StreamType.ST_FIRMWARE_REQUEST: 			return "ST_FIRMWARE_REQUEST";
+		case StreamType.ST_FIRMWARE_RESPONSE: 			return "ST_FIRMWARE_RESPONSE";
+		case StreamType.ST_SOUND: 						return "ST_SOUND";
+		case StreamType.ST_IMAGE: 						return "ST_IMAGE";
 	}
 }
 
