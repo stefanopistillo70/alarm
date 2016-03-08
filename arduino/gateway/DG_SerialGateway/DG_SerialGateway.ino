@@ -58,9 +58,7 @@
 #define RADIO_RX_LED_PIN    6  // Receive led pin
 #define RADIO_TX_LED_PIN    5  // the PCB, on board LED
 
-//#define USE_SIGNATURE // use sign
-
-
+#define USE_SIGNATURE // use sign
 
 // NRFRF24L01 radio driver (set low transmit power by default) 
 //MyTransportRFM69 transport;
@@ -71,17 +69,7 @@ MyHwATMega328 hw;
 
 
 #ifdef USE_SIGNATURE
-
-// Change the soft_serial value to an arbitrary value for proper security
-//uint8_t soft_serial[SHA204_SERIAL_SZ] = {0x00,0x02,0x07,0xe6,0x05,0x01,0x07,0x03,0xff};
-/*whitelist_entry_t node_whitelist[] = {
-  { .nodeId = 7, // Just some value, this need to be changed to the NodeId of the trusted node
-    .serial = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,0x09} } // This need to change to the serial of the trusted node
-};
-MySigningAtsha204Soft signer(true,1,node_whitelist,soft_serial,MY_RANDOMSEED_PIN);
-*/
-MySigningAtsha204Soft signer(true,MY_RANDOMSEED_PIN);
-
+	MySigningAtsha204Soft signer(true,MY_RANDOMSEED_PIN);
 #else
 	MySigningNone signer;
 #endif
