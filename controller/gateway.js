@@ -11,7 +11,7 @@ var gateway = (function() {
 			var replayMsg;
 			if(msg.command == Cmd.C_INTERNAL){
 				if(msg.type == InternalType.I_ID_REQUEST){
-					replayMsg = new Msg(255,0,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,"11");
+					replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,"11");
 				};
 			};
 			
@@ -31,8 +31,10 @@ var gateway = (function() {
 			//var gwPort = '/dev/pts/2';
 			var gwBaud = 115200;
 		
-			var SerialPort = require('serialport').SerialPort;
-			var gw = new SerialPort(gwPort, { baudrate: gwBaud }, false);
+			var serialport = require("serialport");
+			var SerialPort = serialport.SerialPort;
+			//var gw = new SerialPort(gwPort, { baudrate: gwBaud }, false);
+			var gw = new SerialPort(gwPort, { baudrate: gwBaud , parser: serialport.parsers.readline("\n")}, false);
 		
 			gw.open();
 			gw.on('open', function() {

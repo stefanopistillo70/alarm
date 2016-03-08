@@ -18,12 +18,13 @@ class TestSensor : public BasicSensor {
 
 
 void TestSensor::processSensor(MySensor * gw) {
-	Serial.println("Sending counter ...");
+	/*Serial.println("Sending counter ...");
 	int id = gw->getNodeId();
 	MyMessage msg(id, V_TRIPPED);
 	gw->send(msg.set(counter));
 	counter++;
 	Serial.println("Msg Sent");
+	*/
 }
 
 

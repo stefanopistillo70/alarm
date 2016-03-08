@@ -4,7 +4,7 @@
 #include "BasicSensor.h"
 
 //#define USE_SIGNATURE
-#define USE_BATTERY_METER
+//#define USE_BATTERY_METER
 
 
 int BasicSensor::init() {
