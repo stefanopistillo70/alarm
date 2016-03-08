@@ -58,17 +58,19 @@
 #define RADIO_RX_LED_PIN    6  // Receive led pin
 #define RADIO_TX_LED_PIN    5  // the PCB, on board LED
 
-#define USE_SIGNATURE // use sign
+//#define USE_SIGNATURE // use sign
+
+
+
+// NRFRF24L01 radio driver (set low transmit power by default) 
+//MyTransportRFM69 transport;
+MyTransportNRF24 transport(RF24_CE_PIN, RF24_CS_PIN, RF24_PA_LEVEL_GW);
+
+// Hardware profile 
+MyHwATMega328 hw;
+
 
 #ifdef USE_SIGNATURE
-// NRFRF24L01 radio driver (set low transmit power by default) 
-MyTransportNRF24 transport(RF24_CE_PIN, RF24_CS_PIN, RF24_PA_LEVEL_GW);
-//MyTransportRFM69 transport;
-
-// Message signing driver (signer needed if MY_SIGNING_FEATURE is turned on in MyConfig.h)
-//MySigningNone signer;
-//MySigningAtsha204Soft signer;
-//MySigningAtsha204 signer;
 
 // Change the soft_serial value to an arbitrary value for proper security
 //uint8_t soft_serial[SHA204_SERIAL_SZ] = {0x00,0x02,0x07,0xe6,0x05,0x01,0x07,0x03,0xff};
@@ -80,8 +82,8 @@ MySigningAtsha204Soft signer(true,1,node_whitelist,soft_serial,MY_RANDOMSEED_PIN
 */
 MySigningAtsha204Soft signer(true,MY_RANDOMSEED_PIN);
 
-// Hardware profile 
-MyHwATMega328 hw;
+#else
+	MySigningNone signer;
 #endif
 
 // Construct MySensors library (signer needed if MY_SIGNING_FEATURE is turned on in MyConfig.h)
@@ -89,12 +91,8 @@ MyHwATMega328 hw;
 #ifdef WITH_LEDS_BLINKING
 	MySensor gw(transport, hw , signer, RADIO_RX_LED_PIN, RADIO_TX_LED_PIN, RADIO_ERROR_LED_PIN);
 #else
-	#ifdef USE_SIGNATURE
-		MySensor gw(transport, hw, signer);
-	#else
-		MySensor gw;
-	#endif
-#endif
+	MySensor gw(transport, hw, signer);
+#endif	
 
 char inputString[MAX_RECEIVE_LENGTH] = "";    // A string to hold incoming commands from serial/ethernet interface
 int inputPos = 0;

@@ -3,7 +3,7 @@
 
 #include "BasicSensor.h"
 
-#define USE_SIGNATURE
+//#define USE_SIGNATURE
 #define USE_BATTERY_METER
 
 
@@ -43,7 +43,7 @@ int BasicSensor::init() {
 #endif
 
 		//gw.begin();
-		gw->begin(NULL, 7, false, AUTO);
+		gw->begin(NULL, AUTO, false, AUTO);
 
 #ifdef USE_SIGNATURE
 		Serial.println("MySensor init (with signature)");

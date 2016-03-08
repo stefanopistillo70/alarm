@@ -27,8 +27,8 @@ var gateway = (function() {
 		
 		function init() {
 			
-			//const gwPort = '\\\\.\\COM10';
-			var gwPort = '/dev/pts/2';
+			const gwPort = '\\\\.\\COM10';
+			//var gwPort = '/dev/pts/2';
 			var gwBaud = 115200;
 		
 			var SerialPort = require('serialport').SerialPort;
@@ -95,86 +95,106 @@ Cmd.toString = function(value) {
 
 
 GetSetType = {
-	MIN				: 0,
-	V_TEMP			: 0,
-	V_HUM			: 1,
-	V_LIGHT			: 2,
-	V_DIMMER		: 3,
-	V_FORECAST		: 5,
-	V_PRESSURE		: 4,
-	V_RAIN			: 6,
-	V_RAINRATE		: 7,
-	V_WIND			: 8,
-	V_GUST			: 9,
-	V_DIRECTION		: 10,
-	V_UV			: 11,
-	V_WEIGHT		: 12,
-	V_DISTANCE		: 13,
-	V_IMPEDANCE		: 14,
-	V_ARMED			: 15,
-	V_TRIPPED		: 16,
-	V_WATT			: 17,
-	V_KWH			: 18,
-	V_SCENE_ON		: 19,
-	V_SCENE_OFF		: 20,
-	V_HEATER		: 21,
-	V_HEATER_SW		: 22,
-	V_LIGHT_LEVEL	: 23,
-	V_VAR1			: 24,
-	V_VAR2			: 25,
-	V_VAR3			: 26,
-	V_VAR4			: 27,
-	V_VAR5			: 28,
-	V_UP			: 29,
-	V_DOWN			: 30,
-	V_STOP			: 31,
-	V_IR_SEND		: 32,
-	V_IR_RECEIVE	: 33,
-	V_FLOW			: 34,
-	V_VOLUME		: 35,
-	V_LOCK_STATUS	: 36,
-	MAX				: 36
+	MIN						: 0,
+	V_TEMP					: 0,
+	V_HUM					: 1,
+	V_LIGHT					: 2,
+	V_DIMMER				: 3,
+	V_FORECAST				: 5,
+	V_PRESSURE				: 4,
+	V_RAIN					: 6,
+	V_RAINRATE				: 7,
+	V_WIND					: 8,
+	V_GUST					: 9,
+	V_DIRECTION				: 10,
+	V_UV					: 11,
+	V_WEIGHT				: 12,
+	V_DISTANCE				: 13,
+	V_IMPEDANCE				: 14,
+	V_ARMED					: 15,
+	V_TRIPPED				: 16,
+	V_WATT					: 17,
+	V_KWH					: 18,
+	V_SCENE_ON				: 19,
+	V_SCENE_OFF				: 20,
+	V_HEATER				: 21,
+	V_HEATER_SW				: 22,
+	V_LIGHT_LEVEL			: 23,
+	V_VAR1					: 24,
+	V_VAR2					: 25,
+	V_VAR3					: 26,
+	V_VAR4					: 27,
+	V_VAR5					: 28,
+	V_UP					: 29,
+	V_DOWN					: 30,
+	V_STOP					: 31,
+	V_IR_SEND				: 32,
+	V_IR_RECEIVE			: 33,
+	V_FLOW					: 34,
+	V_VOLUME				: 35,
+	V_LOCK_STATUS			: 36,
+	V_LEVEL					: 37,
+	V_VOLTAGE				: 38,
+	V_CURRENT				: 39,
+	V_RGB					: 40,
+	V_RGBW					: 41,
+	V_ID    				: 42,
+	V_UNIT_PREFIX			: 43,
+	V_HVAC_SETPOINT_COOL	: 44,
+	V_HVAC_SETPOINT_HEAT	: 45,
+	V_HVAC_FLOW_MODE		: 46,
+	MAX						: 46
 }
 
 GetSetType.toString = function(value) {
 	switch (value) {
-		case GetSetType.V_TEMP: 		return "V_TEMP";
-		case GetSetType.V_HUM: 			return "V_HUM";
-		case GetSetType.V_LIGHT: 		return "V_LIGHT";
-		case GetSetType.V_DIMMER: 		return "V_DIMMER";
-		case GetSetType.V_FORECAST: 	return "V_FORECAST";
-		case GetSetType.V_PRESSURE: 	return "V_PRESSURE";
-		case GetSetType.V_RAIN: 		return "V_RAIN";
-		case GetSetType.V_RAINRATE: 	return "V_RAINRATE";
-		case GetSetType.V_WIND: 		return "V_WIND";
-		case GetSetType.V_GUST: 		return "V_GUST";
-		case GetSetType.V_DIRECTION: 	return "V_DIRECTION";
-		case GetSetType.V_UV: 			return "V_UV";
-		case GetSetType.V_WEIGHT:		return "V_WEIGHT";
-		case GetSetType.V_DISTANCE: 	return "V_DISTANCE";
-		case GetSetType.V_IMPEDANCE: 	return "V_IMPEDANCE";
-		case GetSetType.V_ARMED: 		return "V_ARMED";
-		case GetSetType.V_TRIPPED: 		return "V_TRIPPED";
-		case GetSetType.V_WATT: 		return "V_WATT";
-		case GetSetType.V_KWH: 			return "V_KWH";
-		case GetSetType.V_SCENE_ON: 	return "V_SCENE_ON";
-		case GetSetType.V_SCENE_OFF: 	return "V_SCENE_OFF";
-		case GetSetType.V_HEATER: 		return "V_HEATER";
-		case GetSetType.V_HEATER_SW: 	return "V_HEATER_SW";
-		case GetSetType.V_LIGHT_LEVEL: 	return "V_LIGHT_LEVEL";
-		case GetSetType.V_VAR1: 		return "V_VAR1";
-		case GetSetType.V_VAR2: 		return "V_VAR2";
-		case GetSetType.V_VAR3: 		return "V_VAR3";
-		case GetSetType.V_VAR4: 		return "V_VAR4";
-		case GetSetType.V_VAR5: 		return "V_VAR5";
-		case GetSetType.V_UP: 			return "V_UP";
-		case GetSetType.V_DOWN: 		return "V_DOWN";
-		case GetSetType.V_STOP: 		return "V_STOP";
-		case GetSetType.V_IR_SEND: 		return "V_IR_SEND";
-		case GetSetType.V_IR_RECEIVE: 	return "V_IR_RECEIVE";
-		case GetSetType.V_FLOW: 		return "V_FLOW";
-		case GetSetType.V_VOLUME: 		return "V_VOLUME";
-		case GetSetType.V_LOCK_STATUS: 	return "V_LOCK_STATUS";
+		case GetSetType.V_TEMP: 				return "V_TEMP";
+		case GetSetType.V_HUM: 					return "V_HUM";
+		case GetSetType.V_LIGHT: 				return "V_LIGHT";
+		case GetSetType.V_DIMMER: 				return "V_DIMMER";
+		case GetSetType.V_FORECAST: 			return "V_FORECAST";
+		case GetSetType.V_PRESSURE: 			return "V_PRESSURE";
+		case GetSetType.V_RAIN: 				return "V_RAIN";
+		case GetSetType.V_RAINRATE: 			return "V_RAINRATE";
+		case GetSetType.V_WIND: 				return "V_WIND";
+		case GetSetType.V_GUST: 				return "V_GUST";
+		case GetSetType.V_DIRECTION: 			return "V_DIRECTION";
+		case GetSetType.V_UV: 					return "V_UV";
+		case GetSetType.V_WEIGHT:				return "V_WEIGHT";
+		case GetSetType.V_DISTANCE: 			return "V_DISTANCE";
+		case GetSetType.V_IMPEDANCE: 			return "V_IMPEDANCE";
+		case GetSetType.V_ARMED: 				return "V_ARMED";
+		case GetSetType.V_TRIPPED: 				return "V_TRIPPED";
+		case GetSetType.V_WATT: 				return "V_WATT";
+		case GetSetType.V_KWH: 					return "V_KWH";
+		case GetSetType.V_SCENE_ON: 			return "V_SCENE_ON";
+		case GetSetType.V_SCENE_OFF: 			return "V_SCENE_OFF";
+		case GetSetType.V_HEATER: 				return "V_HEATER";
+		case GetSetType.V_HEATER_SW: 			return "V_HEATER_SW";
+		case GetSetType.V_LIGHT_LEVEL: 			return "V_LIGHT_LEVEL";
+		case GetSetType.V_VAR1: 				return "V_VAR1";
+		case GetSetType.V_VAR2: 				return "V_VAR2";
+		case GetSetType.V_VAR3: 				return "V_VAR3";
+		case GetSetType.V_VAR4: 				return "V_VAR4";
+		case GetSetType.V_VAR5: 				return "V_VAR5";
+		case GetSetType.V_UP: 					return "V_UP";
+		case GetSetType.V_DOWN: 				return "V_DOWN";
+		case GetSetType.V_STOP: 				return "V_STOP";
+		case GetSetType.V_IR_SEND: 				return "V_IR_SEND";
+		case GetSetType.V_IR_RECEIVE: 			return "V_IR_RECEIVE";
+		case GetSetType.V_FLOW: 				return "V_FLOW";
+		case GetSetType.V_VOLUME: 				return "V_VOLUME";
+		case GetSetType.V_LOCK_STATUS: 			return "V_LOCK_STATUS";
+		case GetSetType.V_LEVEL:				return "V_LEVEL";
+		case GetSetType.V_VOLTAGE:				return "V_VOLTAGE";
+		case GetSetType.V_CURRENT:				return "V_CURRENT";
+		case GetSetType.V_RGB:					return "V_RGB";
+		case GetSetType.V_RGBW:					return "V_RGBW";
+		case GetSetType.V_ID:    				return "V_ID";
+		case GetSetType.V_UNIT_PREFIX:			return "V_UNIT_PREFIX";
+		case GetSetType.V_HVAC_SETPOINT_COOL:	return "V_HVAC_SETPOINT_COOL";
+		case GetSetType.V_HVAC_SETPOINT_HEAT:	return "V_HVAC_SETPOINT_HEAT";
+		case GetSetType.V_HVAC_FLOW_MODE:		return "V_HVAC_FLOW_MODE";
 	}
 }
 
@@ -195,25 +215,33 @@ InternalType = {
 		I_SKETCH_NAME		: 11,
 		I_SKETCH_VERSION	: 12,
 		I_REBOOT			: 13,
-		MAX					: 13
+		I_GATEWAY_READY		: 14,
+		I_REQUEST_SIGNING	: 15,
+		I_GET_NONCE			: 16,
+		I_GET_NONCE_RESPONSE: 17,
+		MAX					: 17
 }
 
 InternalType.toString = function(value) {
 	switch (value) {
-		case InternalType.I_BATTERY_LEVEL: 	return "I_BATTERY_LEVEL";
-		case InternalType.I_TIME: 			return "I_TIME";
-		case InternalType.I_VERSION: 		return "I_VERSION";
-		case InternalType.I_ID_REQUEST: 	return "I_ID_REQUEST";
-		case InternalType.I_ID_RESPONSE: 	return "I_ID_RESPONSE";
-		case InternalType.I_INCLUSION_MODE: return "I_INCLUSION_MODE";
-		case InternalType.I_CONFIG: 		return "I_CONFIG";
-		case InternalType.I_PING: 			return "I_PING";
-		case InternalType.I_PING_ACK: 		return "I_PING_ACK";
-		case InternalType.I_LOG_MESSAGE: 	return "I_LOG_MESSAGE";
-		case InternalType.I_CHILDREN: 		return "I_CHILDREN";
-		case InternalType.I_SKETCH_NAME: 	return "I_SKETCH_NAME";
-		case InternalType.I_SKETCH_VERSION: return "I_SKETCH_VERSION";
-		case InternalType.I_REBOOT: 		return "I_REBOOT";
+		case InternalType.I_BATTERY_LEVEL: 		return "I_BATTERY_LEVEL";
+		case InternalType.I_TIME: 				return "I_TIME";
+		case InternalType.I_VERSION: 			return "I_VERSION";
+		case InternalType.I_ID_REQUEST: 		return "I_ID_REQUEST";
+		case InternalType.I_ID_RESPONSE: 		return "I_ID_RESPONSE";
+		case InternalType.I_INCLUSION_MODE: 	return "I_INCLUSION_MODE";
+		case InternalType.I_CONFIG: 			return "I_CONFIG";
+		case InternalType.I_PING: 				return "I_PING";
+		case InternalType.I_PING_ACK: 			return "I_PING_ACK";
+		case InternalType.I_LOG_MESSAGE: 		return "I_LOG_MESSAGE";
+		case InternalType.I_CHILDREN: 			return "I_CHILDREN";
+		case InternalType.I_SKETCH_NAME: 		return "I_SKETCH_NAME";
+		case InternalType.I_SKETCH_VERSION: 	return "I_SKETCH_VERSION";
+		case InternalType.I_REBOOT: 			return "I_REBOOT";
+		case InternalType.I_GATEWAY_READY: 		return "I_GATEWAY_READY";
+		case InternalType.I_REQUEST_SIGNING: 	return "I_REQUEST_SIGNING";
+		case InternalType.I_GET_NONCE: 			return "I_GET_NONCE";
+		case InternalType.I_GET_NONCE_RESPONSE: return "I_GET_NONCE_RESPONSE";
 	}
 }
 
