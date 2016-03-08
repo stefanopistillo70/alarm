@@ -17,7 +17,7 @@ var gateway = (function() {
 			
 			if(replayMsg){
 				logger.log('info','SENDING -> '+replayMsg.stringify());
-				gw.write(replayMsg.stringify(), function(err, results) {
+				gw.write(replayMsg.stringify()+'\n', function(err, results) {
 							if(err) logger.log('error','err ' + err);
 							else logger.log('info','SENT ' + results + ' bytes');
 				});

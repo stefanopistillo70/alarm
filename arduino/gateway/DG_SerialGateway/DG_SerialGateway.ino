@@ -161,6 +161,8 @@ void serialEvent() {
       if (inChar == '\n') {
         inputString[inputPos] = 0;
         commandComplete = true;
+		Serial.print("command received: ");
+		Serial.println(inputString);
       } else {
         // add it to the inputString:
         inputString[inputPos] = inChar;
