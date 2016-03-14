@@ -29,8 +29,34 @@ var Repository = function() {
 	console.log('Repository init');
 	
 	this.checkForRemoteUpdate();
-		
+			
 };
+
+
+
+Repository.prototype.getNode = function(nodeId){
+		
+		function exists(element) {
+			var ret = false;
+			if(nodeId === element.id) ret = true;
+			else ret = false;
+			return ret;
+		};
+		
+		var node = this.nodes.find(exists);		
+		return node;
+};
+
+
+Repository.prototype.buildNewNode = function(){
+		
+		var nodeId = -1;
+		var node = new Node(nodeId,"",[]);
+		
+		this.nodes.push(node);
+		return node;
+};
+
 
 Repository.prototype.addNewNode = function(node_in){
 		
@@ -54,6 +80,14 @@ Repository.prototype.addNewNode = function(node_in){
 				this.nodes.push(node_in);
 		}
 };
+
+
+Repository.prototype.addSensorLog = function(node_in){
+		
+		console.log("Node_in  ->"+node_in);
+		
+};
+
 
 Repository.prototype.checkForRemoteUpdate = function(){
 	
