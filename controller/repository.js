@@ -47,39 +47,23 @@ Repository.prototype.getNode = function(nodeId){
 		return node;
 };
 
+Repository.prototype.getFreeNodeID = function(){
+	var nextNodeId = 0;
+	for(var i=0, len = this.nodes.length; i < len; i++){
+		if(this.nodes[i].id > nextNodeId ) nextNodeId = this.nodes[i].id;
+	};	
+	return ++nextNodeId;
+}
 
 Repository.prototype.buildNewNode = function(){
 		
-		var nodeId = -1;
+		var nodeId = this.getFreeNodeID();
 		var node = new Node(nodeId,"",[]);
-		
 		this.nodes.push(node);
 		return node;
 };
 
 
-Repository.prototype.addNewNode = function(node_in){
-		
-		console.log("Node_in  ->"+node_in);
-		
-		function exists(element) {
-			console.log("Element ->"+element);
-			var ret = false;
-			if(node_in.id === element.id) ret = true;
-			else ret = false;
-			console.log(ret);
-			return ret;
-		}
-
-		var node = this.nodes.find(exists);
-		
-		console.log("Node ->"+node);
-		
-		if(node == undefined){
-				console.log("Add new node ->"+node_in);
-				this.nodes.push(node_in);
-		}
-};
 
 
 Repository.prototype.addSensorLog = function(node_in){
@@ -106,7 +90,7 @@ Repository.prototype.checkForRemoteUpdate = function(){
 }
 
 Repository.prototype.getNodes = function(){
-	
+	return this.nodes;
 }
 
 Repository.prototype.getZones = function(){
@@ -114,9 +98,6 @@ Repository.prototype.getZones = function(){
 }
 
 
-Repository.createNode = function(id_in,name_in,sensors_in){
-	return new Node(id_in,name_in,sensors_in);
-}
 
 Repository.createZone = function(){
 	return new Zone();	
