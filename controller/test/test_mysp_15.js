@@ -8,6 +8,8 @@ var Repository = require('../repository');
 
 var repository = new Repository();
 
+console.log(repository);
+
 
 describe('MYSP_15', function() {
 	

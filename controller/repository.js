@@ -1,13 +1,17 @@
 
 
-var Node = function(id_in,name_in,sensors_in){
-	
+var Device = function(id_in, name_in, deviceType_in, technology_in, sensors_in){
+		
 	this.id = "";
 	this.name = "";
+	this.deviceType = "";
+	this.technology = "";
 	this.sensors = [];
 	
 	if(id_in != undefined) this.id = id_in;
 	if(name_in != undefined) this.name = name_in;
+	if(deviceType_in != undefined) this.deviceType = deviceType_in;
+	if(technology_in != undefined) this.technology = technology_in;
 	if(sensors_in != undefined) this.sensors = sensors_in;
 	
 }
@@ -17,13 +21,13 @@ var Zone = function(){
 	this.id = "";
 	this.name = "";
 	this.armed = false;
-	this.nodes = [];
+	this.devices = [];
 	
 }
 
 var Repository = function() {
 	
-	this.nodes = [];
+	this.devices = [];
 	this.zones = [];
 	
 	console.log('Repository init');
@@ -32,43 +36,46 @@ var Repository = function() {
 			
 };
 
+Repository.Technology = { NRF : 0, T433 : 1};
+Repository.DeviceType = { RC : 0, SENSOR : 1};;
 
 
-Repository.prototype.getNode = function(nodeId){
+
+Repository.prototype.getDevice = function(deviceId){
 		
 		function exists(element) {
 			var ret = false;
-			if(nodeId === element.id) ret = true;
+			if(deviceId === element.id) ret = true;
 			else ret = false;
 			return ret;
 		};
 		
-		var node = this.nodes.find(exists);		
-		return node;
+		var device = this.devices.find(exists);		
+		return device;
 };
 
-Repository.prototype.getFreeNodeID = function(){
-	var nextNodeId = 0;
-	for(var i=0, len = this.nodes.length; i < len; i++){
-		if(this.nodes[i].id > nextNodeId ) nextNodeId = this.nodes[i].id;
+Repository.prototype.getFreeDeviceID = function(){
+	var nextDeviceId = 0;
+	for(var i=0, len = this.devices.length; i < len; i++){
+		if(this.devices[i].id > nextDeviceId ) nextDeviceId = this.devices[i].id;
 	};	
-	return ++nextNodeId;
+	return ++nextDeviceId;
 }
 
-Repository.prototype.buildNewNode = function(){
+Repository.prototype.buildNewDevice = function(technology){
 		
-		var nodeId = this.getFreeNodeID();
-		var node = new Node(nodeId,"",[]);
-		this.nodes.push(node);
-		return node;
+		var deviceId = this.getFreeDeviceID();
+		var device = new Device(deviceId,"","",technology,[]);
+		this.devices.push(device);
+		return device;
 };
 
 
 
 
-Repository.prototype.addSensorLog = function(node_in){
+Repository.prototype.addSensorLog = function(device_in){
 		
-		console.log("Node_in  ->"+node_in);
+		console.log("Device_in  ->"+device_in);
 		
 };
 
@@ -76,21 +83,21 @@ Repository.prototype.addSensorLog = function(node_in){
 Repository.prototype.checkForRemoteUpdate = function(){
 	
 	console.log('Start remote update');
-	var nodesTmp = this.getNodes();
-	if(nodesTmp != undefined){
-		this.nodes = nodesTmp;
+	var devicesTmp = this.getDevices();
+	if(devicesTmp != undefined){
+		this.devices = devicesTmp;
 	}
 	
-	var zonesTmp = this.getNodes();
+	var zonesTmp = this.getDevices();
 	if(zonesTmp != undefined){
 		this.zones = zonesTmp;
 	}
-	console.log(this.nodes);
+	console.log(this.devices);
 	setTimeout(Repository.prototype.checkForRemoteUpdate.bind(this),10000);
 }
 
-Repository.prototype.getNodes = function(){
-	return this.nodes;
+Repository.prototype.getDevices = function(){
+	return this.devices;
 }
 
 Repository.prototype.getZones = function(){

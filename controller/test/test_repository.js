@@ -11,33 +11,33 @@ describe('Repository', function() {
 	
 	var repository = new Repository();
 			
-	describe('add Node', function () {
+	describe('add Device', function () {
 		
 		it('not exists',function(done){		
-			var node = repository.getNode(1);
+			var device = repository.getDevice(1);
 			
-			node = repository.buildNewNode();
-			console.log('Build node with id ->' + node.id);
-			assert.notEqual(node,undefined);
-			assert.equal(repository.nodes.length,1);
+			device = repository.buildNewDevice('NRF');
+			console.log('Build device with id ->' + device.id);
+			assert.notEqual(device,undefined);
+			assert.equal(repository.devices.length,1);
 			done();
 		});
 		
 		it('exists',function(done){		
-			var node = repository.getNode(1);
-			assert.equal(node.id,1);
+			var device = repository.getDevice(1);
+			assert.equal(device.id,1);
 			done();
 		});
 		
 		it('add more',function(done){		
-			node = repository.buildNewNode();
-			assert.equal(node.id,2);
+			device = repository.buildNewDevice();
+			assert.equal(device.id,2);
 			done();
 		});
 		
 		it('add more 2',function(done){		
-			node = repository.buildNewNode();
-			assert.equal(node.id,3);
+			device = repository.buildNewDevice();
+			assert.equal(device.id,3);
 			done();
 		});
 

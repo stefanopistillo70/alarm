@@ -1,6 +1,6 @@
 
 var logger = require('./logger.js')('MSP15');
-
+var Repository = require('./Repository.js');
 
 var MYSP_15 = function(repository) {
 			
@@ -12,7 +12,7 @@ var MYSP_15 = function(repository) {
 			if(msg.command == Cmd.C_INTERNAL){
 				if(msg.type == InternalType.I_ID_REQUEST){
 					
-					node = repository.buildNewNode();
+					node = repository.buildNewDevice(Repository.Technology.NRF);
 					if(node){
 						replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,node.id);
 					}
