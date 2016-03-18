@@ -1,6 +1,6 @@
 
 
-var Repository = require('repository');
+var Repository = require('./Repository.js');
 
 
 var WebRepository = function() {

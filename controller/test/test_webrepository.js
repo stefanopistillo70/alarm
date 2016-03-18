@@ -13,11 +13,9 @@ describe('WebRepository', function() {
 			
 	describe('init', function (done) {
 		
-		var sensorLog = {
-			
-		};
+		var event = {device_id : 1, sensor_id: 0, event : "evento1"}
 		
-		webrepository.addSensorLog(sensorLog);
+		webrepository.addEventLog(event);
 	});
 
 });

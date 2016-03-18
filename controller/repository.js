@@ -37,8 +37,7 @@ var Repository = function() {
 };
 
 Repository.Technology = { NRF : 0, T433 : 1};
-Repository.DeviceType = { RC : 0, SENSOR : 1};;
-
+Repository.DeviceType = { RC : 0, SENSOR : 1};
 
 
 Repository.prototype.getDevice = function(deviceId){
@@ -53,6 +52,21 @@ Repository.prototype.getDevice = function(deviceId){
 		var device = this.devices.find(exists);		
 		return device;
 };
+
+
+Repository.prototype.getSensor = function(sensorId){
+		
+		function exists(element) {
+			var ret = false;
+			if(sensorId === element.id) ret = true;
+			else ret = false;
+			return ret;
+		};
+		
+		var sensor = this.sensor.find(exists);		
+		return sensor;
+};
+
 
 Repository.prototype.getFreeDeviceID = function(){
 	var nextDeviceId = 0;
@@ -73,9 +87,25 @@ Repository.prototype.buildNewDevice = function(technology){
 
 
 
-Repository.prototype.addSensorLog = function(device_in){
+Repository.prototype.addEventLog = function(event_in){
 		
-		console.log("Device_in  ->"+device_in);
+		var deviceName = '';
+		var sensorName = '';
+		
+		if(event_in.deviceId) {
+			var device = this.getDevice(event_in.deviceId);
+			console.log(device);
+			deviceName = device.name;
+		}
+		
+		if(event_in.sensorId) {
+			var sensor = this.getSensor(event_in.sensorId);
+			sensorName = sensor.name;
+		}
+		
+		var event = {device: deviceName,}
+		
+		console.log('Event -> device : '+deviceName+'   sensor : '+sensorName+'      '+event_in.event);
 		
 };
 

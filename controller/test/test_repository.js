@@ -41,12 +41,20 @@ describe('Repository', function() {
 			done();
 		});
 
-		
-		/*it('test add sensor log',function(done){		
-			repository.addSensorLog(null);
-			done();
-		});*/
 	});
+	
+	
+	describe('add Event log', function () {
+		
+		it('add',function(done){		
+			var device = repository.getDevice(1);
+			device.name = 'device1';
+			var event = {deviceId : 1, sensorId: 0, event : "evento1"}
+			var device = repository.addEventLog(event);
+			done();
+		});
+	});
+
 
 });
 
