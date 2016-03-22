@@ -1,17 +1,17 @@
 var express = require('express');
 var router = express.Router();
 
-var SensorLog = require('../domain/sensorLog');
+var EventLog = require('../domain/eventLog');
 
 
-/* GET SensorLog listing. */
+/* GET EventLog listing. */
 router.get('/', function(req, res, next) {
-	SensorLog.find({}, function(err, sensorLogs) {
+	EventLog.find({}, function(err, eventLogs) {
 				if (err){
 					console.log(err);
 					throw err;
 				}
-				res.json(sensorLogs);
+				res.json(eventLogs);
 	});	
 });
 

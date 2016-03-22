@@ -95,7 +95,8 @@ Repository.prototype.addEventLog = function(event_in){
 		if(event_in.deviceId) {
 			var device = this.getDevice(event_in.deviceId);
 			console.log(device);
-			deviceName = device.name;
+			if(device) deviceName = device.name;
+			else deviceName = event_in.deviceId;
 		}
 		
 		if(event_in.sensorId) {

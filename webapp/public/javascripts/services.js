@@ -1,10 +1,10 @@
 
 var pollServices = angular.module('pollServices', ['ngResource']);
 
-pollServices.factory('SensorLog', ['$resource',
+pollServices.factory('EventLog', ['$resource',
   function($resource){
-	console.log("Service get Sensor");  
-	var response = $resource('sensorLog', {}, {
+	console.log("Service get Event");  
+	var response = $resource('eventLog', {}, {
               query: { method: 'GET', params: {}, isArray: true }
     });
 	console.log("resp ->"+response);

@@ -1,6 +1,6 @@
-var sensorLogControllers = angular.module('sensorLogControllers', []);
+var eventLogControllers = angular.module('eventLogControllers', []);
 
-sensorLogControllers.controller('SensorLogList', ['$scope', 'SensorLog', function($scope, SensorLog) {
+eventLogControllers.controller('EventLogList', ['$scope', 'EventLog', function($scope, EventLog) {
 //sensorLogControllers.controller('SensorLogList', ['$scope', '$http', function($scope, $http) {
 		
 		//var result = SensorLog.query();
@@ -14,7 +14,7 @@ sensorLogControllers.controller('SensorLogList', ['$scope', 'SensorLog', functio
 		});
 */
 		
-		$scope.sensorLog = SensorLog.query();
+		$scope.eventLog = EventLog.query();
 }]);
 
 
