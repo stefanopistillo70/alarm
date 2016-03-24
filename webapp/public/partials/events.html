@@ -1,0 +1,21 @@
+<div class="panel-heading">Panel heading</div>
+<div class="row" ng-switch on="eventLog.length">
+	<ul ng-switch-when="0">
+		<li><em>No logs in database</li>
+	</ul>
+	<ul ng-switch-default>
+		<table class="table table-bordered">
+			<tr>
+				<th>Date</th>
+				<th>Device</th>
+				<th>Sensor</th> 
+			</tr>
+			<tr ng-repeat="x in eventLog">
+			<td>{{ x.insertDate }}</td>
+			<td>{{ x.device }}</td>
+			<td>{{ x.sensor }}</td>
+			</tr>
+		</table>
+	</ul>
+</div>
+<p>&nbsp;</p>
