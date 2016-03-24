@@ -1,8 +1,9 @@
 
-var app = angular.module('DomusGuard', ['ngRoute','ui.bootstrap','eventLogControllers','pollServices']);
+var app = angular.module('DomusGuard', ['ngRoute','ui.bootstrap','dgControllers','dbServices']);
 
 app.config(['$routeProvider', function($routeProvider) {
             $routeProvider.
-				when('/eventLogs', { templateUrl: 'partials/list.html', controller: 'EventLogList' }).
-				otherwise({ redirectTo: '/eventLogs' });
+				when('/eventLogs', { templateUrl: 'partials/events.html', controller: 'EventLogList' }).
+				when('/devices', { templateUrl: 'partials/devices.html', controller: 'DeviceList' }).
+				otherwise({ redirectTo: '/' });
           }]);

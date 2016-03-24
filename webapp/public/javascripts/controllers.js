@@ -1,6 +1,6 @@
-var eventLogControllers = angular.module('eventLogControllers', []);
+var dgControllers = angular.module('dgControllers', []);
 
-eventLogControllers.controller('EventLogList', ['$scope', 'EventLog', function($scope, EventLog) {
+dgControllers.controller('EventLogList', ['$scope', 'EventLog', function($scope, EventLog) {
 //sensorLogControllers.controller('SensorLogList', ['$scope', '$http', function($scope, $http) {
 		
 		//var result = SensorLog.query();
@@ -16,6 +16,14 @@ eventLogControllers.controller('EventLogList', ['$scope', 'EventLog', function($
 		
 		$scope.eventLog = EventLog.query();
 }]);
+
+
+
+dgControllers.controller('DeviceList', ['$scope', 'Device', function($scope, Device) {
+		
+		$scope.device = Device.query();
+}]);
+
 
 
 
