@@ -62,7 +62,7 @@ dgControllers.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items) {
+dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, Device) {
 
   $scope.loading = true;
 
@@ -73,15 +73,30 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 	checkForDB.value = false;
   };
   
-  checkDb(checkForDB)
+  checkDb(checkForDB, Device)
   
 });
 
 
-var checkDb = function(checkForDB){
+var checkDb = function(checkForDB, Device){
+	
+	
 	if(checkForDB.value){
 		console.log('check db');
-		setTimeout(checkDb.bind(null, checkForDB),3000);
+		var promise = Device.query();
+		
+		console.log(promise.$promise);
+		
+		promise.$promise.then(function(result) {
+		  
+			if(result) console.log('n rec ->'+result.length);
+			setTimeout(checkDb.bind(null, checkForDB, Device),3000);
+		  
+		}, function(reason) {
+		  console.log('Failed: ' + reason);
+		});
+		
+		
 	};
 };
 
