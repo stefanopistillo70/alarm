@@ -66,10 +66,24 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 
   $scope.loading = true;
 
+  var checkForDB = { value : true}
+  
   $scope.cancel = function () {
     $uibModalInstance.dismiss('cancel');
+	checkForDB.value = false;
   };
+  
+  checkDb(checkForDB)
+  
 });
+
+
+var checkDb = function(checkForDB){
+	if(checkForDB.value){
+		console.log('check db');
+		setTimeout(checkDb.bind(null, checkForDB),3000);
+	};
+};
 
 
 
