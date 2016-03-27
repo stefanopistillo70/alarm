@@ -1,5 +1,5 @@
 
-var app = angular.module('DomusGuard', ['ngRoute','ui.bootstrap','dgControllers','dbServices']);
+var app = angular.module('DomusGuard', ['ngRoute','ui.bootstrap','ui.grid','dgControllers','dbServices']);
 
 app.config(['$routeProvider', function($routeProvider) {
             $routeProvider.

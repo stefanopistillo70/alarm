@@ -7,6 +7,33 @@
         </div>
         <div class="modal-body">
             <div ng-show="loading" class="loading"><img src="images/loading.gif"></div>
+			
+			
+			
+			<div ng-show="loading" class="formUpdateDevice">
+			
+				<form role="form">
+				<div class="form-group">
+				<label for="email">Email address:</label>
+				<input type="email" class="form-control" id="email">
+				</div>
+				<div class="form-group">
+				<label for="pwd">Password:</label>
+				<input type="password" class="form-control" id="pwd">
+				</div>
+				<div class="checkbox">
+				<label><input type="checkbox"> Remember me</label>
+				</div>
+				<button type="submit" class="btn btn-default">Submit</button>
+				</form>
+			
+			</div>
+
+			
+			
+			
+			
+			
         </div>
 		<div class="modal-footer">
             <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
@@ -22,7 +49,12 @@
 		<li><em>No logs in database</li>
 	</ul>
 	<ul ng-switch-default>
-		<table class="table table-bordered">
+	
+	
+        <div ui-grid="gridOptions" class="myGrid"></div>
+	
+	
+<!--		<table class="table table-bordered">
 			<tr>
 				<th>Date</th>
 				<th>Device</th>
@@ -34,6 +66,7 @@
 			<td>{{ x.sensor }}</td>
 			</tr>
 		</table>
+-->		
 	</ul>
 </div>
 <p>&nbsp;</p>

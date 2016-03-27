@@ -3,12 +3,23 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // create a schema
+
+var sensorSchema = new Schema({
+    name: { type: String},
+    description: { type: String},
+    type:  { type: String}
+});
+
+
 var deviceSchema = new Schema({
   id: { type: String, required: true},
   name: { type: String},
+  deviceType : { type: String},
   technology: { type: String, required: true },
+  sensors: [sensorSchema],
   insertDate: Date
 });
+
 
 deviceSchema.pre('save', function(next) {
   var currentDate = new Date();

@@ -13,7 +13,8 @@ describe('Device', function() {
 	var device = new Device({
 	  id: 'id1',
 	  name: 'device1',
-	  technology: '433'
+	  deviceType : 'RC',
+	  technology: '433',
 	});
 			
 	describe('insert value', function () {
