@@ -21,23 +21,25 @@ dgControllers.controller('EventLogList', ['$scope', 'EventLog', function($scope,
 
 dgControllers.controller('DeviceList', ['$scope', 'Device', function($scope, Device) {
 		
-		 $scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
+		$scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
 		 
-		  $scope.gridOptions.columnDefs = [
-    { name: 'id' },
-    { name: 'name'},
-    { name: 'age', displayName: 'Age (not focusable)', allowCellFocus : false },
-    { name: 'address.city' }
-  ];
+		$scope.gridOptions.columnDefs = [
+				{ name: 'id' },
+				{ name: 'name'},
+				{ name: 'deviceType', displayName: 'Device Type', allowCellFocus : false },
+				{ name: 'technology', displayName: 'tecnology',  allowCellFocus : false},
+				{ name: 'address.city' }
+			  ];
  
-  $scope.gridOptions.multiSelect = false;
-  $scope.gridOptions.modifierKeysToMultiSelect = false;
-  $scope.gridOptions.noUnselect = true;
-  $scope.gridOptions.onRegisterApi = function( gridApi ) {
-    $scope.gridApi = gridApi;
-  };
+		$scope.gridOptions.multiSelect = false;
+		$scope.gridOptions.modifierKeysToMultiSelect = false;
+		$scope.gridOptions.noUnselect = true;
+		$scope.gridOptions.onRegisterApi = function( gridApi ) {
+		$scope.gridApi = gridApi;
+		};
 		
-		$scope.device = Device.query();
+		$scope.gridOptions.data = Device.query();
+		//$scope.device = Device.query();
 }]);
 
 
