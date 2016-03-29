@@ -39,7 +39,6 @@ dgControllers.controller('DeviceList', ['$scope', 'Device', function($scope, Dev
 		};
 		
 		$scope.gridOptions.data = Device.query();
-		//$scope.device = Device.query();
 }]);
 
 
@@ -57,11 +56,7 @@ dgControllers.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
       templateUrl: 'loadingModalContent.html',
       controller: 'ModalInstanceCtrl',
       size: size,
-      resolve: {
-        items: function () {
-          return $scope.items;
-        }
-      }
+      resolve: {}
     });
 
     modalInstance.result.then(function (selectedItem) {
@@ -80,7 +75,7 @@ dgControllers.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, Device, Config) {
+dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, Device, Config) {
 
 
 	var queryConfig = Config.query().$promise;
@@ -96,6 +91,7 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 		updateConfig.then(function(result) {
 	  
 		  $scope.progress = true;
+		  $scope.formUpdateDevice  = true;
 
 		  var checkForDB = { value : true}
 		  
