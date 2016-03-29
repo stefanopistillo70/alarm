@@ -7,18 +7,32 @@ dbServices.factory('EventLog', ['$resource',
 	var response = $resource('eventLog', {}, {
               query: { method: 'GET', params: {}, isArray: true }
     });
-	console.log("resp ->"+response);
     return response;
-
   }]);
   
   
  dbServices.factory('Device', ['$resource',
   function($resource){
-	var response = $resource('device', {}, {
-              query: { method: 'GET', params: {}, isArray: true }
+	var response = $resource('device:entryId', {}, {
+			query: { method: 'GET', params: {}, isArray: true },
+			post: {method:'POST'},
+			update: {method:'PUT', params: {entryId: '@entryId'}},
+			remove: {method:'DELETE'}
     });
-	console.log("resp ->"+response);
+    return response;
+
+  }]);
+  
+  
+  
+ dbServices.factory('Config', ['$resource',
+  function($resource){
+	var response = $resource('config/:entryId', {entryId: '@entryId'}, {
+			query: { method: 'GET', params: {}, isArray: true },
+			post: {method:'POST'},
+			update: {method:'PUT', params: {entryId: '@entryId'}},
+			remove: {method:'DELETE'}
+    });
     return response;
 
   }]);

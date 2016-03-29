@@ -80,19 +80,40 @@ dgControllers.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, Device) {
+dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, items, Device, Config) {
 
-  $scope.loading = true;
-  $scope.formUpdateDevice = true;
 
-  var checkForDB = { value : true}
-  
-  $scope.cancel = function () {
-    $uibModalInstance.dismiss('cancel');
-	checkForDB.value = false;
-  };
-  
-  checkDb(checkForDB, Device)
+	var queryConfig = Config.query().$promise;
+	
+	queryConfig.then(function(result) {
+		
+		var id = result[0]._id;
+		
+		console.log(id);
+		
+		var updateConfig = Config.update({entryId:id}, {enableNewDevice : true}).$promise;
+		
+		updateConfig.then(function(result) {
+	  
+		  $scope.progress = true;
+
+		  var checkForDB = { value : true}
+		  
+		  $scope.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+			checkForDB.value = false;
+		  };
+		  
+		  checkDb(checkForDB, Device)
+		}, 
+		function(reason) {
+			  console.log('Failed: ' + reason);
+		});
+		
+	}, 
+	function(reason) {
+		  console.log('Failed: ' + reason);
+	});
   
 });
 
