@@ -47,28 +47,29 @@ dgControllers.controller('DeviceList', ['$scope', 'Device', function($scope, Dev
 dgControllers.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 
 
-  $scope.animationsEnabled = true;
+	$scope.animationsEnabled = true;
 
-  $scope.open = function (size) {
+	$scope.open = function (size) {
 
-    var modalInstance = $uibModal.open({
-      animation: $scope.animationsEnabled,
-      templateUrl: 'loadingModalContent.html',
-      controller: 'ModalInstanceCtrl',
-      size: size,
-      resolve: {}
-    });
+		var modalInstance = $uibModal.open({
+		  animation: $scope.animationsEnabled,
+		  templateUrl: 'loadingModalContent.html',
+		  controller: 'ModalInstanceCtrl',
+		  size: size,
+		  resolve: {}
+		});
 
-    modalInstance.result.then(function (selectedItem) {
-      $scope.selected = selectedItem;
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
+		modalInstance.result.then(function (result) {
+			console.log('result ');
+			console.log(result);
+		}, function () {
+		  $log.info('Modal dismissed at: ' + new Date());
+		});
+	};
 
-  $scope.toggleAnimation = function () {
-    $scope.animationsEnabled = !$scope.animationsEnabled;
-  };
+	$scope.toggleAnimation = function () {
+		$scope.animationsEnabled = !$scope.animationsEnabled;
+	};
 
 });
 
@@ -86,9 +87,10 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 		
 		console.log(id);
 		
-		var updateConfig = Config.update({entryId:id}, {enableNewDevice : true}).$promise;
+		var updateConfigTrue = Config.update({entryId:id}, {enableNewDevice : true}).$promise;
+		var updateConfigFalse = Config.update({entryId:id}, {enableNewDevice : false}).$promise;
 		
-		updateConfig.then(function(result) {
+		updateConfigTrue.then(function(result) {
 	  
 		  $scope.progress = true;
 		  $scope.formUpdateDevice  = true;
@@ -100,10 +102,8 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 			checkForDB.value = false;
 		  };
 		  
-		  if(checkDb(checkForDB, Device, -1)) {
-			  console.log('new device found');
-			  $uibModalInstance.dismiss('cancel');
-		  }
+		  checkDb(checkForDB, Device, -1, Date.now(), $uibModalInstance, updateConfigFalse);
+		  
 		}, 
 		function(reason) {
 			  console.log('Failed: ' + reason);
@@ -117,26 +117,38 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 });
 
 
-var checkDb = function(checkForDB, Device, initialValue){
-	
+var checkDb = function(checkForDB, Device, initialValue, initialDate, $uibModalInstance, updateConfigFalse){
 	
 	if(checkForDB.value){
-		console.log('check db');
-		var deviceQuery = Device.query().$promise;
 		
-		deviceQuery.then(function(result) {
-		  
-			if(result) console.log('Initial ->'+initialValue+'   n rec ->'+result.length);
+		var now = Date.now();
+		if((Date.now() - initialDate) < 10000){
+			console.log('check db');
+			var deviceQuery = Device.query().$promise;
 			
-			if(initialValue === -1) initialValue = result.length;
-			else{
-				if(result.length > result.length) return true;
-			}
-			setTimeout(checkDb.bind(null, checkForDB, Device, initialValue),3000);
-		  
-		}, function(reason) {
-		  console.log('Failed: ' + reason);
-		});
+			deviceQuery.then(function(result) {
+			  
+				if(result) console.log('Initial ->'+initialValue+'   n rec ->'+result.length);
+				
+				if(initialValue === -1) initialValue = result.length;
+				else{
+					if(result.length > result.length){
+						$uibModalInstance.close('found new device');
+						updateConfigFalse.then(function(result) {}, function(reason) { console.log('Failed: ' + reason);});
+						return;
+					} 
+				}
+				setTimeout(checkDb.bind(null, checkForDB, Device, initialValue, initialDate, $uibModalInstance, updateConfigFalse),3000);
+			  
+			}, function(reason) {
+			  console.log('Failed: ' + reason);
+			});
+		}else{
+			console.log('check DB timeout');
+			$uibModalInstance.dismiss('timeout');
+			updateConfigFalse.then(function(result) {}, function(reason) { console.log('Failed: ' + reason);});
+			return;
+		}
 		
 		
 	};
