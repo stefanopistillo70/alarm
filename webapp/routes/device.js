@@ -14,6 +14,25 @@ router.get('/', function(req, res, next) {
 	});	
 });
 
+/* GET Device listing. */
+router.post('/', function(req, res, next) {
+	console.log(req.body);
+	
+	var device = new Device();
+	
+	device.id = req.body.id;
+	device.name = req.body.name;
+	device.deviceType = req.body.deviceType;
+	device.technology = req.body.technology;
+		
+	device.save(function(err) {
+		if (err) res.send(err);
+
+		res.json({ message: 'Device created!' });
+	});
+		
+});
+
 
 
 router.get('/:id', function(req, res, next) {

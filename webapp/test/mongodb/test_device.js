@@ -31,6 +31,24 @@ describe('Device', function() {
 				}
 			});
 		});
+		
+		it('insert failure tecnology',function(done){
+
+				device.technology = 'tch1';
+				device.save(function(err){
+					if (err) {
+						console.log('Error Inserting New Data');
+						if (err.name == 'ValidationError') {
+							for (field in err.errors) {
+								console.log(err.errors[field].message); 
+							}
+						}
+					}
+					done();
+				});
+		});
+
+		
 	});
 
 	describe('find value', function () {

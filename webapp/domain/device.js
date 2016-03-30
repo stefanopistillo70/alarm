@@ -14,8 +14,8 @@ var sensorSchema = new Schema({
 var deviceSchema = new Schema({
   id: { type: String, required: true},
   name: { type: String},
-  deviceType : { type: String},
-  technology: { type: String, required: true },
+  deviceType : { type: String, enum : ['RC','']},
+  technology: { type: String, enum : ['433','NRF24'], required: true },
   sensors: [sensorSchema],
   insertDate: Date
 });
