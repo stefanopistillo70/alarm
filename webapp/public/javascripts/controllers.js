@@ -100,7 +100,10 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 			checkForDB.value = false;
 		  };
 		  
-		  checkDb(checkForDB, Device)
+		  if(checkDb(checkForDB, Device, -1)) {
+			  console.log('new device found');
+			  $uibModalInstance.dismiss('cancel');
+		  }
 		}, 
 		function(reason) {
 			  console.log('Failed: ' + reason);
@@ -114,19 +117,22 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 });
 
 
-var checkDb = function(checkForDB, Device){
+var checkDb = function(checkForDB, Device, initialValue){
 	
 	
 	if(checkForDB.value){
 		console.log('check db');
-		var promise = Device.query();
+		var deviceQuery = Device.query().$promise;
 		
-		console.log(promise.$promise);
-		
-		promise.$promise.then(function(result) {
+		deviceQuery.then(function(result) {
 		  
-			if(result) console.log('n rec ->'+result.length);
-			setTimeout(checkDb.bind(null, checkForDB, Device),3000);
+			if(result) console.log('Initial ->'+initialValue+'   n rec ->'+result.length);
+			
+			if(initialValue === -1) initialValue = result.length;
+			else{
+				if(result.length > result.length) return true;
+			}
+			setTimeout(checkDb.bind(null, checkForDB, Device, initialValue),3000);
 		  
 		}, function(reason) {
 		  console.log('Failed: ' + reason);
