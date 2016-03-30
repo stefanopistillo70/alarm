@@ -88,7 +88,6 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 		console.log(id);
 		
 		var updateConfigTrue = Config.update({entryId:id}, {enableNewDevice : true}).$promise;
-		var updateConfigFalse = Config.update({entryId:id}, {enableNewDevice : false}).$promise;
 		
 		updateConfigTrue.then(function(result) {
 	  
@@ -99,10 +98,11 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 		  
 		  $scope.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
+			Config.update({entryId:id}, {enableNewDevice : false});
 			checkForDB.value = false;
 		  };
 		  
-		  checkDb(checkForDB, Device, -1, Date.now(), $uibModalInstance, updateConfigFalse);
+		  checkDb(checkForDB, Device, -1, Date.now(), $uibModalInstance, Config);
 		  
 		}, 
 		function(reason) {
@@ -117,7 +117,7 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 });
 
 
-var checkDb = function(checkForDB, Device, initialValue, initialDate, $uibModalInstance, updateConfigFalse){
+var checkDb = function(checkForDB, Device, initialValue, initialDate, $uibModalInstance, Config){
 	
 	if(checkForDB.value){
 		
@@ -134,11 +134,11 @@ var checkDb = function(checkForDB, Device, initialValue, initialDate, $uibModalI
 				else{
 					if(result.length > result.length){
 						$uibModalInstance.close('found new device');
-						updateConfigFalse.then(function(result) {}, function(reason) { console.log('Failed: ' + reason);});
+						Config.update({entryId:0}, {enableNewDevice : false});
 						return;
 					} 
 				}
-				setTimeout(checkDb.bind(null, checkForDB, Device, initialValue, initialDate, $uibModalInstance, updateConfigFalse),3000);
+				setTimeout(checkDb.bind(null, checkForDB, Device, initialValue, initialDate, $uibModalInstance, Config),3000);
 			  
 			}, function(reason) {
 			  console.log('Failed: ' + reason);
@@ -146,7 +146,7 @@ var checkDb = function(checkForDB, Device, initialValue, initialDate, $uibModalI
 		}else{
 			console.log('check DB timeout');
 			$uibModalInstance.dismiss('timeout');
-			updateConfigFalse.then(function(result) {}, function(reason) { console.log('Failed: ' + reason);});
+			Config.update({entryId:0}, {enableNewDevice : false});
 			return;
 		}
 		
