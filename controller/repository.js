@@ -79,11 +79,12 @@ Repository.prototype.getFreeDeviceID = function(){
 Repository.prototype.buildNewDevice = function(technology){
 		
 		var deviceId = this.getFreeDeviceID();
-		var device = new Device(deviceId,"","",technology,[]);
-		this.devices.push(device);
-		return device;
+		if(deviceId > 0){
+			var device = new Device(deviceId,"","",technology,[]);
+			this.devices.push(device);
+			return device;			
+		}else null;
 };
-
 
 
 
@@ -104,9 +105,11 @@ Repository.prototype.addEventLog = function(event_in){
 			sensorName = sensor.name;
 		}
 		
-		var event = {device: deviceName,}
+		var event = {'device': deviceName, 'sensor' : sensorName, 'event' : event_in.event};
 		
 		console.log('Event -> device : '+deviceName+'   sensor : '+sensorName+'      '+event_in.event);
+		
+		this.savePersistantEvent(event);
 		
 };
 
@@ -141,6 +144,7 @@ Repository.createZone = function(){
 	return new Zone();	
 }
 
+Repository.prototype.savePersistantEvent = function(event){};
 
 module.exports = Repository; 
 
