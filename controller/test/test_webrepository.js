@@ -11,11 +11,14 @@ describe('WebRepository', function() {
 	
 	var webrepository = new WebRepository();
 			
-	describe('init', function (done) {
+	describe('event', function () {
 		
-		var event = {device_id : 1, sensor_id: 0, event : "evento1"}
-		
-		webrepository.addEventLog(event);
+		it('add event',function(done){
+			var event = {device_id : 1, sensor_id: 0, event : "evento1"}
+			
+			webrepository.addEventLog(event);
+			done();
+		});
 	});
 
 });

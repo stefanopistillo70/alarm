@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 	});	
 });
 
-/* GET Device listing. */
+/* create Device. */
 router.post('/', function(req, res, next) {
 	console.log(req.body);
 	
