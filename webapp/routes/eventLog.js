@@ -3,15 +3,15 @@ var router = express.Router();
 
 var EventLog = require('../domain/eventLog');
 
+var Response = require('./response');
+
+
 
 /* GET EventLog listing. */
 router.get('/', function(req, res, next) {
 	EventLog.find({}, function(err, eventLogs) {
-				if (err){
-					console.log(err);
-					throw err;
-				}
-				res.json(eventLogs);
+			if (err) res.status(400).send(new Response().error(400,err.errors));
+			res.json(eventLogs);
 	});	
 });
 
@@ -22,8 +22,8 @@ router.post('/', function(req, res, next) {
 	var e = new EventLog();
 		
 	e.save(function(err) {
-		if (err) res.send(err);
-		else res.json({ message: 'Event created!' });
+		if (err) res.status(400).send(new Response().error(400,err.errors));
+		else res.json(new Response(e));
 	});
 		
 });
