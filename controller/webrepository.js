@@ -17,8 +17,9 @@ var WebRepository = function() {
 
 WebRepository.prototype = Repository.prototype;
 
-Repository.prototype.savePersistantEvent = function(event){
+WebRepository.prototype.savePersistantEvent = function(event, callback){
 	
+	console.log('savePersistantEvent');
 	var args = {
 		data: { event },
 		headers: { "Content-Type": "application/json" }
@@ -26,7 +27,11 @@ Repository.prototype.savePersistantEvent = function(event){
 
 	client.post(this.url+"/eventLog", args, function (data, response) {
 		console.log(data);
-		console.log(response);
+		//console.log(response);
+		console.log(response.statusCode);
+		callback();
+	}).on('error', function (err) {
+		console.log('something went wrong on the request', err.request.options);
 	});
 }
 

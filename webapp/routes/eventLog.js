@@ -19,13 +19,11 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
 	console.log(req.body);
 	
-	var e = new Event();
+	var e = new EventLog();
 		
 	e.save(function(err) {
-		console.log(err);
 		if (err) res.send(err);
-
-		res.json({ message: 'Event created!' });
+		else res.json({ message: 'Event created!' });
 	});
 		
 });

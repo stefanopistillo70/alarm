@@ -88,7 +88,7 @@ Repository.prototype.buildNewDevice = function(technology){
 
 
 
-Repository.prototype.addEventLog = function(event_in){
+Repository.prototype.addEventLog = function(event_in, callback){
 		
 		var deviceName = '';
 		var sensorName = '';
@@ -109,7 +109,7 @@ Repository.prototype.addEventLog = function(event_in){
 		
 		console.log('Event -> device : '+deviceName+'   sensor : '+sensorName+'      '+event_in.event);
 		
-		this.savePersistantEvent(event);
+		this.savePersistantEvent(event,callback);
 		
 };
 
@@ -144,7 +144,9 @@ Repository.createZone = function(){
 	return new Zone();	
 }
 
-Repository.prototype.savePersistantEvent = function(event){};
+Repository.prototype.savePersistantEvent = function(event,callback){
+	callback();
+};
 
 module.exports = Repository; 
 
