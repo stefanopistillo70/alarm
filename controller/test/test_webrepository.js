@@ -10,13 +10,27 @@ describe('WebRepository', function() {
 	});
 	
 	var webrepository = new WebRepository();
-			
-	describe('event', function () {
+	
+	describe("add device ", function () {
 		
-		it('add event',function(done){
-			var event = {device_id : 1, sensor_id: 0, event : "evento1"}
+		it('event ok',function(done){
 			
-			webrepository.addEventLog(event, function(){
+			webrepository.buildNewDevice(event, function(err){
+				assert.equal(err,undefined);
+				done();
+			});
+			
+		});
+	});
+
+			
+	describe("add event ", function () {
+		
+		it('event ok',function(done){
+			var event = {device_id : "1", sensor_id: "0", event : "evento1"}
+			
+			webrepository.addEventLog(event, function(err){
+				assert.equal(err,undefined);
 				done();
 			});
 			

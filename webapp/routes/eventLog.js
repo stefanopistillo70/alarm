@@ -20,6 +20,10 @@ router.post('/', function(req, res, next) {
 	console.log(req.body);
 	
 	var e = new EventLog();
+	e.device = req.body.event.device;
+	e.sensor = req.body.event.sensor;
+	e.event = req.body.event.event;
+	
 		
 	e.save(function(err) {
 		if (err) res.status(400).send(new Response().error(400,err.errors));
