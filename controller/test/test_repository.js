@@ -52,6 +52,17 @@ describe('Repository', function() {
 			done();
 		});
 		
+		it('exists',function(done){		
+			var device = repository.getDevice("10100000111001111000");
+			
+			repository.buildNewDevice("433",device.id,function(){}, function(err){
+				console.log(err);
+				done();
+			});
+			
+		});
+
+		
 		it('add more',function(done){		
 			repository.buildNewDevice("433","101000001110011110001",function(device){
 					console.log('Build device with id ->' + device.id);

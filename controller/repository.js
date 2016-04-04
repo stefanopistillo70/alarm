@@ -84,11 +84,19 @@ Repository.prototype.buildNewDevice = function(technology, deviceId, callback, e
 				return;
 			}
 			
-			var device = new Device(deviceId,"","",technology,[]);
+			var device = this.getDevice(deviceId);
+			if(device){
+				error("Device with id "+deviceId+" already exists");
+				return;
+			} 
+			
+			device = new Device(deviceId,"","",technology,[]);
 			
 			this.savePersistantDevice(device, function(devices){
 				devices.push(device);
 				callback(device);
+			},function(error){
+				
 			});
 		}else{
 			if(deviceId == undefined) deviceId = this.getFreeDeviceID();
