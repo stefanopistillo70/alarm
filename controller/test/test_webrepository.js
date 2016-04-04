@@ -33,11 +33,6 @@ describe('WebRepository', function() {
 				assert.notEqual(device,undefined);
 				assert.equal(device.id,deviceID);
 				done();
-			},
-			function(error){
-				console.log(error);
-				assert.notEqual(error,undefined);
-				done();
 			});
 		});
 

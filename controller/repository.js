@@ -92,12 +92,14 @@ Repository.prototype.buildNewDevice = function(technology, deviceId, callback, e
 			
 			device = new Device(deviceId,"","",technology,[]);
 			
-			this.savePersistantDevice(device, function(devices){
-				devices.push(device);
-				callback(device);
-			},function(error){
-				error_cb(error);
-			});
+			this.savePersistantDevice(device, 
+				function(devices){
+					devices.push(device);
+					callback(device);
+				}, 
+				function(error){
+					error_cb(error);
+				});
 		}else{
 			if(deviceId == undefined) deviceId = this.getFreeDeviceID();
 			else throw new Error();

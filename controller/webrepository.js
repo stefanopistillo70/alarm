@@ -83,6 +83,7 @@ WebRepository.prototype.savePersistantDevice = function(device, result , error){
 	console.log("WebRepository -> savePersistantDevice");
 	
 	var args = {
+		data: device,
 		headers: { "Content-Type": "application/json" }
 	};
 
@@ -90,7 +91,7 @@ WebRepository.prototype.savePersistantDevice = function(device, result , error){
 	client.post(this.url+"/device", args, function (data, response) {
 		var err = undefined;
 		if(response.statusCode == 200){
-				result(data);
+				result(this.devices, data);
 		}else{
 			error(data.errors);
 		} 
