@@ -4,17 +4,21 @@ var Client = require('node-rest-client').Client;
 
 var Repository = require('./Repository.js');
 
-var client = new Client();
+
 
 var WebRepository = function() {
-	
+		
 	console.log('WebRepository init');
-	
+	this.devices = new Array();
+	this.zones = new Array();
 	this.url = 'http://127.0.0.1:3000';
-			
+	
+	this.checkForRemoteUpdate();
+	
 };
 
 WebRepository.prototype = Repository.prototype;
+
 
 WebRepository.prototype.savePersistantEvent = function(event, callback){
 	
@@ -26,7 +30,9 @@ WebRepository.prototype.savePersistantEvent = function(event, callback){
 
 	client.post(this.url+"/eventLog", args, function (data, response) {
 		var err = undefined;
-		if(response.statusCode != 200) err = data.errors;
+		if(response.statusCode != 200){
+			err = data.errors;
+		}
 		callback(err);
 	}).on('error', function (err) {
 		callback(err);
@@ -38,11 +44,11 @@ WebRepository.prototype.checkForRemoteUpdate = function(){
 	
 	console.log('Start Web remote update');
 	
-	
 	var args = {
 		headers: { "Content-Type": "application/json" }
 	};
 
+	var client = new Client();
 	client.get(this.url+"/device", args, function (data, response) {
 		var err = undefined;
 		if(response.statusCode == 200){
@@ -52,11 +58,11 @@ WebRepository.prototype.checkForRemoteUpdate = function(){
 					this.devices = devicesTmp;
 				}
 				
-				var zonesTmp = this.getDevices();
+				/*var zonesTmp = devices;
 				if(zonesTmp != undefined){
 					this.zones = zonesTmp;
 				}
-				console.log(this.devices);
+				*/
 				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),10000);
 
 		}else{
@@ -72,6 +78,27 @@ WebRepository.prototype.checkForRemoteUpdate = function(){
 }
 
 
+WebRepository.prototype.savePersistantDevice = function(device, result , error){
+	
+	console.log("WebRepository -> savePersistantDevice");
+	
+	var args = {
+		headers: { "Content-Type": "application/json" }
+	};
+
+	var client = new Client();
+	client.post(this.url+"/device", args, function (data, response) {
+		var err = undefined;
+		if(response.statusCode == 200){
+				result(data);
+		}else{
+			error(data.errors);
+		} 
+	}).on('error', function (err) {
+		error(data.errors);
+	});
+
+};
 
 
 module.exports = WebRepository; 

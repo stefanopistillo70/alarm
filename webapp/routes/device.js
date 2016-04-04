@@ -7,10 +7,8 @@ var Device = require('../domain/device');
 router.get('/', function(req, res, next) {
 	Device.find({}, function(err, eventLogs) {
 				if (err){
-					console.log(err);
-					throw err;
-				}
-				res.json(eventLogs);
+					res.status(400).send(err);
+				}else res.json(eventLogs);
 	});	
 });
 
@@ -26,23 +24,20 @@ router.post('/', function(req, res, next) {
 	device.technology = req.body.technology;
 		
 	device.save(function(err) {
-		if (err) res.send(err);
-
-		res.json({ message: 'Device created!' });
+		if (err){
+			res.status(400).send(err);
+		}else res.json({ message: 'Device created!' });
 	});
 		
 });
-
 
 
 router.get('/:id', function(req, res, next) {
 	console.log('ID -> '+req.params.id)
 	Device.find({}, function(err, eventLogs) {
 				if (err){
-					console.log(err);
-					throw err;
-				}
-				res.json(eventLogs);
+					res.status(400).send(err);
+				}else res.json(eventLogs);
 	});	
 });
 
@@ -56,9 +51,9 @@ router.put('/:id', function(req, res, next) {
 		device.id = req.body.id;
 		
 		device.save(function(err) {
-            if (err) res.send(err);
-
-            res.json({ message: 'Device created!' });
+            if (err){
+				res.status(400).send(err);
+			}else res.json({ message: 'Device created!' });
         });
 });
 

@@ -41,7 +41,7 @@ Repository.DeviceType = { RC : 0, SENSOR : 1};
 
 
 Repository.prototype.getDevice = function(deviceId){
-		
+		console.log("Get Device "+deviceId)
 		function exists(element) {
 			var ret = false;
 			if(deviceId === element.id) ret = true;
@@ -76,17 +76,17 @@ Repository.prototype.getFreeDeviceID = function(){
 	return ++nextDeviceId;
 }
 
-Repository.prototype.buildNewDevice = function(technology, deviceId, callback, error){
+Repository.prototype.buildNewDevice = function(technology, deviceId, callback, error_cb){
 	
 		if(technology == "433"){
 			if((deviceId == undefined) || (deviceId === "")) {
-				error("device id empy or undefined");
+				error_cb("device id empy or undefined");
 				return;
 			}
 			
 			var device = this.getDevice(deviceId);
 			if(device){
-				error("Device with id "+deviceId+" already exists");
+				error_cb("Device with id "+deviceId+" already exists");
 				return;
 			} 
 			
@@ -96,7 +96,7 @@ Repository.prototype.buildNewDevice = function(technology, deviceId, callback, e
 				devices.push(device);
 				callback(device);
 			},function(error){
-				
+				error_cb(error);
 			});
 		}else{
 			if(deviceId == undefined) deviceId = this.getFreeDeviceID();
@@ -140,12 +140,12 @@ Repository.prototype.addEventLog = function(event_in, callback){
 Repository.prototype.checkForRemoteUpdate = function(){
 	
 	console.log('Start remote update');
-	var devicesTmp = this.getDevices();
+	var devicesTmp = this.devices;
 	if(devicesTmp != undefined){
 		this.devices = devicesTmp;
 	}
 	
-	var zonesTmp = this.getDevices();
+	var zonesTmp = this.zones;
 	if(zonesTmp != undefined){
 		this.zones = zonesTmp;
 	}
@@ -153,14 +153,14 @@ Repository.prototype.checkForRemoteUpdate = function(){
 	setTimeout(Repository.prototype.checkForRemoteUpdate.bind(this),10000);
 }
 
-Repository.prototype.getDevices = function(){
+/*Repository.prototype.getDevices = function(){
 	return this.devices;
 }
 
 Repository.prototype.getZones = function(){
-	
+	return this.devices;
 }
-
+*/
 
 
 Repository.createZone = function(){
@@ -173,6 +173,7 @@ Repository.prototype.savePersistantEvent = function(event,callback){
 
 
 Repository.prototype.savePersistantDevice = function(device,callback){
+	console.log("Repository -> savePersistantDevice");
 	callback(this.devices);
 };
 
