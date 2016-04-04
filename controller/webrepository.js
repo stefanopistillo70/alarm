@@ -33,6 +33,47 @@ WebRepository.prototype.savePersistantEvent = function(event, callback){
 	});
 }
 
+
+WebRepository.prototype.checkForRemoteUpdate = function(){
+	
+	console.log('Start Web remote update');
+	
+	
+	var args = {
+		headers: { "Content-Type": "application/json" }
+	};
+
+	client.get(this.url+"/device", args, function (data, response) {
+		var err = undefined;
+		if(response.statusCode == 200){
+				
+				var devicesTmp = data;
+				if(devicesTmp != undefined){
+					this.devices = devicesTmp;
+				}
+				
+				var zonesTmp = this.getDevices();
+				if(zonesTmp != undefined){
+					this.zones = zonesTmp;
+				}
+				console.log(this.devices);
+				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),10000);
+
+		}else{
+			console.log(data.errors);
+			setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),10000);
+		} 
+	}).on('error', function (err) {
+		console.log(data.errors);
+		setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),10000);
+	});
+	
+		
+}
+
+
+
+
 module.exports = WebRepository; 
 
 

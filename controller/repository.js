@@ -27,7 +27,7 @@ var Zone = function(){
 
 var Repository = function() {
 	
-	this.devices = [];
+	this.devices = new Array();
 	this.zones = [];
 	
 	console.log('Repository init');
@@ -76,14 +76,29 @@ Repository.prototype.getFreeDeviceID = function(){
 	return ++nextDeviceId;
 }
 
-Repository.prototype.buildNewDevice = function(technology){
-		
-		var deviceId = this.getFreeDeviceID();
-		if(deviceId > 0){
+Repository.prototype.buildNewDevice = function(technology, deviceId, callback, error){
+	
+		if(technology == "433"){
+			if((deviceId == undefined) || (deviceId === "")) {
+				error("device id empy or undefined");
+				return;
+			}
+			
 			var device = new Device(deviceId,"","",technology,[]);
-			this.devices.push(device);
-			return device;			
-		}else null;
+			
+			this.savePersistantDevice(device, function(devices){
+				devices.push(device);
+				callback(device);
+			});
+		}else{
+			if(deviceId == undefined) deviceId = this.getFreeDeviceID();
+			else throw new Error();
+			if(deviceId > 0){
+				var device = new Device(deviceId,"","",technology,[]);
+				this.devices.push(device);
+				return device;			
+			}else null;		
+		}
 };
 
 
@@ -147,6 +162,13 @@ Repository.createZone = function(){
 Repository.prototype.savePersistantEvent = function(event,callback){
 	callback();
 };
+
+
+Repository.prototype.savePersistantDevice = function(device,callback){
+	callback(this.devices);
+};
+
+
 
 module.exports = Repository; 
 
