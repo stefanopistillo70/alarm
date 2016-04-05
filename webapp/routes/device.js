@@ -18,28 +18,32 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
 	console.log(req.body);
 	
-	Config.find({}, function(err, result) {
+	Config.find({}, function(err, configs) {
 				if (err){
-					res.status(400).send(new Response().error(400,err.errors));;
+					res.status(400).send(new Response().error(400,err.errors));
 				}else{
-					if((result != undefined) && (result.length > 0)){
-						
-					}else{res.status(400).send(err);}
+					if((configs != undefined) && (configs.length > 0)){
+						if(configs[0].enableNewDevice){
+							
+								var device = new Device();
+	
+								device.id = req.body.id;
+								device.name = req.body.name;
+								device.deviceType = req.body.deviceType;
+								device.technology = req.body.technology;
+									
+								device.save(function(err) {
+									if (err){
+										res.status(400).send(new Response().error(400,err.errors));;
+									}else res.json({ message: 'Device created!' });
+								});
+							
+						}
+						else res.status(400).send(new Response().error(400,"enableNewDevice is false"));
+					}else{ res.status(400).send(new Response().error(400,"No Config found...")); }
 				} 
 			});
 	
-	var device = new Device();
-	
-	device.id = req.body.id;
-	device.name = req.body.name;
-	device.deviceType = req.body.deviceType;
-	device.technology = req.body.technology;
-		
-	device.save(function(err) {
-		if (err){
-			res.status(400).send(new Response().error(400,err.errors));;
-		}else res.json({ message: 'Device created!' });
-	});
 		
 });
 

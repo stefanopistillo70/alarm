@@ -10,7 +10,44 @@ describe('WebRepository', function() {
 	});
 	
 	var webrepository = new WebRepository();
-	console.log(webrepository);
+	var configID;
+	
+	
+	describe("config ", function () {
+		
+		it('get config',function(done){	
+			webrepository.getConfig(function(configs){
+				configID = configs[0]._id;
+				assert.equal(configs[0].enableNewDevice,false);
+				done();
+			});
+		});
+		
+		
+		it('update true',function(done){	
+			var config = { enableNewDevice : true};
+			webrepository.saveConfig(configID, config, function(response){
+					webrepository.getConfig(function(configs){
+						assert.equal(configs[0].enableNewDevice,true);
+						done();
+					});			
+			});
+		});
+		
+		it('update false',function(done){	
+			var config = { enableNewDevice : false};
+			webrepository.saveConfig(configID, config, function(response){
+					webrepository.getConfig(function(configs){
+						assert.equal(configs[0].enableNewDevice,false);
+						done();
+					});			
+			});
+		});
+
+		
+		
+	});
+	
 	
 	describe("add device ", function () {
 
@@ -28,16 +65,35 @@ describe('WebRepository', function() {
 			});
 		});
 		
-		it('433 add new device ',function(done){	
+		it('433 add new device failure',function(done){	
+					
 			var deviceID = "11111111110000001";
-			console.log("Lenght");
-			console.log(webrepository.devices.length);
 			webrepository.buildNewDevice("433",deviceID, function(device){
-				assert.notEqual(device,undefined);
-				assert.equal(device.id,deviceID);
-				assert.equal(webrepository.devices.length,1);
+			},function(error){
+				console.log(error);
 				done();
+			});			
+
+		});
+		
+		
+		it('433 add new device ',function(done){	
+		
+			var config = { enableNewDevice : true};
+			webrepository.saveConfig(configID, config, function(response){
+				console.log("UPDATE enableNewDevice done");
+				var deviceID = "11111111110000001";
+				webrepository.buildNewDevice("433",deviceID, function(device){
+					assert.notEqual(device,undefined);
+					assert.equal(device.id,deviceID);
+					
+					var config = { enableNewDevice : false};
+					webrepository.saveConfig(configID, config, function(response){
+						done();
+					});
+				});							
 			});
+		
 		});
 
 	});

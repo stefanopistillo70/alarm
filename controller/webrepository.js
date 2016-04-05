@@ -87,6 +87,8 @@ class WebRepository extends Repository{
 		
 		var onResponseEvent = function(data, response) {
 			var err = undefined;
+			console.log("DATA");
+			console.log(data);
 			if(response.statusCode == 200){
 					result(devices,data);
 			}else{
@@ -95,10 +97,62 @@ class WebRepository extends Repository{
 		};
 		
 		client.post(this.url+"/device", args, onResponseEvent).on('error', function (err) {
-			error(data.errors);
+			error(err);
 		});
 
 	};
+	
+	
+	
+	saveConfig(id,config,result,error){
+
+		console.log("WebRepository -> save Config");
+		
+				
+		var args = {
+			data: config,
+			headers: { "Content-Type": "application/json" }
+		};
+
+		var client = new Client();
+		
+		var onResponseEvent = function(data, response) {
+			console.log("DATA");
+			console.log(data);
+			if(response.statusCode == 200){
+				result(data);
+			}else{
+				error(data.errors);
+			} 
+		};
+		
+		client.put(this.url+"/config/"+id, args, onResponseEvent).on('error', function (err) {
+			error(err);
+		});
+	}
+	
+	getConfig(result,error){
+
+		console.log("WebRepository -> get Config");
+				
+		var args = {
+			headers: { "Content-Type": "application/json" }
+		};
+
+		var client = new Client();
+		
+		var onResponseEvent = function(data, response) {
+			if(response.statusCode == 200){
+				result(data);
+			}else{
+				error(data.errors);
+			} 
+		};
+		
+		client.get(this.url+"/config", args, onResponseEvent).on('error', function (err) {
+			error(err);
+		});
+	}
 
 };
 

@@ -68,9 +68,9 @@ describe('Config', function() {
 
 	describe('find value', function () {
 		it('find1',function(done){
-			Config.find({}, function(err, devices) {
+			Config.find({}, function(err, configs) {
 				if (err) throw err;
-				assert.equal(devices.length,1);
+				assert.equal(configs.length,1);
 				done();
 			});
 		});

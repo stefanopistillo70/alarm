@@ -94,7 +94,7 @@ class Repository {
 					callback(device);
 				}, 
 				function(error){
-					error_cb(error);
+					if(error_cb) error_cb(error);
 				});
 		}else{
 			if(deviceId == undefined) deviceId = this.getFreeDeviceID();
@@ -115,17 +115,15 @@ class Repository {
 				
 		if(event_in.deviceId != '') {
 			var device = this.getDevice(event_in.deviceId);
-			console.log("DEVICE");
-			console.log(device);
 			if(device != undefined){
 				if(device.name != '') deviceName = device.name;
+				if(event_in.sensorId != '') {
+					var sensor = this.getSensor(device, event_in.sensorId);
+					if(sensor) sensorName = sensor.name;
+				}
 			} 
 		}
 		
-		if(event_in.sensorId != '') {
-			var sensor = this.getSensor(device, event_in.sensorId);
-			if(sensor) sensorName = sensor.name;
-		}
 		
 		var event = {'device': deviceName, 'sensor' : sensorName, 'event' : event_in.event};
 		
