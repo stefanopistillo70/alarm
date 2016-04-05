@@ -46,7 +46,7 @@ describe('WebRepository', function() {
 	describe("add event ", function () {
 		
 		it('event ok',function(done){
-			var event = {device_id : "11111111110000001", sensor_id: "0", event : "evento1"}
+			var event = {deviceId : "11111111110000001", sensorId: "0", event : "evento1"}
 			
 			webrepository.addEventLog(event, function(err){
 				assert.equal(err,undefined);

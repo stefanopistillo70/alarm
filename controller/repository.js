@@ -51,7 +51,7 @@ class Repository {
 		return device;
 	};
 	
-	getSensor(sensorId){
+	getSensor(device, sensorId){
 		
 		function exists(element) {
 			var ret = false;
@@ -60,7 +60,9 @@ class Repository {
 			return ret;
 		};
 		
-		var sensor = this.sensor.find(exists);		
+		var sensors = device.sensors;
+		var sensor;
+		if(sensors) sensor = sensors.find(exists);		
 		return sensor;
 	};
 	
@@ -114,17 +116,16 @@ class Repository {
 		
 		var deviceName = '';
 		var sensorName = '';
-		
-		if(event_in.deviceId) {
+				
+		if(event_in.deviceId != '') {
 			var device = this.getDevice(event_in.deviceId);
-			console.log(device);
-			if(device) deviceName = device.name;
-			else deviceName = event_in.deviceId;
+			if(device) deviceName = event_in.deviceId;
+			else deviceName = device.name;			
 		}
 		
-		if(event_in.sensorId) {
-			var sensor = this.getSensor(event_in.sensorId);
-			sensorName = sensor.name;
+		if(event_in.sensorId != '') {
+			var sensor = this.getSensor(device, event_in.sensorId);
+			if(sensor) sensorName = sensor.name;
 		}
 		
 		var event = {'device': deviceName, 'sensor' : sensorName, 'event' : event_in.event};
