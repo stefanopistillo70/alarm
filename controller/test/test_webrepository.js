@@ -10,6 +10,7 @@ describe('WebRepository', function() {
 	});
 	
 	var webrepository = new WebRepository();
+	console.log(webrepository);
 	
 	describe("add device ", function () {
 
@@ -29,20 +30,23 @@ describe('WebRepository', function() {
 		
 		it('433 add new device ',function(done){	
 			var deviceID = "11111111110000001";
+			console.log("Lenght");
+			console.log(webrepository.devices.length);
 			webrepository.buildNewDevice("433",deviceID, function(device){
 				assert.notEqual(device,undefined);
 				assert.equal(device.id,deviceID);
+				assert.equal(webrepository.devices.length,1);
 				done();
 			});
 		});
 
 	});
 
-/*			
+		
 	describe("add event ", function () {
 		
 		it('event ok',function(done){
-			var event = {device_id : "1", sensor_id: "0", event : "evento1"}
+			var event = {device_id : "11111111110000001", sensor_id: "0", event : "evento1"}
 			
 			webrepository.addEventLog(event, function(err){
 				assert.equal(err,undefined);
@@ -51,7 +55,7 @@ describe('WebRepository', function() {
 			
 		});
 	});
-*/
+
 });
 
 

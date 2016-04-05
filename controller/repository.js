@@ -1,4 +1,5 @@
 
+"use strict";
 
 var Device = function(id_in, name_in, deviceType_in, technology_in, sensors_in){
 		
@@ -25,22 +26,19 @@ var Zone = function(){
 	
 }
 
-var Repository = function() {
+class Repository {
 	
-	this.devices = new Array();
-	this.zones = [];
+	constructor(){
+		this.devices = new Array();
+		this.zones = [];
+		
+		console.log('Repository init');
+		
+		//this.checkForRemoteUpdate();
+	};
 	
-	console.log('Repository init');
 	
-	this.checkForRemoteUpdate();
-			
-};
-
-Repository.Technology = { NRF : 0, T433 : 1};
-Repository.DeviceType = { RC : 0, SENSOR : 1};
-
-
-Repository.prototype.getDevice = function(deviceId){
+	getDevice(deviceId){
 		console.log("Get Device "+deviceId)
 		function exists(element) {
 			var ret = false;
@@ -51,10 +49,9 @@ Repository.prototype.getDevice = function(deviceId){
 		
 		var device = this.devices.find(exists);		
 		return device;
-};
-
-
-Repository.prototype.getSensor = function(sensorId){
+	};
+	
+	getSensor(sensorId){
 		
 		function exists(element) {
 			var ret = false;
@@ -65,18 +62,17 @@ Repository.prototype.getSensor = function(sensorId){
 		
 		var sensor = this.sensor.find(exists);		
 		return sensor;
-};
-
-
-Repository.prototype.getFreeDeviceID = function(){
-	var nextDeviceId = 0;
-	for(var i=0, len = this.devices.length; i < len; i++){
-		if(this.devices[i].id > nextDeviceId ) nextDeviceId = this.devices[i].id;
-	};	
-	return ++nextDeviceId;
-}
-
-Repository.prototype.buildNewDevice = function(technology, deviceId, callback, error_cb){
+	};
+	
+	getFreeDeviceID(){
+		var nextDeviceId = 0;
+		for(var i=0, len = this.devices.length; i < len; i++){
+			if(this.devices[i].id > nextDeviceId ) nextDeviceId = this.devices[i].id;
+		};	
+		return ++nextDeviceId;
+	}
+	
+	buildNewDevice(technology, deviceId, callback, error_cb){
 	
 		if(technology == "433"){
 			if((deviceId == undefined) || (deviceId === "")) {
@@ -109,11 +105,12 @@ Repository.prototype.buildNewDevice = function(technology, deviceId, callback, e
 				return device;			
 			}else null;		
 		}
-};
-
-
-
-Repository.prototype.addEventLog = function(event_in, callback){
+	};
+	
+	
+	
+	
+	addEventLog(event_in, callback){
 		
 		var deviceName = '';
 		var sensorName = '';
@@ -136,48 +133,50 @@ Repository.prototype.addEventLog = function(event_in, callback){
 		
 		this.savePersistantEvent(event,callback);
 		
-};
+	};
 
 
-Repository.prototype.checkForRemoteUpdate = function(){
+	checkForRemoteUpdate(){
 	
-	console.log('Start remote update');
-	var devicesTmp = this.devices;
-	if(devicesTmp != undefined){
-		this.devices = devicesTmp;
+		console.log('Start remote update');
+		var devicesTmp = this.devices;
+		if(devicesTmp != undefined){
+			this.devices = devicesTmp;
+		}
+		
+		var zonesTmp = this.zones;
+		if(zonesTmp != undefined){
+			this.zones = zonesTmp;
+		}
+		console.log(this.devices);
+		setTimeout(Repository.prototype.checkForRemoteUpdate.bind(this),10000);
 	}
-	
-	var zonesTmp = this.zones;
-	if(zonesTmp != undefined){
-		this.zones = zonesTmp;
+
+
+	createZone(){
+		return new Zone();	
 	}
-	console.log(this.devices);
-	setTimeout(Repository.prototype.checkForRemoteUpdate.bind(this),10000);
-}
 
-/*Repository.prototype.getDevices = function(){
-	return this.devices;
-}
-
-Repository.prototype.getZones = function(){
-	return this.devices;
-}
-*/
+	savePersistantEvent(event,callback){
+		callback();
+	};
 
 
-Repository.createZone = function(){
-	return new Zone();	
-}
+	savePersistantDevice(device,callback){
+		console.log("Repository -> savePersistantDevice");
+		callback(this.devices);
+	};
 
-Repository.prototype.savePersistantEvent = function(event,callback){
-	callback();
+			
 };
 
 
-Repository.prototype.savePersistantDevice = function(device,callback){
-	console.log("Repository -> savePersistantDevice");
-	callback(this.devices);
-};
+
+
+
+
+//Repository.Technology = { NRF : 0, T433 : 1};
+//Repository.DeviceType = { RC : 0, SENSOR : 1};
 
 
 
