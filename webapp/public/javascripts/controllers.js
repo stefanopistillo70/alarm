@@ -13,8 +13,17 @@ dgControllers.controller('EventLogList', ['$scope', 'EventLog', function($scope,
 			  $scope.sensorLog = JSON.parse(data);
 		});
 */
+		var eventLogQuery = EventLog.query().$promise;
 		
-		$scope.eventLog = EventLog.query();
+		eventLogQuery.then(function(response) {
+			if(response.result){
+			$scope.eventLog = response.result
+			}
+		},
+		function(reason) {
+			  console.log('Failed eventLogQuery: ' + reason);
+		});
+		
 }]);
 
 
@@ -38,7 +47,16 @@ dgControllers.controller('DeviceList', ['$scope', 'Device', function($scope, Dev
 		$scope.gridApi = gridApi;
 		};
 		
-		$scope.gridOptions.data = Device.query();
+		deviceQuery = Device.query().$promise;
+		
+		deviceQuery.then(function(response) {
+			if (response.result) {
+				$scope.gridOptions.data = response.result;
+			}
+		}, function(reason) {
+			  console.log('Failed DeviceList: ' + reason);
+		});
+		
 }]);
 
 

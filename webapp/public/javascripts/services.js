@@ -5,7 +5,7 @@ dbServices.factory('EventLog', ['$resource',
   function($resource){
 	console.log("Service get Event");  
 	var response = $resource('eventLog', {}, {
-              query: { method: 'GET', params: {}, isArray: true }
+              query: { method: 'GET', params: {} }
     });
     return response;
   }]);
@@ -14,7 +14,7 @@ dbServices.factory('EventLog', ['$resource',
  dbServices.factory('Device', ['$resource',
   function($resource){
 	var response = $resource('device:entryId', {}, {
-			query: { method: 'GET', params: {}, isArray: true },
+			query: { method: 'GET', params: {} },
 			post: {method:'POST'},
 			update: {method:'PUT', params: {entryId: '@entryId'}},
 			remove: {method:'DELETE'}

@@ -11,7 +11,7 @@ var Response = require('./response');
 router.get('/', function(req, res, next) {
 	EventLog.find({}, function(err, eventLogs) {
 			if (err) res.status(400).send(new Response().error(400,err.errors));
-			res.json(eventLogs);
+			res.json(new Response(eventLogs));
 	});	
 });
 
