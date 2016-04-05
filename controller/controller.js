@@ -19,8 +19,8 @@ controller.start = function(){
 	//console.log("MSG -> " + msg.toString());
 
 
-	//var Repository = require('./Repository.js');
-	//controller.repository = new Repository();
+	var Webrepository = require('./webrepository');
+	controller.repository = new Webrepository();
 	
 	//controller.checkForZoneAlarm();
 

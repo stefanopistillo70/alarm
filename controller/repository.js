@@ -32,9 +32,7 @@ class Repository {
 		this.devices = new Array();
 		this.zones = [];
 		
-		console.log('Repository init');
-		
-		//this.checkForRemoteUpdate();
+		console.log('Repository init');		
 	};
 	
 	
@@ -137,21 +135,6 @@ class Repository {
 		
 	};
 
-	checkForRemoteUpdate(){
-	
-		console.log('Start remote update');
-		var devicesTmp = this.devices;
-		if(devicesTmp != undefined){
-			this.devices = devicesTmp;
-		}
-		
-		var zonesTmp = this.zones;
-		if(zonesTmp != undefined){
-			this.zones = zonesTmp;
-		}
-		console.log(this.devices);
-		setTimeout(Repository.prototype.checkForRemoteUpdate.bind(this),10000);
-	}
 
 	createZone(){
 		return new Zone();	

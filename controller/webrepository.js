@@ -14,7 +14,7 @@ class WebRepository extends Repository{
 		console.log('WebRepository init');
 		this.url = 'http://127.0.0.1:3000';
 		
-		//this.checkForRemoteUpdate();
+		this.checkForRemoteUpdate(this.devices, this.url);
 	}
 	
 	
@@ -38,36 +38,38 @@ class WebRepository extends Repository{
 		});
 	}
 	
-	checkForRemoteUpdate(){
+	checkForRemoteUpdate(devices,url){
 		
-		console.log('Start Web remote update');
+		console.log('CHECK Web remote update :'+devices.length);
 		
 		var args = {
 			headers: { "Content-Type": "application/json" }
 		};
 
-		var client = new Client();
-		client.get(this.url+"/device", args, function (data, response) {
+		
+		var onResponseEvent = function(data, response) {
 			var err = undefined;
 			if(response.statusCode == 200){
 					
 					var devicesTmp = data;
 					if(devicesTmp != undefined){
-						this.devices = devicesTmp;
+						devices = devicesTmp;
 					}
 					
-					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),10000);
+					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,devices,url),10000);
 
 			}else{
 				console.log(data.errors);
-				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),10000);
+				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,devices,url),10000);
 			} 
-		}).on('error', function (err) {
+		};
+
+		var client = new Client();
+		client.get(url+"/device", args, onResponseEvent).on('error', function (err) {
 			console.log(data.errors);
-			setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),10000);
+			setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,devices,url),10000);
 		});
-		
-			
+					
 	}
 
 	
