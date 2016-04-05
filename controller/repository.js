@@ -110,8 +110,6 @@ class Repository {
 	};
 	
 	
-	
-	
 	addEventLog(event_in, callback){
 		
 		var deviceName = '';
@@ -136,7 +134,6 @@ class Repository {
 		
 	};
 
-
 	checkForRemoteUpdate(){
 	
 		console.log('Start remote update');
@@ -153,7 +150,6 @@ class Repository {
 		setTimeout(Repository.prototype.checkForRemoteUpdate.bind(this),10000);
 	}
 
-
 	createZone(){
 		return new Zone();	
 	}
@@ -162,24 +158,16 @@ class Repository {
 		callback();
 	};
 
-
 	savePersistantDevice(device,callback){
 		console.log("Repository -> savePersistantDevice");
 		callback(this.devices);
 	};
-
 			
 };
 
 
-
-
-
-
 //Repository.Technology = { NRF : 0, T433 : 1};
 //Repository.DeviceType = { RC : 0, SENSOR : 1};
-
-
 
 module.exports = Repository; 
 
