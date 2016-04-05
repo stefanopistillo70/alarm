@@ -112,13 +112,16 @@ class Repository {
 	
 	addEventLog(event_in, callback){
 		
-		var deviceName = '';
+		var deviceName = event_in.deviceId;
 		var sensorName = '';
 				
 		if(event_in.deviceId != '') {
 			var device = this.getDevice(event_in.deviceId);
-			if(device) deviceName = event_in.deviceId;
-			else deviceName = device.name;			
+			console.log("DEVICE");
+			console.log(device);
+			if(device != undefined){
+				if(device.name != '') deviceName = device.name;
+			} 
 		}
 		
 		if(event_in.sensorId != '') {
