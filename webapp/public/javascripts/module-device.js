@@ -124,13 +124,14 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $ui
 			console.log('check db');
 			var deviceQuery = DeviceService.query().$promise;
 			
-			deviceQuery.then(function(result) {
+			deviceQuery.then(function(response) {
 			  
-				if(result) console.log('Initial ->'+initialValue+'   n rec ->'+result.length);
+				var devices = response.result;
+				if(devices) console.log('Initial ->'+initialValue+'   n rec ->'+devices.length);
 				
-				if(initialValue === -1) initialValue = result.length;
-				else{
-					if(result.length > result.length){
+				if(initialValue === -1) initialValue = devices.length;
+				else if(devices){
+					if(devices.length > initialValue){
 						$uibModalInstance.close('found new device');
 						ConfigService.update({entryId:0}, {enableNewDevice : false});
 						return;
