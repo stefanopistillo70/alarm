@@ -1,34 +1,6 @@
-var dgControllers = angular.module('dgControllers', []);
+var dgModuleDevice = angular.module('dgModuleDevice', ['ngResource','ui.bootstrap','ui.grid','dgModuleConfig']);
 
-dgControllers.controller('EventLogList', ['$scope', 'EventLog', function($scope, EventLog) {
-//sensorLogControllers.controller('SensorLogList', ['$scope', '$http', function($scope, $http) {
-		
-		//var result = SensorLog.query();
-		//console.log("SENSORS ->"+result);
-		
-		/*$http.get('sensorLog').success(function(data) {
-				console.log("Data->"+data);
-				var p = JSON.parse(data);
-				console.log("Data->"+p);
-			  $scope.sensorLog = JSON.parse(data);
-		});
-*/
-		var eventLogQuery = EventLog.query().$promise;
-		
-		eventLogQuery.then(function(response) {
-			if(response.result){
-			$scope.eventLog = response.result
-			}
-		},
-		function(reason) {
-			  console.log('Failed eventLogQuery: ' + reason);
-		});
-		
-}]);
-
-
-
-dgControllers.controller('DeviceList', ['$scope', 'Device', function($scope, Device) {
+dgModuleDevice.controller('DeviceCtrl', ['$scope', 'DeviceService', function($scope, DeviceService) {
 		
 		$scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
 		 
@@ -40,21 +12,23 @@ dgControllers.controller('DeviceList', ['$scope', 'Device', function($scope, Dev
 				{ name: 'address.city' }
 			  ];
  
-		$scope.gridOptions.multiSelect = false;
+		//$scope.gridOptions.multiSelect = false;
 		$scope.gridOptions.modifierKeysToMultiSelect = false;
-		$scope.gridOptions.noUnselect = true;
+		//$scope.gridOptions.noUnselect = true;
 		$scope.gridOptions.onRegisterApi = function( gridApi ) {
 		$scope.gridApi = gridApi;
 		};
 		
-		deviceQuery = Device.query().$promise;
+		$scope.gridOptions.isRowSelectable = function(row){ return true;};
+		
+		deviceQuery = DeviceService.query().$promise;
 		
 		deviceQuery.then(function(response) {
 			if (response.result) {
 				$scope.gridOptions.data = response.result;
 			}
 		}, function(reason) {
-			  console.log('Failed DeviceList: ' + reason);
+			  console.log('Failed DeviceCtrl: ' + reason);
 		});
 		
 }]);
@@ -62,7 +36,14 @@ dgControllers.controller('DeviceList', ['$scope', 'Device', function($scope, Dev
 
 
 
-dgControllers.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
+
+/***************************************************
+
+Dialog new Device
+
+****************************************************/
+
+dgModuleDevice.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 
 
 	$scope.animationsEnabled = true;
@@ -94,10 +75,10 @@ dgControllers.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, Device, Config) {
+dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, DeviceService, ConfigService) {
 
 
-	var queryConfig = Config.query().$promise;
+	var queryConfig = ConfigService.query().$promise;
 	
 	queryConfig.then(function(result) {
 		
@@ -105,7 +86,7 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 		
 		console.log(id);
 		
-		var updateConfigTrue = Config.update({entryId:id}, {enableNewDevice : true}).$promise;
+		var updateConfigTrue = ConfigService.update({entryId:id}, {enableNewDevice : true}).$promise;
 		
 		updateConfigTrue.then(function(result) {
 	  
@@ -116,11 +97,11 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 		  
 		  $scope.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
-			Config.update({entryId:id}, {enableNewDevice : false});
+			ConfigService.update({entryId:id}, {enableNewDevice : false});
 			checkForDB.value = false;
 		  };
 		  
-		  checkDb(checkForDB, Device, -1, Date.now(), $uibModalInstance, Config);
+		  checkDb(checkForDB, DeviceService, -1, Date.now(), $uibModalInstance, ConfigService);
 		  
 		}, 
 		function(reason) {
@@ -135,14 +116,14 @@ dgControllers.controller('ModalInstanceCtrl', function ($scope, $uibModalInstanc
 });
 
 
-var checkDb = function(checkForDB, Device, initialValue, initialDate, $uibModalInstance, Config){
+var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $uibModalInstance, ConfigService){
 	
 	if(checkForDB.value){
 		
 		var now = Date.now();
 		if((Date.now() - initialDate) < 10000){
 			console.log('check db');
-			var deviceQuery = Device.query().$promise;
+			var deviceQuery = DeviceService.query().$promise;
 			
 			deviceQuery.then(function(result) {
 			  
@@ -152,11 +133,11 @@ var checkDb = function(checkForDB, Device, initialValue, initialDate, $uibModalI
 				else{
 					if(result.length > result.length){
 						$uibModalInstance.close('found new device');
-						Config.update({entryId:0}, {enableNewDevice : false});
+						ConfigService.update({entryId:0}, {enableNewDevice : false});
 						return;
 					} 
 				}
-				setTimeout(checkDb.bind(null, checkForDB, Device, initialValue, initialDate, $uibModalInstance, Config),3000);
+				setTimeout(checkDb.bind(null, checkForDB, DeviceService, initialValue, initialDate, $uibModalInstance, ConfigService),3000);
 			  
 			}, function(reason) {
 			  console.log('Failed: ' + reason);
@@ -164,13 +145,32 @@ var checkDb = function(checkForDB, Device, initialValue, initialDate, $uibModalI
 		}else{
 			console.log('check DB timeout');
 			$uibModalInstance.dismiss('timeout');
-			Config.update({entryId:0}, {enableNewDevice : false});
+			ConfigService.update({entryId:0}, {enableNewDevice : false});
 			return;
 		}
 		
 		
 	};
 };
+
+//********************* Services *************************
+
+
+
+ dgModuleDevice.factory('DeviceService', ['$resource',
+  function($resource){
+	var response = $resource('device:entryId', {}, {
+			query: { method: 'GET', params: {} },
+			post: {method:'POST'},
+			update: {method:'PUT', params: {entryId: '@entryId'}},
+			remove: {method:'DELETE'}
+    });
+    return response;
+
+  }]);
+  
+
+
 
 
 
