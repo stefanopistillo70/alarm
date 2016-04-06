@@ -39,12 +39,11 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', 'DeviceService', function($sc
 
 /***************************************************
 
-Dialog new Device
+Modal new Device
 
 ****************************************************/
 
-dgModuleDevice.controller('ModalDemoCtrl', function ($scope, $uibModal, $log) {
-
+dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, $log) {
 
 	$scope.animationsEnabled = true;
 
@@ -90,16 +89,23 @@ dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstan
 		
 		updateConfigTrue.then(function(result) {
 	  
-		  $scope.progress = true;
-		  $scope.formUpdateDevice  = true;
+		$scope.progress = true;
+		$scope.formUpdateDevice  = true;
 
-		  var checkForDB = { value : true}
-		  
-		  $scope.cancel = function () {
+		var checkForDB = { value : true}
+
+		$scope.cancel = function () {
 			$uibModalInstance.dismiss('cancel');
 			ConfigService.update({entryId:id}, {enableNewDevice : false});
 			checkForDB.value = false;
-		  };
+		};
+		  
+		  
+		$scope.update = function(user) {
+			console.log("UPDATE USER");
+			console.log(user);
+		};
+
 		  
 		  checkDb(checkForDB, DeviceService, -1, Date.now(), $uibModalInstance, ConfigService);
 		  
