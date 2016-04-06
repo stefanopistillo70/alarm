@@ -1,4 +1,4 @@
-var dgModuleDevice = angular.module('dgModuleDevice', ['ngResource','ui.bootstrap','ui.grid','dgModuleConfig']);
+var dgModuleDevice = angular.module('dgModuleDevice', ['ngResource','ui.bootstrap','ui.grid','ui.grid.selection','dgModuleConfig']);
 
 dgModuleDevice.controller('DeviceCtrl', ['$scope', 'DeviceService', function($scope, DeviceService) {
 		
@@ -12,14 +12,15 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', 'DeviceService', function($sc
 				{ name: 'address.city' }
 			  ];
  
-		//$scope.gridOptions.multiSelect = false;
+
+		$scope.gridOptions.multiSelect = false;
 		$scope.gridOptions.modifierKeysToMultiSelect = false;
-		//$scope.gridOptions.noUnselect = true;
+		$scope.gridOptions.noUnselect = true;
 		$scope.gridOptions.onRegisterApi = function( gridApi ) {
-		$scope.gridApi = gridApi;
-		};
+			$scope.gridApi = gridApi;
+		}; 
 		
-		$scope.gridOptions.isRowSelectable = function(row){ return true;};
+		$scope.gridOptions.enableRowSelection = true;
 		
 		deviceQuery = DeviceService.query().$promise;
 		
