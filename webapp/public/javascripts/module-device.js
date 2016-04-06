@@ -51,7 +51,7 @@ dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, $lo
 
 		var modalInstance = $uibModal.open({
 		  animation: $scope.animationsEnabled,
-		  templateUrl: 'loadingModalContent.html',
+		  templateUrl: 'partials/loadingModalContent.html',
 		  controller: 'ModalInstanceCtrl',
 		  size: size,
 		  resolve: {}
@@ -81,33 +81,26 @@ dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstan
 	
 	queryConfig.then(function(result) {
 		
-		var id = result[0]._id;
-		
-		console.log(id);
-		
-		var updateConfigTrue = ConfigService.update({entryId:id}, {enableNewDevice : true}).$promise;
-		
-		updateConfigTrue.then(function(result) {
-	  
-		$scope.progress = true;
-		$scope.formUpdateDevice  = true;
-
-		var checkForDB = { value : true}
-
-		$scope.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
-			ConfigService.update({entryId:id}, {enableNewDevice : false});
-			checkForDB.value = false;
-		};
+			var id = result[0]._id;
+			
+			console.log(id);
+			
+			var updateConfigTrue = ConfigService.update({entryId:id}, {enableNewDevice : true}).$promise;
+			
+			updateConfigTrue.then(function(result) {
 		  
-		  
-		$scope.update = function(user) {
-			console.log("UPDATE USER");
-			console.log(user);
-		};
+			$scope.progress = true;
+			$scope.formUpdateDevice  = true;
 
-		  
-		  checkDb(checkForDB, DeviceService, -1, Date.now(), $uibModalInstance, ConfigService);
+			var checkForDB = { value : true}
+
+			$scope.cancel = function () {
+				$uibModalInstance.dismiss('cancel');
+				ConfigService.update({entryId:id}, {enableNewDevice : false});
+				checkForDB.value = false;
+			};
+			  
+			checkDb(checkForDB, DeviceService, -1, Date.now(), $uibModalInstance, ConfigService);
 		  
 		}, 
 		function(reason) {
@@ -159,9 +152,36 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $ui
 	};
 };
 
-//********************* Services *************************
 
 
+
+/***************************************************
+*
+* 		Update Device
+*
+****************************************************/
+
+
+dgModuleDevice.controller('DeviceUpdateCtrl', ['$scope', 'DeviceService', function($scope, DeviceService) {
+		
+		$scope.update = function(device) {
+			console.log("UPDATE DEVICE");
+			console.log(device);
+		};
+
+		
+}]);
+
+
+
+
+
+
+/***************************************************
+*
+* 		Service
+*
+****************************************************/
 
  dgModuleDevice.factory('DeviceService', ['$resource',
   function($resource){
