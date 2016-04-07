@@ -30,7 +30,7 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService',
 				console.log(device.id);
 			}
 		};
-		
+				
 		$scope.modifyRow = function (size) {
 			var selected = $scope.gridApi.selection.getSelectedRows();
 			console.log("Modify");
@@ -39,20 +39,22 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService',
 				console.log(device.id);
 				
 				
-				var modalInstance = $uibModal.open({
+				
+				var modifyModalInstance = $uibModal.open({
 					  animation: true,
 					  templateUrl: 'partials/deviceForm.html',
 					  size: size,
+					  scope: $scope,
 					  resolve: {}
 					});
 
-					modalInstance.result.then(function (result) {
+				modifyModalInstance.result.then(function (result) {
 						console.log('result ');
 						console.log(result);
 					}, function () {
-					  $log.info('Modal dismissed at: ' + new Date());
+					  console.log('Modal dismissed at: ' + new Date());
 				});
-				
+								
 			}
 		};
 		
@@ -86,6 +88,7 @@ dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, $lo
 		  animation: true,
 		  templateUrl: 'partials/loadingModalContent.html',
 		  controller: 'ModalInstanceCtrl',
+		  scope: $scope,
 		  size: size,
 		  resolve: {}
 		});
@@ -123,6 +126,7 @@ dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstan
 			var checkForDB = { value : true}
 
 			$scope.cancel = function () {
+				console.log("CANCELL - ModalInstanceCtrl");
 				$uibModalInstance.dismiss('cancel');
 				ConfigService.update({entryId:id}, {enableNewDevice : false});
 				checkForDB.value = false;
@@ -176,7 +180,6 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $ui
 			ConfigService.update({entryId:0}, {enableNewDevice : false});
 			return;
 		}
-		
 	};
 };
 
@@ -192,13 +195,15 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $ui
 
 dgModuleDevice.controller('DeviceUpdateCtrl', ['$scope', 'DeviceService', function($scope, DeviceService) {
 		
-		$scope.update = function(device) {
+		$scope.updateDU = function(device) {
 			console.log("UPDATE DEVICE");
 			console.log(device);
+			$scope.$parent.$close('update device');
 		};
 		
-		$scope.cancel = function () {
-			$uibModalInstance.dismiss('cancel');
+		$scope.cancelDU = function () {
+			console.log("CANCELL - DeviceUpdateCtrl");
+			$scope.$parent.$dismiss('cancel');
 		};
 		
 }]);
