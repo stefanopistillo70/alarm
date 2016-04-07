@@ -80,15 +80,14 @@ Modal new Device
 
 ****************************************************/
 
-dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, $log) {
+dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, ConfigService) {
 
-	$scope.open = function (size) {
+	$scope.openNewDevModal = function (size) {
 
 		var modalInstance = $uibModal.open({
 		  animation: true,
 		  templateUrl: 'partials/loadingModalContent.html',
 		  controller: 'ModalInstanceCtrl',
-		  scope: $scope,
 		  size: size,
 		  resolve: {}
 		});
@@ -96,8 +95,11 @@ dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, $lo
 		modalInstance.result.then(function (result) {
 			console.log('result ');
 			console.log(result);
+			
 		}, function () {
-		  $log.info('Modal dismissed at: ' + new Date());
+		  console.log('Modal dismissed at: ' + new Date());
+		  console.log('Config -> enableNewDevice=false');
+		  ConfigService.update({entryId:0}, {enableNewDevice : false});
 		});
 	};
 
@@ -108,6 +110,8 @@ dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, $lo
 
 dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, DeviceService, ConfigService) {
 
+	$scope.showProgress = true;
+	
 	var queryConfig = ConfigService.query().$promise;
 	
 	queryConfig.then(function(result) {
@@ -120,19 +124,23 @@ dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstan
 			
 			updateConfigTrue.then(function(result) {
 		  
-			$scope.progress = true;
-			$scope.formUpdateDevice  = true;
-
 			var checkForDB = { value : true}
 
-			$scope.cancel = function () {
+			$scope.cancelNewDevModal = function () {
 				console.log("CANCELL - ModalInstanceCtrl");
 				$uibModalInstance.dismiss('cancel');
 				ConfigService.update({entryId:id}, {enableNewDevice : false});
 				checkForDB.value = false;
 			};
+			
+			$scope.newDevFound = function(){
+				console.log("new device found");
+				$scope.showProgress = false;
+				ConfigService.update({entryId:id}, {enableNewDevice : false});
+				checkForDB.value = false;
+			}
 			  
-			checkDb(checkForDB, DeviceService, -1, Date.now(), $uibModalInstance, ConfigService);
+			checkDb(checkForDB, DeviceService, -1, Date.now(), $scope, ConfigService);
 		  
 		}, 
 		function(reason) {
@@ -147,7 +155,7 @@ dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstan
 });
 
 
-var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $uibModalInstance, ConfigService){
+var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $scope, ConfigService){
 	
 	if(checkForDB.value){
 		
@@ -163,22 +171,19 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $ui
 				
 				if(initialValue === -1) initialValue = devices.length;
 				else if(devices){
-					if(devices.length > initialValue){
-						$uibModalInstance.close('found new device');
-						ConfigService.update({entryId:0}, {enableNewDevice : false});
+					//TODO eliminae ||
+					if((devices.length > initialValue) || ((Date.now() - initialDate) > 20000)){
+						$scope.newDevFound();
 						return;
 					} 
 				}
-				setTimeout(checkDb.bind(null, checkForDB, DeviceService, initialValue, initialDate, $uibModalInstance, ConfigService),3000);
+				setTimeout(checkDb.bind(null, checkForDB, DeviceService, initialValue, initialDate, $scope, ConfigService),3000);
 			  
 			}, function(reason) {
 			  console.log('Failed: ' + reason);
 			});
 		}else{
-			console.log('check DB timeout');
-			$uibModalInstance.dismiss('timeout');
-			ConfigService.update({entryId:0}, {enableNewDevice : false});
-			return;
+			$scope.cancelNewDevModal();
 		}
 	};
 };

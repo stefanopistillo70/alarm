@@ -1,19 +1,19 @@
 
 
 
-<input type="checkbox" ng-model="checked" aria-label="Toggle ngHide"><br/>
+<!--<input type="checkbox" ng-model="checked" aria-label="Toggle ngHide"><br/>-->
 
-		<div ng-show="checked" >
+		<div ng-show="showProgress" >
 			<div class="modal-header">
 				<h3 class="modal-title">Waiting for device ... </h3>
 				<img src="images/progress.gif" height="30" >
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+				<button class="btn btn-warning" type="button" ng-click="cancelNewDevModal()">Cancel</button>
 			</div>
 		</div>
 		
-		<div ng-hide="checked">
+		<div ng-hide="showProgress">
 			<div class="modal-header">
 				<h3 class="modal-title">New Device found</h3>
 			</div>
