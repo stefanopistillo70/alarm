@@ -1,6 +1,7 @@
 var dgModuleDevice = angular.module('dgModuleDevice', ['ngResource','ui.bootstrap','ui.grid','ui.grid.selection','dgModuleConfig']);
 
-dgModuleDevice.controller('DeviceCtrl', ['$scope', 'DeviceService', function($scope, DeviceService) {
+dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService', function($scope, $uibModal, DeviceService) {
+		
 		
 		$scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
 		 
@@ -12,7 +13,6 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', 'DeviceService', function($sc
 				{ name: 'address.city' }
 			  ];
  
-
 		$scope.gridOptions.multiSelect = false;
 		$scope.gridOptions.modifierKeysToMultiSelect = false;
 		$scope.gridOptions.noUnselect = true;
@@ -21,6 +21,40 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', 'DeviceService', function($sc
 		}; 
 		
 		$scope.gridOptions.enableRowSelection = true;
+		
+		$scope.deleteRow = function () {
+			var selected = $scope.gridApi.selection.getSelectedRows();
+			console.log("DELETE");
+			if(selected && selected.length > 0){
+				var device = selected[0];
+				console.log(device.id);
+			}
+		};
+		
+		$scope.modifyRow = function (size) {
+			var selected = $scope.gridApi.selection.getSelectedRows();
+			console.log("Modify");
+			if(selected && selected.length > 0){
+				var device = selected[0];
+				console.log(device.id);
+				
+				
+				var modalInstance = $uibModal.open({
+					  animation: true,
+					  templateUrl: 'partials/deviceForm.html',
+					  size: size,
+					  resolve: {}
+					});
+
+					modalInstance.result.then(function (result) {
+						console.log('result ');
+						console.log(result);
+					}, function () {
+					  $log.info('Modal dismissed at: ' + new Date());
+				});
+				
+			}
+		};
 		
 		deviceQuery = DeviceService.query().$promise;
 		
@@ -46,12 +80,10 @@ Modal new Device
 
 dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, $log) {
 
-	$scope.animationsEnabled = true;
-
 	$scope.open = function (size) {
 
 		var modalInstance = $uibModal.open({
-		  animation: $scope.animationsEnabled,
+		  animation: true,
 		  templateUrl: 'partials/loadingModalContent.html',
 		  controller: 'ModalInstanceCtrl',
 		  size: size,
@@ -66,17 +98,12 @@ dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, $lo
 		});
 	};
 
-	$scope.toggleAnimation = function () {
-		$scope.animationsEnabled = !$scope.animationsEnabled;
-	};
-
 });
 
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
 dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, DeviceService, ConfigService) {
-
 
 	var queryConfig = ConfigService.query().$promise;
 	
@@ -150,7 +177,6 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $ui
 			return;
 		}
 		
-		
 	};
 };
 
@@ -170,7 +196,10 @@ dgModuleDevice.controller('DeviceUpdateCtrl', ['$scope', 'DeviceService', functi
 			console.log("UPDATE DEVICE");
 			console.log(device);
 		};
-
+		
+		$scope.cancel = function () {
+			$uibModalInstance.dismiss('cancel');
+		};
 		
 }]);
 
