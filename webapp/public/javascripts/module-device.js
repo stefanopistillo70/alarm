@@ -132,8 +132,10 @@ dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstan
 				checkForDB.value = false;
 			};
 			
-			$scope.newDevFound = function(){
+			$scope.newDevFound = function(device){
 				console.log("new device found");
+				console.log(device);
+				$scope.device = device;
 				$scope.showProgress = false;
 				$scope.title = "New Device Found";
 				ConfigService.update({entryId:id}, {enableNewDevice : false});
@@ -173,7 +175,15 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $sc
 				else if(devices){
 					//TODO eliminae ||
 					if((devices.length > initialValue) || ((Date.now() - initialDate) > 2000)){
-						$scope.newDevFound();
+						
+						devices = devices.sort(function(d1, d2){
+							var date1 = Date.parse(d1.insertDate);
+							var date2 = Date.parse(d2.insertDate);
+							return date2 - date1;
+						});
+						
+						device = devices[0];
+						$scope.newDevFound(device);
 						return;
 					} 
 				}
