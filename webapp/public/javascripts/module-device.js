@@ -38,6 +38,7 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService',
 				var device = selected[0];
 				console.log(device.id);
 				
+				$scope.device = device;
 				$scope.title = "Modify Device";
 				var modifyModalInstance = $uibModal.open({
 					  animation: true,
