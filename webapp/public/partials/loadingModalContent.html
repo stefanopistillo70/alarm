@@ -1,8 +1,5 @@
 
 
-
-<!--<input type="checkbox" ng-model="checked" aria-label="Toggle ngHide"><br/>-->
-
 		<div ng-show="showProgress" >
 			<div class="modal-header">
 				<h3 class="modal-title">Waiting for device ... </h3>
@@ -14,9 +11,6 @@
 		</div>
 		
 		<div ng-hide="showProgress">
-			<div class="modal-header">
-				<h3 class="modal-title">New Device found</h3>
-			</div>
 			
 			<div class="leftColumn" ng-include="'/partials/deviceForm.html'"></div>
 			

@@ -1,24 +1,31 @@
 			
 			
-<div ng-controller="DeviceUpdateCtrl">			
-<form class="form-horizontal" role="form">
-				
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Name:</label>
-		<div class="col-sm-10">
-			<input type="text" ng-model="device.name" placeholder="Enter device name" />
+<div ng-controller="DeviceUpdateCtrl">		
+
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+
+	<form class="form-horizontal" role="form">
+
+		<div class="modal-body">
+			<div class="form-group">
+				<label class="control-label col-sm-2" >Name:</label>
+				<div class="col-sm-10">
+					<input type="text" ng-model="device.name" placeholder="Enter device name" />
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="control-label col-sm-2" >Type:</label>
+				<div class="col-sm-10">
+					<input type="text" ng-model="device.type" placeholder="Enter Type" />
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="form-group">
-		<label class="control-label col-sm-2" >Type:</label>
-		<div class="col-sm-10">
-			<input type="text" ng-model="device.type" placeholder="Enter Type" />
+		
+		<div class="modal-footer">
+			<button class="btn btn-warning" type="button" ng-click="cancelDU()">Cancel</button>
+			<button class="btn btn-warning" type="button" ng-click="updateDU(device)">Save</button>
 		</div>
-	</div>
-	
-	<div class="modal-footer">
-		<button class="btn btn-warning" type="button" ng-click="cancelDU()">Cancel</button>
-		<button class="btn btn-warning" type="button" ng-click="updateDU(device)">Save</button>
-	</div>
-</form>
+	</form>
 </div>

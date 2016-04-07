@@ -38,8 +38,7 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService',
 				var device = selected[0];
 				console.log(device.id);
 				
-				
-				
+				$scope.title = "Modify Device";
 				var modifyModalInstance = $uibModal.open({
 					  animation: true,
 					  templateUrl: 'partials/deviceForm.html',
@@ -136,6 +135,7 @@ dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstan
 			$scope.newDevFound = function(){
 				console.log("new device found");
 				$scope.showProgress = false;
+				$scope.title = "New Device Found";
 				ConfigService.update({entryId:id}, {enableNewDevice : false});
 				checkForDB.value = false;
 			}
@@ -172,7 +172,7 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $sc
 				if(initialValue === -1) initialValue = devices.length;
 				else if(devices){
 					//TODO eliminae ||
-					if((devices.length > initialValue) || ((Date.now() - initialDate) > 20000)){
+					if((devices.length > initialValue) || ((Date.now() - initialDate) > 2000)){
 						$scope.newDevFound();
 						return;
 					} 
