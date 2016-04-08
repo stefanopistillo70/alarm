@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-var Device = require('../domain/device');
-var Config = require('../domain/config');
+var Device = require('../models/device');
+var Config = require('../models/config');
 var Response = require('./response');
 
 /* GET Device listing. */

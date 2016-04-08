@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var Config = require('../domain/config');
+var Config = require('../models/config');
 var Response = require('./response');
 
 /* GET Config listing. */

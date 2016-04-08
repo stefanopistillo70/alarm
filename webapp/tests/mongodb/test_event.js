@@ -1,13 +1,17 @@
 
 var assert = require('assert');
 var mongoose = require('mongoose');
-var EventLog = require('../../domain/eventLog');
+var EventLog = require('../../models/eventLog');
 
 
 describe('EventLog', function() {
 	
 	before(function (done) {
 		mongoose.connect('mongodb://127.0.0.1:27017/MySensorsDb', done);
+	});
+	
+	after(function() {
+		mongoose.connection.close();
 	});
 	
 	

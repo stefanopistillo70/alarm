@@ -1,13 +1,17 @@
 
 var assert = require('assert');
 var mongoose = require('mongoose');
-var Device = require('../../domain/device');
+var Device = require('../../models/device');
 
 
 describe('Device', function() {
 	
 	before(function (done) {
 		mongoose.connect('mongodb://127.0.0.1:27017/MySensorsDb', done);
+	});
+	
+	after(function() {
+		mongoose.connection.close();
 	});
 	
 	var device = new Device({

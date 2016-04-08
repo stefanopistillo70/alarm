@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var EventLog = require('../domain/eventLog');
+var EventLog = require('../models/eventLog');
 
 var Response = require('./response');
 

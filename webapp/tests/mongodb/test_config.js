@@ -1,13 +1,17 @@
 
 var assert = require('assert');
 var mongoose = require('mongoose');
-var Config = require('../../domain/config');
+var Config = require('../../models/config');
 
 
 describe('Config', function() {
 	
 	before(function (done) {
 		mongoose.connect('mongodb://127.0.0.1:27017/MySensorsDb', done);
+	});
+	
+	after(function() {
+		mongoose.connection.close();
 	});
 	
 	var configDefault = new Config({
