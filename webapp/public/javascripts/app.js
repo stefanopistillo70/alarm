@@ -7,3 +7,7 @@ app.config(['$routeProvider', function($routeProvider) {
 				when('/devices', { templateUrl: 'partials/devices.html', controller: 'DeviceCtrl' }).
 				otherwise({ redirectTo: '/' });
           }]);
+		  
+		  
+		  
+		  
