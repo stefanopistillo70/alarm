@@ -33,3 +33,4 @@ var Device = mongoose.model('Device', deviceSchema);
 
 // make this available to our users in our Node applications
 module.exports = Device;
+module.exports.schema = deviceSchema;

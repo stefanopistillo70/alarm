@@ -1,10 +1,10 @@
 
 var assert = require('assert');
 var mongoose = require('mongoose');
-var Device = require('../../models/device');
+var Zone = require('../../models/zone');
 
 
-describe('Device', function() {
+describe('Zone', function() {
 	
 	before(function (done) {
 		mongoose.connect('mongodb://127.0.0.1:27017/MySensorsDb', done);
@@ -14,18 +14,16 @@ describe('Device', function() {
 		mongoose.connection.close();
 	});
 	
-	var device = new Device({
-	  id: 'id1',
-	  name: 'device1',
-	  deviceType : 'RC',
-	  technology: '433',
+	var zone = new Zone({
+	  name: 'zone1',
+	  armed : false
 	});
 			
 	describe('insert value', function () {
 		
 		it('insert1',function(done){
 
-			device.save(function(err){
+			zone.save(function(err){
 			if (err) {
 					console.log(err);
 					throw err;
@@ -36,7 +34,31 @@ describe('Device', function() {
 			});
 		});
 		
-		it('insert failure tecnology',function(done){
+		it('insert with devices',function(done){
+
+			var zone = new Zone({
+			  name: 'zone1',
+			  armed : false,
+			  devices : [{
+				  id: 'id1',
+				  name: 'device1',
+				  deviceType : 'RC',
+				  technology: '433',
+				}]
+			});
+					
+			zone.save(function(err){
+			if (err) {
+					console.log(err);
+					throw err;
+				} else {
+					console.log('Log Saved');
+					done();
+				}
+			});
+		});
+		
+/*		it('insert failure tecnology',function(done){
 
 				device.technology = 'tch1';
 				device.save(function(err){
@@ -51,14 +73,15 @@ describe('Device', function() {
 					done();
 				});
 		});
-
+*/
+		
 	});
 
 	describe('find value', function () {
 		it('find1',function(done){
-			Device.find({}, function(err, devices) {
+			Zone.find({}, function(err, zones) {
 				if (err) throw err;
-				assert.equal(devices.length,1);
+				assert.equal(zones.length,1);
 				done();
 			});
 		});
@@ -66,6 +89,10 @@ describe('Device', function() {
 
 	describe('get list', function () {
 	});
+
+
+
+	
 });
 
 
