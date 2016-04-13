@@ -9,6 +9,7 @@ var routes = require('./routes/index');
 var eventLog = require('./routes/eventLog');
 var device = require('./routes/device');
 var config = require('./routes/config');
+var zone = require('./routes/zone');
 
 
 
@@ -41,6 +42,7 @@ app.use('/', routes);
 app.use('/eventLog', eventLog);
 app.use('/device', device);
 app.use('/config', config);
+app.use('/zone', zone);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -4,9 +4,9 @@ var router = express.Router();
 var Zone = require('../models/zone');
 var Response = require('./response');
 
-/* GET Device listing. */
+/* GET Zone listing. */
 router.get('/', function(req, res, next) {
-	Device.find({}, function(err, devices) {
+	Zone.find({}, function(err, devices) {
 				if (err){
 					res.status(400).send(err);
 				}else res.json(new Response(devices));

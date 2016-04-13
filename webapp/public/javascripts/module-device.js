@@ -10,7 +10,7 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService',
 				{ name: 'name'},
 				{ name: 'deviceType', displayName: 'Device Type', allowCellFocus : false },
 				{ name: 'technology', displayName: 'tecnology',  allowCellFocus : false},
-				{ name: 'address.city' }
+				{ name: 'sensors' }
 			  ];
  
 		$scope.gridOptions.multiSelect = false;

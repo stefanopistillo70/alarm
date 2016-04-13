@@ -2,14 +2,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var deviceSchema = require('./Device').schema;
+
 // create a schema
-
-
 var zoneSchema = new Schema({
   name: { type: String},
   armed : { type: Boolean},
-  devices: [deviceSchema],
+  devices: [{id : String}],
   insertDate: Date
 });
 

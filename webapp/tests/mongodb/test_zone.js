@@ -1,7 +1,9 @@
 
 var assert = require('assert');
 var mongoose = require('mongoose');
+var Device = require('../../models/device');
 var Zone = require('../../models/zone');
+
 
 
 describe('Zone', function() {
@@ -36,15 +38,18 @@ describe('Zone', function() {
 		
 		it('insert with devices',function(done){
 
+			var device1 = new Device({
+			  id: 'id1',
+			  name: 'device1',
+			  deviceType : 'RC',
+			  technology: '433',
+			  sensors : []
+			});
+			
 			var zone = new Zone({
 			  name: 'zone1',
 			  armed : false,
-			  devices : [{
-				  id: 'id1',
-				  name: 'device1',
-				  deviceType : 'RC',
-				  technology: '433',
-				}]
+			  devices : [device1]
 			});
 					
 			zone.save(function(err){
