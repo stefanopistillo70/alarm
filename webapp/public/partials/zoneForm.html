@@ -1,0 +1,33 @@
+			
+			
+<div ng-controller="ZoneUpdateCtrl">		
+
+	<div class="modal-header">
+		<h3 class="modal-title">{{title}}</h3>
+	</div>
+
+	<form class="form-horizontal" role="form">
+
+		<div class="modal-body">
+
+			<div class="form-group">
+				<label class="control-label col-sm-2" >Name:</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" ng-model="zone.name" placeholder="Enter Zone name" />
+				</div>
+			</div>
+			<div class="checkbox">
+				<label>
+				<input type="checkbox" ng-model="zone.armed">
+				Armed
+				</label>
+			</div>
+			
+		</div>
+		
+		<div class="modal-footer">
+			<button class="btn btn-warning" type="button" ng-click="cancelDU()">Cancel</button>
+			<button class="btn btn-warning" type="button" ng-click="updateDU(device)">Save</button>
+		</div>
+	</form>
+</div>

@@ -23,8 +23,8 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 			var selected = $scope.gridApi.selection.getSelectedRows();
 			console.log("DELETE");
 			if(selected && selected.length > 0){
-				var device = selected[0];
-				console.log(device.id);
+				var zone = selected[0];
+				console.log(zone.id);
 			}
 		};
 				
@@ -32,14 +32,14 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 			var selected = $scope.gridApi.selection.getSelectedRows();
 			console.log("Modify");
 			if(selected && selected.length > 0){
-				var device = selected[0];
-				console.log(device.id);
+				var zone = selected[0];
+				console.log(zone.id);
 				
-				$scope.device = device;
+				$scope.zone = zone;
 				$scope.title = "Modify Device";
 				var modifyModalInstance = $uibModal.open({
 					  animation: true,
-					  templateUrl: 'partials/deviceForm.html',
+					  templateUrl: 'partials/zoneForm.html',
 					  size: size,
 					  scope: $scope,
 					  resolve: {}
@@ -71,86 +71,6 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 
 
 
-/***************************************************
-
-Modal new Zone
-
-****************************************************/
-/*
-dgModuleZone.controller('ModalNewZoneCtrl', function ($scope, $uibModal) {
-
-	$scope.openNewDevModal = function (size) {
-
-		var modalInstance = $uibModal.open({
-		  animation: true,
-		  templateUrl: 'partials/loadingModalContent.html',
-		  controller: 'ModalInstanceCtrl',
-		  size: size,
-		  resolve: {}
-		});
-
-		modalInstance.result.then(function (result) {
-			console.log('result ');
-			console.log(result);
-			
-		}, function () {
-		  console.log('Modal dismissed at: ' + new Date());
-		});
-	};
-
-});
-
-// Please note that $uibModalInstance represents a modal window (instance) dependency.
-// It is not the same as the $uibModal service used above.
-
-dgModuleZone.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, ZoneService) {
-	
-	var queryConfig = ConfigService.query().$promise;
-	
-	queryConfig.then(function(result) {
-		
-			var id = result[0]._id;
-			
-			console.log(id);
-			
-			var updateConfigTrue = ConfigService.update({entryId:id}, {enableNewDevice : true}).$promise;
-			
-			updateConfigTrue.then(function(result) {
-		  
-			var checkForDB = { value : true}
-
-			$scope.cancelNewDevModal = function () {
-				console.log("CANCELL - ModalInstanceCtrl");
-				$uibModalInstance.dismiss('cancel');
-				ConfigService.update({entryId:id}, {enableNewDevice : false});
-				checkForDB.value = false;
-			};
-			
-			$scope.newDevFound = function(device){
-				console.log("new device found");
-				console.log(device);
-				$scope.device = device;
-				$scope.showProgress = false;
-				$scope.title = "New Device Found";
-				ConfigService.update({entryId:id}, {enableNewDevice : false});
-				checkForDB.value = false;
-			}
-			  
-			checkDb(checkForDB, DeviceService, -1, Date.now(), $scope, ConfigService);
-		  
-		}, 
-		function(reason) {
-			  console.log('Failed: ' + reason);
-		});
-		
-	}, 
-	function(reason) {
-		  console.log('Failed: ' + reason);
-	});
-  
-});
-
-*/
 
 /***************************************************
 *
@@ -161,14 +81,14 @@ dgModuleZone.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance
 
 dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', function($scope, ZoneService) {
 		
-		$scope.updateDU = function(device) {
-			console.log("UPDATE DEVICE");
-			console.log(device);
-			$scope.$parent.$close('update device');
+		$scope.updateDU = function(zone) {
+			console.log("UPDATE ZONE");
+			console.log(zone);
+			$scope.$parent.$close('update zone');
 		};
 		
 		$scope.cancelDU = function () {
-			console.log("CANCELL - DeviceUpdateCtrl");
+			console.log("CANCELL - ZoneUpdateCtrl");
 			$scope.$parent.$dismiss('cancel');
 		};
 		
