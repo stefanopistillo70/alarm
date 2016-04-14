@@ -129,9 +129,21 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 		
 		
 		
-		$scope.updateZU = function(zone) {
+		$scope.updateZU = function() {
 			console.log("UPDATE ZONE");
-			console.log(zone);
+			console.log($scope.zone);
+			
+			zoneUpdate = ZoneService.update({entryId:$scope.zone._id},$scope.zone).$promise;
+		
+			zoneUpdate.then(function(response) {
+				if (response.result) {
+					$scope.$parent.$close('update zone');
+				}
+			}, function(reason) {
+				  console.log('Failed ZoneUpdateCtrl: ' + reason);
+			});
+			
+			
 			$scope.$parent.$close('update zone');
 		};
 		
@@ -170,7 +182,7 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 
  dgModuleZone.factory('ZoneService', ['$resource',
   function($resource){
-	var response = $resource('zone:entryId', {}, {
+	var response = $resource('zone/:entryId', {}, {
 			query: { method: 'GET', params: {} },
 			post: {method:'POST'},
 			update: {method:'PUT', params: {entryId: '@entryId'}},
