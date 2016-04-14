@@ -35,7 +35,7 @@
 		<div class="col-md-4" style="background-color:red" >
 		
 		
-			<a ng-repeat="device in devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{device._id}}</a>
+			<a ng-repeat="device in devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{device.name}}</a>
 		
 <!--			<ul class="list-group">
 				<li class="list-group-item active">Cras justo odio</li>
@@ -57,7 +57,7 @@
 		</div>
 
 		<div class="col-md-4">
-			<a ng-repeat="device in zone.devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{device._id}}</a>
+			<a ng-repeat="device in zone.devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{device.name}}</a>
 		</div>
 	
 	</div>

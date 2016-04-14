@@ -98,6 +98,13 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 		
 		$scope.moveLeft = function() {
 			console.log("Move Left");
+			if($scope.selected){
+				var device = $scope.selected;
+				$scope.selected = undefined;
+				$scope.devices.push(device);
+				removeDeviceFromArray(device._id, $scope.zone.devices);
+			}
+
 
 		};
 		
@@ -107,7 +114,7 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 				var device = $scope.selected;
 				$scope.selected = undefined;
 				$scope.zone.devices.push(device);
-				removeDeviceFromArray(device.id, $scope.devices);
+				removeDeviceFromArray(device._id, $scope.devices);
 			}
 		};
 		
@@ -136,9 +143,11 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 		
 		
 		var removeDeviceFromArray = function(id, array){
-			
+			console.log("ID ->"+id);
+			console.log("array.len ->"+array.length);
 			for(var i = array.length - 1; i >= 0; i--) {
-				if(array[i].id === id) {
+				if(array[i]._id === id) {
+					console.log("split ->"+i);
 				   array.splice(i, 1);
 				   break;
 				}
