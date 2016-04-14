@@ -35,7 +35,7 @@ router.post('/', function(req, res, next) {
 								device.save(function(err) {
 									if (err){
 										res.status(400).send(new Response().error(400,err.errors));;
-									}else res.json({ message: 'Device created!' });
+									}else res.json(new Response("Device Created"));
 								});
 							
 						}
@@ -43,7 +43,6 @@ router.post('/', function(req, res, next) {
 					}else{ res.status(400).send(new Response().error(400,"No Config found...")); }
 				} 
 			});
-	
 		
 });
 
@@ -62,18 +61,19 @@ router.put('/:id', function(req, res, next) {
 		
 		console.log(req.body);
 		
-		var device = new Device();
+		var device = req.body;
 		
-		device.id = req.body.id;
-		
-		device.save(function(err) {
-            if (err){
+		var query = { '_id' : device._id}
+		var update = { 'name' : device.name, 'deviceType' : device.deviceType };
+		var opts = { strict: true };
+		Device.update(query, update, opts, function(error,raw) {
+			if (error){
 				res.status(400).send(new Response().error(400,err.errors));
-			}else res.json({ message: 'Device created!' });
-        });
+			}else{
+				console.log(raw);
+			} res.json(new Response("Device Updated"));		  
+		});			
 });
-
-
 
 
 module.exports = router;

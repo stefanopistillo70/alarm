@@ -214,7 +214,17 @@ dgModuleDevice.controller('DeviceUpdateCtrl', ['$scope', 'DeviceService', functi
 		$scope.updateDU = function(device) {
 			console.log("UPDATE DEVICE");
 			console.log(device);
-			$scope.$parent.$close('update device');
+			
+			deviceUpdate = DeviceService.update({entryId:device._id},device).$promise;
+		
+			deviceUpdate.then(function(response) {
+				if (response.result) {
+					$scope.$parent.$close('update device');
+				}
+			}, function(reason) {
+				  console.log('Failed DeviceUpdateCtrl: ' + reason);
+			});
+			
 		};
 		
 		$scope.cancelDU = function () {
@@ -237,7 +247,7 @@ dgModuleDevice.controller('DeviceUpdateCtrl', ['$scope', 'DeviceService', functi
 
  dgModuleDevice.factory('DeviceService', ['$resource',
   function($resource){
-	var response = $resource('device:entryId', {}, {
+	var response = $resource('device/:entryId', {entryId: '@entryId'}, {
 			query: { method: 'GET', params: {} },
 			post: {method:'POST'},
 			update: {method:'PUT', params: {entryId: '@entryId'}},

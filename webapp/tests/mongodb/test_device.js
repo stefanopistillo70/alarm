@@ -87,13 +87,29 @@ describe('Device', function() {
 		it('find1',function(done){
 			Device.find({}, function(err, devices) {
 				if (err) throw err;
-				assert.equal(devices.length,1);
+				assert.equal((devices.length-1)>0,true);
 				done();
 			});
 		});
 	});
 
-	describe('get list', function () {
+	describe('update', function () {
+		it('update device',function(done){	
+				
+			var query = { 'id' : 'id1'}
+			var update = { 'name': 'deviceProva' };
+			var opts = { strict: true };
+			Device.update(query, update, opts, function(error,raw) {
+				if(error) throw new Error(error);
+				console.log(raw);
+				Device.find(query, function(err, devices) {
+					if (err) throw err;
+					assert.equal(devices[0].name,"deviceProva");
+					done();
+				});
+			  
+			});			
+		});
 	});
 });
 
