@@ -9,7 +9,8 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 		 
 		$scope.gridOptions.columnDefs = [
 				{ name: 'name'},
-				{ name: 'armed'}
+				{ name: 'armed'},
+				{ name: 'devices'}
 			  ];
  
 		$scope.gridOptions.multiSelect = false;
@@ -84,17 +85,38 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceService', function($scope, ZoneService, DeviceService	) {
 		
 		
+		var removeDeviceFromArray = function(id, array){
+			console.log("ID ->"+id);
+			console.log("array.len ->"+array.length);
+			for(var i = array.length - 1; i >= 0; i--) {
+				if(array[i]._id === id) {
+					console.log("split ->"+i);
+				   array.splice(i, 1);
+				   break;
+				}
+			}			
+		}
+		
+		
 		//Get All Devices
 		deviceQuery = DeviceService.query().$promise;
 		
 		deviceQuery.then(function(response) {
 			if (response.result) {
 				$scope.devices = response.result;
+				
+				console.log("ZONE");
+				console.log($scope.zone);
+				//Remove from devices list the devices in zone
+				for(var i = 0; i < $scope.zone.devices.length; i++) {
+					removeDeviceFromArray($scope.zone.devices[i]._id,$scope.devices);
+				}				
 			}
 		}, function(reason) {
 			  console.log('Failed get devices: ' + reason);
 		});
-
+		
+		
 		
 		$scope.moveLeft = function() {
 			console.log("Move Left");
@@ -154,18 +176,7 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 		
 		
 		
-		var removeDeviceFromArray = function(id, array){
-			console.log("ID ->"+id);
-			console.log("array.len ->"+array.length);
-			for(var i = array.length - 1; i >= 0; i--) {
-				if(array[i]._id === id) {
-					console.log("split ->"+i);
-				   array.splice(i, 1);
-				   break;
-				}
-			}
-			
-		}
+
 		
 }]);
 

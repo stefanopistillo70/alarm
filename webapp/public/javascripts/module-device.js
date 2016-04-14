@@ -2,7 +2,6 @@ var dgModuleDevice = angular.module('dgModuleDevice', ['ngResource','ui.bootstra
 
 dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService', function($scope, $uibModal, DeviceService) {
 		
-		
 		$scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
 		 
 		$scope.gridOptions.columnDefs = [
