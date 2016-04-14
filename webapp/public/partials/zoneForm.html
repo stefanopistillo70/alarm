@@ -22,7 +22,55 @@
 				Armed
 				</label>
 			</div>
+
 			
+<div class="panel panel-default">
+	<!-- Default panel contents -->
+	<div class="panel-heading">Device Settings</div>
+	<div class="panel-body">
+	
+		
+		<div class="row">	
+		
+		<div class="col-md-4" style="background-color:red" >
+		
+		
+			<a ng-repeat="device in devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{device._id}}</a>
+		
+<!--			<ul class="list-group">
+				<li class="list-group-item active">Cras justo odio</li>
+				<li class="list-group-item">Dapibus ac facilisis in</li>
+				<li class="list-group-item">Morbi leo risus</li>
+				<li class="list-group-item">Porta ac consectetur ac</li>
+				<li class="list-group-item">Vestibulum at eros</li>
+			</ul>
+-->			
+		</div>
+
+		<div class="col-md-4">
+			<div class="panel panel-default">
+				<button class="btn btn-warning" type="button" ng-click="moveRight()">></button>
+				<button class="btn btn-warning" type="button" ng-click="moveLeft()"><</button>
+				<button class="btn btn-warning" type="button" ng-click="moveAllRight()">>></button>
+				<button class="btn btn-warning" type="button" ng-click="moveAllLeft()">>></button>
+			</div>
+		</div>
+
+		<div class="col-md-4">
+			<a ng-repeat="device in zone.devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{device._id}}</a>
+		</div>
+	
+	</div>
+
+	
+	
+	</div>			
+
+</div>
+
+
+
+	
 		</div>
 		
 		<div class="modal-footer">

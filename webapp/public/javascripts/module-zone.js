@@ -3,6 +3,8 @@ var dgModuleZone = angular.module('dgModuleZone', ['ngResource','ui.bootstrap','
 dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', function($scope, $uibModal, ZoneService) {
 		
 		
+		
+		
 		$scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
 		 
 		$scope.gridOptions.columnDefs = [
@@ -36,7 +38,7 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 				console.log(zone.id);
 				
 				$scope.zone = zone;
-				$scope.title = "Modify Device";
+				$scope.title = "Modify Zone";
 				var modifyModalInstance = $uibModal.open({
 					  animation: true,
 					  templateUrl: 'partials/zoneForm.html',
@@ -79,18 +81,70 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 ****************************************************/
 
 
-dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', function($scope, ZoneService) {
+dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceService', function($scope, ZoneService, DeviceService	) {
 		
-		$scope.updateDU = function(zone) {
+		
+		//Get All Devices
+		deviceQuery = DeviceService.query().$promise;
+		
+		deviceQuery.then(function(response) {
+			if (response.result) {
+				$scope.devices = response.result;
+			}
+		}, function(reason) {
+			  console.log('Failed get devices: ' + reason);
+		});
+
+		
+		$scope.moveLeft = function() {
+			console.log("Move Left");
+
+		};
+		
+		$scope.moveRight = function() {
+			console.log("Move Right");
+			if($scope.selected){
+				var device = $scope.selected;
+				$scope.selected = undefined;
+				$scope.zone.devices.push(device);
+				removeDeviceFromArray(device.id, $scope.devices);
+			}
+		};
+		
+		$scope.moveAllLeft = function() {
+			console.log("Move All Left");
+		};
+		
+		$scope.moveAllRight = function() {
+			console.log("Move All Right");
+		};
+
+		
+		
+		
+		$scope.updateZU = function(zone) {
 			console.log("UPDATE ZONE");
 			console.log(zone);
 			$scope.$parent.$close('update zone');
 		};
 		
-		$scope.cancelDU = function () {
+		$scope.cancelZU = function () {
 			console.log("CANCELL - ZoneUpdateCtrl");
 			$scope.$parent.$dismiss('cancel');
 		};
+		
+		
+		
+		var removeDeviceFromArray = function(id, array){
+			
+			for(var i = array.length - 1; i >= 0; i--) {
+				if(array[i].id === id) {
+				   array.splice(i, 1);
+				   break;
+				}
+			}
+			
+		}
 		
 }]);
 
