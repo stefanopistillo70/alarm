@@ -103,7 +103,15 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 		
 		deviceQuery.then(function(response) {
 			if (response.result) {
-				$scope.devices = response.result;
+				$scope.devices = [];
+				
+				for(var i = 0; i < response.result.length; i++) {
+					$scope.devices.push({_id: response.result[i]._id, id : response.result[i].id, name : response.result[i].name});
+				}
+				
+				console.log("result");
+				console.log(response.result);
+				console.log($scope.devices);
 				
 				console.log("ZONE");
 				console.log($scope.zone);
