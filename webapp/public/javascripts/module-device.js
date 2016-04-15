@@ -23,10 +23,26 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService',
 		
 		$scope.deleteRow = function () {
 			var selected = $scope.gridApi.selection.getSelectedRows();
-			console.log("DELETE");
+			console.log(selected);
+			console.log("DELETE device");
 			if(selected && selected.length > 0){
 				var device = selected[0];
 				console.log(device.id);
+				
+				var deviceCancel = DeviceService.remove({entryId:device._id}).$promise;
+		
+				deviceCancel.then(function(response) {
+					if (response.result) {
+						console.log('device cancelled');
+						angular.forEach(selected, function (data, index) {
+							$scope.gridOptions.data.splice($scope.gridOptions.data.lastIndexOf(data), 1);
+						});
+					}
+				}, function(reason) {
+					  console.log('Failed remove: ');
+					  console.log(reason);
+				});
+				
 			}
 		};
 				
@@ -250,7 +266,7 @@ dgModuleDevice.controller('DeviceUpdateCtrl', ['$scope', 'DeviceService', functi
 			query: { method: 'GET', params: {} },
 			post: {method:'POST'},
 			update: {method:'PUT', params: {entryId: '@entryId'}},
-			remove: {method:'DELETE'}
+			remove: {method:'DELETE', params: {entryId: '@entryId'}}
     });
     return response;
 

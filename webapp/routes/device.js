@@ -72,9 +72,31 @@ router.put('/:id', function(req, res, next) {
 				res.status(400).send(new Response().error(400,err.errors));
 			}else{
 				console.log(raw);
-			} res.json(new Response("Device Updated"));		  
+				res.json(new Response("Device Updated"));
+			} 		  
 		});			
 });
+
+
+
+router.delete('/:id', function(req, res, next) {
+		
+		console.log('ID -> '+req.params.id)
+		
+		Device.remove({ _id: req.params.id }, function(error,raw) {
+			if (error) {
+				res.status(400).send(new Response().error(400,err.errors));
+			} else {
+				console.log(raw);
+				res.json(new Response("Device Removed"));	
+			}
+		});
+		
+});
+
+
+
+
 
 
 module.exports = router;
