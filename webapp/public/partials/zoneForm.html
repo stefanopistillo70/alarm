@@ -31,17 +31,21 @@
 					
 					<div class="row">	
 					
-						<div class="col-md-4" style="background-color:red" >
+						<div class="col-md-4" >
 							<a ng-repeat="device in devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{device.name}}</a>
 						</div>
 
 						<div class="col-md-4">
-							<div class="panel panel-default">
-								<button class="btn btn-warning" type="button" ng-click="moveRight()">></button>
-								<button class="btn btn-warning" type="button" ng-click="moveLeft()"><</button>
-								<button class="btn btn-warning" type="button" ng-click="moveAllRight()">>></button>
-								<button class="btn btn-warning" type="button" ng-click="moveAllLeft()">>></button>
-							</div>
+								<div class="raw">
+									<div class="col-md-4"></div>
+									<div class="col-md-4">
+										<button class="btn btn-warning" type="button" ng-click="moveRight()">></button>
+										<div></div>
+										<button class="btn btn-warning" type="button" ng-click="moveLeft()"><</button>
+										<button class="btn btn-warning" type="button" ng-click="moveAllRight()">>></button>
+										<button class="btn btn-warning" type="button" ng-click="moveAllLeft()">>></button>
+									</div>	
+								</div>
 						</div>
 
 						<div class="col-md-4">

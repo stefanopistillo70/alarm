@@ -13,8 +13,13 @@ var zone = require('./routes/zone');
 
 
 
+
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/MySensorsDb', function(err) {
+
+var sysConfig = require('config');
+var dbConfig = sysConfig.get('dbConfig');
+
+mongoose.connect(dbConfig.url, function(err) {
     if(err) {
         console.log('connection error', err);
     } else {

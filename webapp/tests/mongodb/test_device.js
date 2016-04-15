@@ -4,10 +4,13 @@ var mongoose = require('mongoose');
 var Device = require('../../models/device');
 
 
+var sysConfig = require('../config.json');
+var dbConfig = sysConfig.dbConfig;
+
 describe('Device', function() {
 	
 	before(function (done) {
-		mongoose.connect('mongodb://127.0.0.1:27017/MySensorsDb', done);
+		mongoose.connect(dbConfig.url, done);
 	});
 	
 	after(function() {
