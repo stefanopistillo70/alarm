@@ -63,8 +63,7 @@ describe('EventLog', function() {
 		it('find1',function(done){
 			EventLog.find({}, function(err, eventLogs) {
 				if (err) throw err;
-				//console.log(eventLogs);
-				assert.equal(eventLogs.length,1);
+				assert.equal((eventLogs.length-1)>0,true);
 				done();
 			});
 		});

@@ -87,7 +87,7 @@ describe('Zone', function() {
 		it('find1',function(done){
 			Zone.find({}, function(err, zones) {
 				if (err) throw err;
-				assert.equal(zones.length,1);
+				assert.equal((zones.length-1)>0,true);
 				done();
 			});
 		});

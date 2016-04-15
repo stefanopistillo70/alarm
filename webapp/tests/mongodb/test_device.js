@@ -21,7 +21,6 @@ describe('Device', function() {
 		
 		it('insert1',function(done){
 			
-			
 			var device = new Device({
 			  id: 'id1',
 			  name: 'device1',
