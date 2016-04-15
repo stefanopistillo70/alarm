@@ -55,6 +55,7 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 				
 				$scope.zone = zone;
 				$scope.title = "Modify Zone";
+				$scope.newZone = false;
 				var modifyModalInstance = $uibModal.open({
 					  animation: true,
 					  templateUrl: 'partials/zoneForm.html',
@@ -68,10 +69,34 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 						console.log(result);
 					}, function () {
 					  console.log('Modal dismissed at: ' + new Date());
-				});
-								
+				});								
 			}
 		};
+		
+		
+		$scope.newRow = function (size) {
+			console.log("New");
+			
+			$scope.zone = { name : "", armed : false, devices : []};
+			$scope.title = "New Zone";
+			$scope.newZone = true;
+			var modifyModalInstance = $uibModal.open({
+				  animation: true,
+				  templateUrl: 'partials/zoneForm.html',
+				  size: size,
+				  scope: $scope,
+				  resolve: {}
+				});
+
+			modifyModalInstance.result.then(function (result) {
+					console.log('result ');
+					console.log(result);
+				}, function () {
+				  console.log('Modal dismissed at: ' + new Date());
+			});								
+		};
+
+		
 		
 		zoneQuery = ZoneService.query().$promise;
 		
@@ -175,21 +200,37 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 		
 		
 		$scope.updateZU = function() {
-			console.log("UPDATE ZONE");
-			console.log($scope.zone);
 			
-			zoneUpdate = ZoneService.update({entryId:$scope.zone._id},$scope.zone).$promise;
-		
-			zoneUpdate.then(function(response) {
-				if (response.result) {
-					$scope.$parent.$close('update zone');
-				}
-			}, function(reason) {
-				  console.log('Failed ZoneUpdateCtrl: ' + reason);
-			});
+			if(!$scope.newZone){
+				console.log("UPDATE ZONE");
+				console.log($scope.zone);
+				
+				zoneUpdate = ZoneService.update({entryId:$scope.zone._id},$scope.zone).$promise;
 			
+				zoneUpdate.then(function(response) {
+					if (response.result) {
+						$scope.$parent.$close('update zone');
+					}
+				}, function(reason) {
+					  console.log('Failed ZoneUpdateCtrl: ' + reason);
+				});
+			}else{
+				console.log("NEW ZONE");
+				console.log($scope.zone);
+				
+				zoneCreate = ZoneService.post($scope.zone).$promise;
 			
-			$scope.$parent.$close('update zone');
+				zoneCreate.then(function(response) {
+					if (response.result) {
+						$scope.gridOptions.data.push($scope.zone);
+						$scope.$parent.$close('created zone');
+					}
+				}, function(reason) {
+					  console.log('Failed ZoneUpdateCtrl: ' + reason);
+				});
+
+				
+			}
 		};
 		
 		$scope.cancelZU = function () {

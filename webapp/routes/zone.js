@@ -20,6 +20,8 @@ router.post('/', function(req, res, next) {
 	var zone = new Zone();
 
 	zone.name = req.body.name;
+	zone.armed = req.body.armed;
+	zone.devices = req.body.devices;
 		
 	zone.save(function(err) {
 		if (err){
