@@ -3,8 +3,6 @@ var dgModuleZone = angular.module('dgModuleZone', ['ngResource','ui.bootstrap','
 dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', function($scope, $uibModal, ZoneService) {
 		
 		
-		
-		
 		$scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
 		 
 		$scope.gridOptions.columnDefs = [
@@ -97,7 +95,6 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 		};
 
 		
-		
 		zoneQuery = ZoneService.query().$promise;
 		
 		zoneQuery.then(function(response) {
@@ -109,8 +106,6 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 		});
 		
 }]);
-
-
 
 
 
@@ -197,8 +192,6 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 		};
 
 		
-		
-		
 		$scope.updateZU = function() {
 			
 			if(!$scope.newZone){
@@ -239,13 +232,7 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 		};
 		
 		
-		
-
-		
 }]);
-
-
-
 
 
 
@@ -255,7 +242,7 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 *
 ****************************************************/
 
- dgModuleZone.factory('ZoneService', ['$resource',
+dgModuleZone.factory('ZoneService', ['$resource',
   function($resource){
 	var response = $resource('zone/:entryId', {}, {
 			query: { method: 'GET', params: {} },
@@ -265,7 +252,7 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
     });
     return response;
 
-  }]);
+}]);
   
 
 
