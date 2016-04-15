@@ -1,3 +1,7 @@
+
+var fs = require('fs');
+var https = require('https');
+	
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -30,6 +34,13 @@ mongoose.connect(dbConfig.url, function(err) {
 
 
 var app = express();
+
+https.createServer({
+  key: fs.readFileSync('../environment/Development/resource/certs/server.key'),
+  cert: fs.readFileSync('../environment/Development/resource/certs/server.crt')
+}, app).listen(443);
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
