@@ -60,6 +60,23 @@ router.put('/:id', function(req, res, next) {
 });
 
 
+router.delete('/:id', function(req, res, next) {
+		
+		console.log('ID -> '+req.params.id)
+		
+		Zone.remove({ _id: req.params.id }, function(error,raw) {
+			if (error) {
+				res.status(400).send(new Response().error(400,err.errors));
+			} else {
+				console.log(raw);
+				res.json(new Response("Zone Removed"));	
+			}
+		});
+		
+});
+
+
+
 
 
 module.exports = router;

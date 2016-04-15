@@ -28,6 +28,21 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 			if(selected && selected.length > 0){
 				var zone = selected[0];
 				console.log(zone.id);
+				
+				var zoneCancel = ZoneService.remove({entryId:zone._id}).$promise;
+		
+				zoneCancel.then(function(response) {
+					if (response.result) {
+						console.log('zone cancelled');
+						angular.forEach(selected, function (data, index) {
+							$scope.gridOptions.data.splice($scope.gridOptions.data.lastIndexOf(data), 1);
+						});
+					}
+				}, function(reason) {
+					  console.log('Failed remove: ');
+					  console.log(reason);
+				});
+
 			}
 		};
 				
