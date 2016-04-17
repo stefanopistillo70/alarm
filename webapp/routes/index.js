@@ -1,6 +1,6 @@
 var express = require('express');
 var passport = require('passport');
-var p = require('../config/passport')(passport);
+var p = require('./authentication')(passport);
 
 var router = express.Router();
 
@@ -47,7 +47,6 @@ router.use(function(req, res, next) {
   // decode token
   if (token) {
   }else{
-	  
 	  
 	  // if there is no token
     // return an error

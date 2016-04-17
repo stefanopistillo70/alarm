@@ -1,12 +1,20 @@
 
+
+
+
 var LocalStrategy    = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // load up the user model
 var User       = require('../models/user');
 
-// load the auth variables
-var configAuth = require('./auth');
+var configAuth = {
+	   'googleAuth' : {
+        'clientID'      : '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
+        'clientSecret'  : 'crk3KvehjxYlukK1z4U9TZPP',
+        'callbackURL'   : 'http://localhost:3000/auth/google/callback'
+    }
+};
 
 module.exports = function(passport) {
 
@@ -42,7 +50,9 @@ module.exports = function(passport) {
         // make the code asynchronous
         // User.findOne won't fire until we have all our data back from Google
         process.nextTick(function() {
-
+			console.log("NEXT TRIK");
+			console.log(token);
+			console.log(profile);
             // try to find the user based on their google id
             User.findOne({ 'google.id' : profile.id }, function(err, user) {
                 if (err)
@@ -50,6 +60,7 @@ module.exports = function(passport) {
 
                 if (user) {
 
+					console.log("User Found");
                     // if a user is found, log them in
                     return done(null, user);
                 } else {
@@ -62,6 +73,8 @@ module.exports = function(passport) {
                     newUser.google.name  = profile.displayName;
                     newUser.google.email = profile.emails[0].value; // pull the first email
 
+					console.log("NEW User");
+					console.log(newUser);
                     // save the user
                     newUser.save(function(err) {
                         if (err)
