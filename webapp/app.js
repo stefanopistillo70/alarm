@@ -18,6 +18,7 @@ var eventLog = require('./routes/eventLog');
 var device = require('./routes/device');
 var config = require('./routes/config');
 var zone = require('./routes/zone');
+var auth = require('./routes/authentication');
 
 
 
@@ -38,6 +39,14 @@ mongoose.connect(dbConfig.url, function(err) {
 
 
 var app = express();
+
+app.use(function(req, res, next) {
+	console.log("CHECK ALL");
+	res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
+	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+	res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+	next();
+});
 
 https.createServer({
   key: fs.readFileSync('../environment/Development/resource/certs/server.key'),
@@ -65,6 +74,10 @@ app.use('/eventLog', eventLog);
 app.use('/device', device);
 app.use('/config', config);
 app.use('/zone', zone);
+app.use('/auth', auth);
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

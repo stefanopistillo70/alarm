@@ -12,11 +12,12 @@ var configAuth = {
 	   'googleAuth' : {
         'clientID'      : '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
         'clientSecret'  : 'crk3KvehjxYlukK1z4U9TZPP',
-        'callbackURL'   : 'http://localhost:3000/auth/google/callback'
+        'callbackURL'   : 'http://127.0.0.1:3000/auth/google/callback'
     }
 };
 
-module.exports = function(passport) {
+
+var passport = require('passport');
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
@@ -86,4 +87,32 @@ module.exports = function(passport) {
 
     }));
 
-};
+
+
+
+var express = require('express');
+var router = express.Router();
+
+
+// =====================================
+// GOOGLE ROUTES =======================
+// =====================================
+// send to google to do the authentication
+// profile gets us their basic information including their name
+// email gets their emails
+router.get('/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
+
+// the callback after google has authenticated the user
+router.get('/google/callback',
+		passport.authenticate('google', {
+				successRedirect : '/#/',
+				failureRedirect : '/#/login'
+		}));
+
+
+
+module.exports = router;
+
+
+
+
