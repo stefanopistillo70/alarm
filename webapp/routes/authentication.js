@@ -52,7 +52,6 @@ module.exports = function(passport) {
         process.nextTick(function() {
 			console.log("NEXT TRIK");
 			console.log(token);
-			console.log(profile);
             // try to find the user based on their google id
             User.findOne({ 'google.id' : profile.id }, function(err, user) {
                 if (err)

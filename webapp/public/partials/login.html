@@ -1,12 +1,17 @@
 
-<div class="container">
+<div ng-controller="LoginCtrl">		
 
     <div class="jumbotron text-center">
-        <h1><span class="fa fa-lock"></span> Node Authentication</h1>
+        <h1><span class="fa fa-lock"></span> DomusGuard Authentication </h1>
 
         <p>Login or Register with:</p>
+		
+		<div class="modal-header">
+			<h3 class="modal-title">{{title}}</h3>
+		</div>
 
-        <a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google</a>
+        <!--<a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google</a>-->
+		<button class="btn btn-danger" type="button" ng-click="login()"><span class="fa fa-google-plus"></span> Google</button>
 
     </div>
 

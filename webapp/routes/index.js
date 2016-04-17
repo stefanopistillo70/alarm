@@ -41,6 +41,7 @@ router.get('/auth/google/callback',
 router.use(function(req, res, next) {
 	
 	console.log("CHECK ALL");
+	//console.log(req);
 	
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
 

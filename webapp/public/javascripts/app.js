@@ -1,5 +1,5 @@
 
-var app = angular.module('DomusGuard', ['ngRoute','dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone']);
+var app = angular.module('DomusGuard', ['ngRoute','dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
 
 app.config(['$routeProvider', function($routeProvider) {
             $routeProvider.
@@ -19,13 +19,14 @@ app.factory('myInterceptor', ['$log', '$q','$location', function ($log, $q, $loc
     var myInterceptor = {
 		'request': function(config) {
 			  // do something on success
-			  //$log.debug('REQUEST');
+			  $log.debug('REQUEST ->'+config.url);
 			  return config;
 			},
 
     // optional method
 	   'requestError': function(rejection) {
 		  // do something on error
+		  $log.debug('REQUEST ERROR');
 		  if (canRecover(rejection)) {
 			return responseOrNewPromise
 		  }
@@ -37,6 +38,7 @@ app.factory('myInterceptor', ['$log', '$q','$location', function ($log, $q, $loc
 		// optional method
 		'response': function(response) {
 		  // do something on success
+		  $log.debug('RESPONSE ->');
 		  return response;
 		},
 
