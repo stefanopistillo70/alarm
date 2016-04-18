@@ -86,8 +86,6 @@ passport.use(new GoogleStrategy({
 );
 
 
-
-
 var express = require('express');
 var router = express.Router();
 

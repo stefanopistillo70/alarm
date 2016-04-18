@@ -13,7 +13,7 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 
 
-var routes = require('./routes/index');
+var routes = require('./routes/routes');
 var eventLog = require('./routes/eventLog');
 var device = require('./routes/device');
 var config = require('./routes/config');
@@ -47,6 +47,7 @@ app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
 	next();
 });
+
 
 https.createServer({
   key: fs.readFileSync('../environment/Development/resource/certs/server.key'),
