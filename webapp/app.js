@@ -42,9 +42,9 @@ var app = express();
 
 app.use(function(req, res, next) {
 	console.log("CHECK ALL");
-	res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
-	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-	res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
 	next();
 });
 

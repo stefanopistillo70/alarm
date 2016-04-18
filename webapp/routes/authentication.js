@@ -103,7 +103,7 @@ router.get('/google/callback',
 		passport.authenticate('google', { failureRedirect: '/#/login' }),
 		function(req, res) {
 			console.log("AUTH -> SUCCESS");
-			res.redirect('/');
+			res.redirect("/");
 		}
 );
 
