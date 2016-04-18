@@ -11,16 +11,6 @@ app.config(['$routeProvider', function($routeProvider) {
           }]);
 
 
-
-app.controller('HeaderCtrl', ['$log', '$rootScope', function($log, $rootScope, $uibModal) {
-	$log.debug('Controll Header');
-	$log.debug($rootScope);
-	$rootScope.client_id = "PROVA";
-}]);
-
-
-
-		  
 		  
 //Intercept authenticator error 403 
 
@@ -66,8 +56,6 @@ app.factory('myInterceptor', ['$log', '$q','$location', function ($log, $q, $loc
 
     return myInterceptor;
 }]);
-
-
 
 app.config(['$httpProvider', function($httpProvider) {  
     $httpProvider.interceptors.push('myInterceptor');

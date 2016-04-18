@@ -3,8 +3,18 @@ var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap'
 
 dgModuleLogin.controller('LoginCtrl', ['$scope', '$uibModal', 'LoginService', function($scope, $uibModal, LoginService) {
 		
-		$scope.title = "Prova";
-		$scope.clientID = "620125449078";
+		
+		$scope.$on('event:google-plus-signin-success', function (event,authResult) {
+		// Send login to server or save into cookie
+			console.log("Event succes");
+			console.log(event);
+			console.log(authResult);
+		});
+
+		$scope.$on('event:google-plus-signin-failure', function (event,authResult) {
+		// Auth failure or signout detected
+			console.log("Event failure");
+		});
 		
 		$scope.login = function() {
 			console.log("Login");
