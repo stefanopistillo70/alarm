@@ -4,6 +4,7 @@ var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap'
 dgModuleLogin.controller('LoginCtrl', ['$scope', '$uibModal', 'LoginService', function($scope, $uibModal, LoginService) {
 		
 		$scope.title = "Prova";
+		$scope.clientID = "620125449078";
 		
 		$scope.login = function() {
 			console.log("Login");

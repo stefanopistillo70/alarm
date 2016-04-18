@@ -1,5 +1,5 @@
 
-var app = angular.module('DomusGuard', ['ngRoute','dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
+var app = angular.module('DomusGuard', ['ngRoute','dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin','directive.g+signin']);
 
 app.config(['$routeProvider', function($routeProvider) {
             $routeProvider.
@@ -9,6 +9,17 @@ app.config(['$routeProvider', function($routeProvider) {
 				when('/login', { templateUrl: 'partials/login.html' }).
 				otherwise({ redirectTo: '/' });
           }]);
+
+
+
+app.controller('HeaderCtrl', ['$log', '$rootScope', function($log, $rootScope, $uibModal) {
+	$log.debug('Controll Header');
+	$log.debug($rootScope);
+	$rootScope.client_id = "PROVA";
+}]);
+
+
+
 		  
 		  
 //Intercept authenticator error 403 
