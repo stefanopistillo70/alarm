@@ -5,8 +5,8 @@ var User       = require('../models/user');
 var express = require('express');
 var router = express.Router();
 
-/*var LocalStrategy    = require('passport-local').Strategy;
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+//var LocalStrategy    = require('passport-local').Strategy;
+//var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // load up the user model
 var User       = require('../models/user');
@@ -15,11 +15,17 @@ var configAuth = {
 	   'googleAuth' : {
         'clientID'      : '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
         'clientSecret'  : 'crk3KvehjxYlukK1z4U9TZPP',
-        'callbackURL'   : 'http://127.0.0.1:3000/auth/google/callback'
+        'callbackURL'   : 'http://localhost:3000'
     }
 };
 
+var google = require('googleapis');
+var OAuth2 = google.auth.OAuth2;
 
+var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleAuth.clientSecret, configAuth.googleAuth.callbackURL);
+
+
+/*
 var passport = require('passport');
 
 // used to serialize the user for the session
@@ -115,13 +121,15 @@ passport.use(new GoogleStrategy({
 //Verify token
 router.post('/google', function(req, res, next) {
 	
-	console.log("********************");
-	
 	console.log(req.body);
 	
-	profile = req.body;
+	var code = req.body.code;
+	console.log("code ->"+code);
 	
-	res.json(new Response("Ciao"));
+	oauth2Client.getToken(code, function(err, tokens) {
+		if(err) res.status(400).send(err);			
+		res.json(new Response(tokens));
+	});
 	
 	/*User.findOne({ 'google.name' : profile.id }, function(err, user) {
 				if (err)

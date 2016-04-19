@@ -74,7 +74,9 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 						  if (authResult['code']) {
 							console.log("CODE ->"+authResult['code']);
 							
-							loginGetToken = LoginService.getToken({},authResult['code']).$promise;
+							var data = {};
+							data.code = authResult['code'];
+							loginGetToken = LoginService.getToken(data).$promise;
 		
 							loginGetToken.then(function(response) {
 								if (response.result) {
