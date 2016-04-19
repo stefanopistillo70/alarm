@@ -262,7 +262,7 @@ dgModuleDevice.controller('DeviceUpdateCtrl', ['$scope', 'DeviceService', functi
 
  dgModuleDevice.factory('DeviceService', ['$resource',
   function($resource){
-	var response = $resource('device/:entryId', {entryId: '@entryId'}, {
+	var response = $resource(apiVer+'device/:entryId', {entryId: '@entryId'}, {
 			query: { method: 'GET', params: {} },
 			post: {method:'POST'},
 			update: {method:'PUT', params: {entryId: '@entryId'}},

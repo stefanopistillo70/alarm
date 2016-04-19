@@ -30,7 +30,7 @@ dgModuleEvent.controller('EventCtrl', ['$scope', 'EventService', function($scope
 dgModuleEvent.factory('EventService', ['$resource',
   function($resource){
 	console.log("Service get Event");  
-	var response = $resource('eventLog', {}, {
+	var response = $resource(apiVer+'eventLog', {}, {
               query: { method: 'GET', params: {} }
     });
     return response;

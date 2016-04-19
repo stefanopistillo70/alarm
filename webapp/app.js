@@ -24,6 +24,8 @@ var mongoose = require('mongoose');
 var sysConfig = require('config');
 var dbConfig = sysConfig.get('dbConfig');
 
+var apiVer = "/api/1.0";
+
 mongoose.connect(dbConfig.url, function(err) {
     if(err) {
         console.log('connection error', err);
@@ -37,11 +39,27 @@ mongoose.connect(dbConfig.url, function(err) {
 var app = express();
 
 app.use(function(req, res, next) {
-	console.log("CHECK ALL");
+	var url = req.url;
+	console.log("CHECK ALL "+url);
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
-	next();
+	
+	var token = req.headers['x-access-token'];
+	console.log(token);
+	
+	var urlLogin = apiVer + "/auth"
+	if(url.substring(0, apiVer.length) == apiVer && !(url.substring(0, urlLogin.length) == urlLogin)){
+		console.log("Verify token");
+		if (token) {
+			next();
+		}else{
+			return res.status(403).send({ 
+				success: false, 
+				message: 'No token provided.' 
+			});
+		}
+	}else next();
 });
 
 
@@ -65,12 +83,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use('/', routes);
-app.use('/eventLog', eventLog);
-app.use('/device', device);
-app.use('/config', config);
-app.use('/zone', zone);
-app.use('/auth', auth);
+
+app.use(apiVer+'/', routes);
+app.use(apiVer+'/eventLog', eventLog);
+app.use(apiVer+'/device', device);
+app.use(apiVer+'/config', config);
+app.use(apiVer+'/zone', zone);
+app.use(apiVer+'/auth', auth);
 
 
 

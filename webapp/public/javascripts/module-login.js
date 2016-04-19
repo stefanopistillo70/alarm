@@ -110,7 +110,7 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 
 dgModuleLogin.factory('LoginService', ['$resource',
   function($resource){
-	var response = $resource('/auth/google', {}, {
+	var response = $resource(apiVer+'auth/google', {}, {
 			query: { method: 'GET', params: {} },
 			getToken: {method:'POST', params: {}},
     });

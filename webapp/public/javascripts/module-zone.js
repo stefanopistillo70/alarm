@@ -244,7 +244,7 @@ dgModuleZone.controller('ZoneUpdateCtrl', ['$scope', 'ZoneService', 'DeviceServi
 
 dgModuleZone.factory('ZoneService', ['$resource',
   function($resource){
-	var response = $resource('zone/:entryId', {}, {
+	var response = $resource(apiVer+'zone/:entryId', {}, {
 			query: { method: 'GET', params: {} },
 			post: {method:'POST'},
 			update: {method:'PUT', params: {entryId: '@entryId'}},

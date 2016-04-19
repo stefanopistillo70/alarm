@@ -1,4 +1,6 @@
 
+var apiVer = "/api/1.0/";
+
 var app = angular.module('DomusGuard', ['ngRoute','dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -69,7 +71,7 @@ app.factory('sessionInjector', ['$log', '$rootScope', function($log, $rootScope)
 				if ($rootScope.auth.google) {
 					$log.debug('token injected');
 					$log.debug($rootScope.auth.google);
-					config.headers['x-session-token'] = $rootScope.auth.google.access_token;
+					config.headers['x-access-token'] = $rootScope.auth.google.access_token;
 				}
 			}
             return config;
