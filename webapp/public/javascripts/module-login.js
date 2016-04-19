@@ -9,6 +9,20 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$uibModal', 'LoginService', fu
 			console.log("Event succes");
 			console.log(event);
 			console.log(authResult);
+			
+			var id_token = authResult.hg.id_token
+			var xhr = new XMLHttpRequest();
+			xhr.open('POST', 'http://127.0.0.1/auth/google');
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+			xhr.onload = function() {
+			  console.log('Signed in as: ' + xhr.responseText);
+			  
+			  $rootScope.auth.google = authResult.hg;
+			  
+			};
+			xhr.send('idtoken=' + id_token);
+			
+			
 		});
 
 		$scope.$on('event:google-plus-signin-failure', function (event,authResult) {
