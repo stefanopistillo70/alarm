@@ -1,7 +1,7 @@
 
 var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap']);
 
-dgModuleLogin.controller('LoginCtrl', ['$scope', '$uibModal', 'LoginService', function($scope, $uibModal, LoginService) {
+dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'LoginService', function($scope, $rootScope, $uibModal, LoginService) {
 		
 		
 		$scope.$on('event:google-plus-signin-success', function (event,authResult) {
@@ -10,19 +10,23 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$uibModal', 'LoginService', fu
 			console.log(event);
 			console.log(authResult);
 			
-			var id_token = authResult.hg.id_token
-			var xhr = new XMLHttpRequest();
-			xhr.open('POST', 'http://127.0.0.1/auth/google');
-			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-			xhr.onload = function() {
-			  console.log('Signed in as: ' + xhr.responseText);
-			  
-			  $rootScope.auth.google = authResult.hg;
-			  
-			};
-			xhr.send('idtoken=' + id_token);
 			
 			
+			loginUpdate = LoginService.update({entryId:0},authResult.hg).$promise;
+		
+			loginUpdate.then(function(response) {
+				if (response.result) {
+					console.log(response.result);
+				}
+				
+				console.log("Save token in rootScope");
+				if(!$rootScope.auth) $rootScope.auth = {};
+				$rootScope.auth.google = authResult.hg;
+				
+			}, function(reason) {
+				  console.log('Failed DeviceUpdateCtrl: ' + reason);
+			});
+				
 		});
 
 		$scope.$on('event:google-plus-signin-failure', function (event,authResult) {
@@ -59,6 +63,7 @@ dgModuleLogin.factory('LoginService', ['$resource',
   function($resource){
 	var response = $resource('/auth/google', {}, {
 			query: { method: 'GET', params: {} },
+			update: {method:'POST', params: {entryId: '@entryId'}},
     });
     return response;
 

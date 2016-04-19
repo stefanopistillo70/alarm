@@ -15,7 +15,6 @@ app.config(['$routeProvider', function($routeProvider) {
 //Intercept authenticator error 403 
 
 app.factory('myInterceptor', ['$log', '$q','$location', function ($log, $q, $location){
-    $log.debug('$log is here to show you that this is a regular factory with injection');
 
     var myInterceptor = {
 		'request': function(config) {
@@ -62,13 +61,17 @@ app.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
-/*
-app.factory('sessionInjector', ['SessionService', function(SessionService) {  
+
+app.factory('sessionInjector', ['$log', '$rootScope', function($log, $rootScope) {  
     var sessionInjector = {
         request: function(config) {
-            if (!SessionService.isAnonymus) {
-                config.headers['x-session-token'] = SessionService.token;
-            }
+			if ($rootScope.auth){
+				if ($rootScope.auth.google) {
+					$log.debug('token injected');
+					$log.debug($rootScope.auth.google);
+					config.headers['x-session-token'] = $rootScope.auth.google.access_token;
+				}
+			}
             return config;
         }
     };
@@ -77,4 +80,3 @@ app.factory('sessionInjector', ['SessionService', function(SessionService) {
 app.config(['$httpProvider', function($httpProvider) {  
     $httpProvider.interceptors.push('sessionInjector');
 }]);
-*/

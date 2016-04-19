@@ -1,8 +1,11 @@
 
+var Response = require('./response');
+var User       = require('../models/user');
 
+var express = require('express');
+var router = express.Router();
 
-
-var LocalStrategy    = require('passport-local').Strategy;
+/*var LocalStrategy    = require('passport-local').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // load up the user model
@@ -33,10 +36,12 @@ passport.deserializeUser(function(id, done) {
 	});
 });
     
+*/
 
 // =========================================================================
 // GOOGLE ==================================================================
 // =========================================================================
+/*
 passport.use(new GoogleStrategy({
 
 		clientID        : configAuth.googleAuth.clientID,
@@ -86,8 +91,7 @@ passport.use(new GoogleStrategy({
 );
 
 
-var express = require('express');
-var router = express.Router();
+
 
 
 // =====================================
@@ -110,11 +114,45 @@ var router = express.Router();
 
 //Verify token
 router.post('/google', function(req, res, next) {
-	//verify token
 	
+	console.log(req.body);
+	
+	profile = req.body;
+	
+	res.json(new Response());
+	
+	/*User.findOne({ 'google.name' : profile.id }, function(err, user) {
+				if (err)
+					res.status(400).send(err);
+
+				if (user) {
+
+					console.log("User Found token ->"+user.google.token);
+					// if a user is found, log them in
+					res.json(new Response());
+				} else {
+					// if the user isnt in our database, create a new user
+					var newUser          = new User();
+
+					// set all of the relevant information
+					newUser.google.id    = profile.id;
+					newUser.google.token = token;
+					newUser.google.name  = profile.displayName;
+					newUser.google.email = profile.emails[0].value; // pull the first email
+
+					console.log("NEW User");
+					console.log(newUser);
+					// save the user
+					newUser.save(function(err) {
+						if (err)
+							throw err;
+						res.json(new Response());
+					});
+				}
+			});
+	*/
 	
 });
-
 
 
 
