@@ -52,7 +52,9 @@ app.use(function(req, res, next) {
 	if(url.substring(0, apiVer.length) == apiVer && !(url.substring(0, urlLogin.length) == urlLogin)){
 		console.log("Verify token");
 		if (token) {
-			next();
+			
+			verifyToken(token,res,next);
+						
 		}else{
 			return res.status(403).send({ 
 				success: false, 
@@ -124,6 +126,35 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+
+
+//////////////////////////////////// TODO move in authorization
+
+var configAuth = {
+	   'googleAuth' : {
+        'clientID'      : '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
+        'clientSecret'  : 'crk3KvehjxYlukK1z4U9TZPP',
+        'callbackURL'   : 'http://localhost:3000'
+    }
+};
+
+var google = require('googleapis');
+var OAuth2 = google.auth.OAuth2;
+
+var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleAuth.clientSecret, configAuth.googleAuth.callbackURL);
+
+var verifyToken = function(token,res,next){
+	console.log("VERIFY token ID");
+	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , function(err,result){
+			console.log(err);
+			console.log(result);
+			if(err) res.status(400).send(err);			
+			else next();
+		});
+}
+
+
 
 
 module.exports = app;

@@ -71,7 +71,7 @@ app.factory('sessionInjector', ['$log', '$rootScope', function($log, $rootScope)
 				if ($rootScope.auth.google) {
 					$log.debug('token injected');
 					$log.debug($rootScope.auth.google);
-					config.headers['x-access-token'] = $rootScope.auth.google.access_token;
+					config.headers['x-access-token'] = $rootScope.auth.google.id_token;
 				}
 			}
             return config;
