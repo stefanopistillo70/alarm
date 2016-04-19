@@ -38,7 +38,8 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 					auth2 = gapi.auth2.init({
 					  client_id: '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
 					  // Scopes to request in addition to 'profile' and 'email'
-					  scope:'https://www.googleapis.com/auth/plus.login'
+					  scope:'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/userinfo.email',
+					  access_type: "offline"
 					});
 					
 					console.log("SIGNED ->"+auth2.isSignedIn);
@@ -46,8 +47,6 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 					var googleUser = auth2.currentUser.get();
 					
 					console.log(googleUser);
-					
-					
 					
 					// Listen for sign-in state changes.
 					/*  auth2.isSignedIn.listen(signinChanged);
@@ -67,7 +66,6 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 					  }
 					*/
 					
-					
 					auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(
 						function(authResult) {
 															
@@ -85,29 +83,20 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 								
 								console.log("Save token in rootScope");
 								if(!$rootScope.auth) $rootScope.auth = {};
-								$rootScope.auth.google = authResult.hg;
+								$rootScope.auth.google = response.result;
 								
 							}, function(reason) {
 								  console.log('Failed Login insert Code: ' + reason);
 							});
 							
 							
-							
-							
 						  } else {
 							console.log("ERROR");
 						  }
 						  
-						  
 						});
-					
-					
-					
-					
 				});
-			
 		};
-		
 }]);
 
 
