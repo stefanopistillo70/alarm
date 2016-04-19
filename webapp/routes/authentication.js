@@ -115,11 +115,13 @@ passport.use(new GoogleStrategy({
 //Verify token
 router.post('/google', function(req, res, next) {
 	
+	console.log("********************");
+	
 	console.log(req.body);
 	
 	profile = req.body;
 	
-	res.json(new Response());
+	res.json(new Response("Ciao"));
 	
 	/*User.findOne({ 'google.name' : profile.id }, function(err, user) {
 				if (err)

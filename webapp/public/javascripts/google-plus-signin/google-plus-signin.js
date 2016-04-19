@@ -89,8 +89,7 @@ angular.module('directive.g+signin', []).
                       }
                       //Initialize Auth2 with our clientId
                       gapi.load('auth2', function () {
-                          var googleAuthObj =
-                          gapi.auth2.init({
+                          var googleAuthObj = gapi.auth2.init({
                               client_id: defaults.clientid,
                               cookie_policy: defaults.cookiepolicy
                           });
@@ -98,7 +97,12 @@ angular.module('directive.g+signin', []).
                           if (isAutoRendering) {
                               gapi.signin2.render(element[0], defaults);
                           } else {
-                              googleAuthObj.attachClickHandler(defaults.customtargetid, {}, defaults.onsuccess, defaults.onfailure);
+								googleAuthObj.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(function(resp) {
+									console.log("grantOfflineAccess");
+									console.log(resp);
+									var auth_code = resp.code;
+								});
+                              //googleAuthObj.attachClickHandler(defaults.customtargetid, {}, defaults.onsuccess, defaults.onfailure);
                           }
                       });
                   };

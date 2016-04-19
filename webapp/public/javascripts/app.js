@@ -1,5 +1,5 @@
 
-var app = angular.module('DomusGuard', ['ngRoute','dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin','directive.g+signin']);
+var app = angular.module('DomusGuard', ['ngRoute','dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
 
 app.config(['$routeProvider', function($routeProvider) {
             $routeProvider.

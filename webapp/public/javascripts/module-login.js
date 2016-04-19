@@ -29,27 +29,85 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 				
 		});
 
-		$scope.$on('event:google-plus-signin-failure', function (event,authResult) {
-		// Auth failure or signout detected
-			console.log("Event failure");
-		});
 		
 		$scope.login = function() {
 			console.log("Login");
 			
-			loginQuery = LoginService.query().$promise;
+			console.log("**************** gapi.auth2.init");
+				gapi.load('auth2', function() {
+					auth2 = gapi.auth2.init({
+					  client_id: '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
+					  // Scopes to request in addition to 'profile' and 'email'
+					  scope:'https://www.googleapis.com/auth/plus.login'
+					});
+					
+					console.log("SIGNED ->"+auth2.isSignedIn);
+					
+					var googleUser = auth2.currentUser.get();
+					
+					console.log(googleUser);
+					
+					
+					
+					// Listen for sign-in state changes.
+					/*  auth2.isSignedIn.listen(signinChanged);
+
+					  // Listen for changes to current user.
+					  auth2.currentUser.listen(userChanged);
+
+					  // Sign in the user if they are currently signed in.
+					  if (auth2.isSignedIn.get() == true) {
+						auth2.signIn();
+					  }
+
+					  // Start with the current live values.
+					  if (auth2){
+						console.log('Refreshing values...');
+						googleUser = auth2.currentUser.get();
+					  }
+					*/
+					
+					
+					auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(
+						function(authResult) {
+															
+						  if (authResult['code']) {
+							console.log("CODE ->"+authResult['code']);
+							
+							loginGetToken = LoginService.getToken({},authResult['code']).$promise;
 		
-			loginQuery.then(function(response) {
-				if (response.result) {
-					$scope.$parent.$close('login');
-				}
-			}, function(reason) {
-				  console.log('Failed LoginCtrl: ' + reason);
-			});
+							loginGetToken.then(function(response) {
+								if (response.result) {
+									console.log(response.result);
+								}
+								
+								console.log("Save token in rootScope");
+								if(!$rootScope.auth) $rootScope.auth = {};
+								$rootScope.auth.google = authResult.hg;
+								
+							}, function(reason) {
+								  console.log('Failed Login insert Code: ' + reason);
+							});
+							
+							
+							
+							
+						  } else {
+							console.log("ERROR");
+						  }
+						  
+						  
+						});
+					
+					
+					
+					
+				});
 			
 		};
 		
 }]);
+
 
 
 
@@ -63,7 +121,7 @@ dgModuleLogin.factory('LoginService', ['$resource',
   function($resource){
 	var response = $resource('/auth/google', {}, {
 			query: { method: 'GET', params: {} },
-			update: {method:'POST', params: {entryId: '@entryId'}},
+			getToken: {method:'POST', params: {}},
     });
     return response;
 
