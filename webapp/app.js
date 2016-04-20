@@ -53,7 +53,6 @@ app.use(function(req, res, next) {
 		console.log("Verify token on DB");
 		if (token) {
 			
-			//verifyToken(token,res,next);
 			next();
 						
 		}else{
@@ -127,44 +126,6 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
-
-
-//////////////////////////////////// TODO move in authorization
-
-/*var configAuth = {
-	   'googleAuth' : {
-        'clientID'      : '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
-        'clientSecret'  : 'crk3KvehjxYlukK1z4U9TZPP',
-        'callbackURL'   : 'http://localhost:3000'
-    }
-};
-
-var google = require('googleapis');
-var OAuth2 = google.auth.OAuth2;
-
-var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleAuth.clientSecret, configAuth.googleAuth.callbackURL);
-
-var verifyToken = function(token,res,next){
-	console.log("VERIFY token ID");
-	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , function(err,ticket){
-			console.log(err);
-			console.log(ticket);
-			if(err){
-				res.status(403).send({ 
-					success: false, 
-					message: 'Invalid Token ->'+err
-				});
-			} else {
-				
-				var data = ticket.getAttributes();
-				console.log(data);
-				next();
-			} 
-		});
-}
-*/
-
 
 
 module.exports = app;

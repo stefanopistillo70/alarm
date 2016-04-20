@@ -78,18 +78,21 @@ app.factory('sessionInjector', ['$log', '$rootScope', function($log, $rootScope)
 						console.log("Google USER");
 						console.log(googleUser);
 						
-						console.log("SIGNED ->"+auth2.isSignedIn.get());
-						config.headers['x-access-token'] = googleUser.hg.id_token;
+						var isSignedIn = auth2.isSignedIn.get();
+						console.log("SIGNED ->"+isSignedIn);
+						
+						if(isSignedIn){
+							
+							console.log("EXPIRE DATE ->"+(new Date(googleUser.hg.expires_at)).toISOString());
+							
+							if((googleUser.hg.expires_at - (new Date()).getTime()) > 0){
+								config.headers['x-access-token'] = googleUser.hg.access_token;
+							}else{
+								$log.debug("token expired");
+							}
+						}
 						
 					}
-					
-					//check expiration
-					/*var now = new Date();
-					if(($rootScope.auth.google.expiry_date - now.getTime()) > 0){
-						config.headers['x-access-token'] = $rootScope.auth.google.id_token;
-					}else{
-						$log.debug("token expired");
-					}*/
 					
 				}
 			}

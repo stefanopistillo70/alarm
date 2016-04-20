@@ -85,15 +85,10 @@ router.post('/google', function(req, res, next) {
 });
 
 
-
-
 var verifyIdToken = function(token,callback){
 	console.log("VERIFY token ID");
 	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
 }
-
-
-
 
 
 module.exports = router;
