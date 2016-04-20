@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 // create a schema
 var userSchema = new Schema({
-  google: { id: String, token: String, name: String, email: String},
+  google: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date },
   insertDate: Date
 });
 

@@ -31,52 +31,66 @@ router.post('/google', function(req, res, next) {
 	
 	oauth2Client.getToken(code, function(err, tokens) {
 		
-		if(err) res.status(400).send(err);			
-		else res.json(new Response(tokens));
-		/*oauth2Client.verifyIdToken(tokens.id_token, configAuth.googleAuth.clientID , function(err,result){
-			console.log(err);
-			console.log(result);
-			if(err) res.status(400).send(err);			
-			else res.json(new Response(tokens));
-			
-		});
-		*/
+		console.log("TOKEN ->");
+		console.log(tokens);
+		
+		
+		if(err) res.status(400).send(new Response().error(400,err));			
+		else{
+
+			verifyIdToken(tokens.id_token,function(err,ticket){
+				
+				if(err){
+					res.status(403).send(new Response().error(403,"Invalid ID Token ->"+err));
+				} else {
+				
+					var data = ticket.getAttributes();
+					console.log(data);
+					
+					User.findOne({ 'google.email' : data.payload.email }, function(err, user) {
+		
+						if (err) res.status(400).send(new Response().error(400,err.errors));
+							
+						if (user) {
+							console.log("User Found token ->"+user.google.token);
+							// if a user is found, log them in
+							res.json(new Response(tokens));
+						} else {
+							// if the user isnt in our database, create a new user
+							var newUser          = new User();
+							newUser.google.email = data.payload.email;
+							newUser.google.token = tokens.access_token;
+							newUser.google.refresh_token  = tokens.refresh_token;
+							newUser.google.expiry_date = tokens.expiry_date;
+
+							console.log("NEW User");
+							console.log(newUser);
+							// save the user
+							newUser.save(function(err) {
+								if (err) res.status(400).send(new Response().error(400,err.errors));
+								res.json(new Response());
+							});
+						}
+										
+					});
+
+				} 
+				
+			});
+		
+		}
 
 	});
 	
-	/*User.findOne({ 'google.name' : profile.id }, function(err, user) {
-				if (err)
-					res.status(400).send(err);
-
-				if (user) {
-
-					console.log("User Found token ->"+user.google.token);
-					// if a user is found, log them in
-					res.json(new Response());
-				} else {
-					// if the user isnt in our database, create a new user
-					var newUser          = new User();
-
-					// set all of the relevant information
-					newUser.google.id    = profile.id;
-					newUser.google.token = token;
-					newUser.google.name  = profile.displayName;
-					newUser.google.email = profile.emails[0].value; // pull the first email
-
-					console.log("NEW User");
-					console.log(newUser);
-					// save the user
-					newUser.save(function(err) {
-						if (err)
-							throw err;
-						res.json(new Response());
-					});
-				}
-			});
-	*/
-	
 });
 
+
+
+
+var verifyIdToken = function(token,callback){
+	console.log("VERIFY token ID");
+	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
+}
 
 
 

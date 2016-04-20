@@ -46,14 +46,15 @@ app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
 	
 	var token = req.headers['x-access-token'];
-	console.log(token);
+	//console.log(token);
 	
 	var urlLogin = apiVer + "/auth"
 	if(url.substring(0, apiVer.length) == apiVer && !(url.substring(0, urlLogin.length) == urlLogin)){
-		console.log("Verify token");
+		console.log("Verify token on DB");
 		if (token) {
 			
-			verifyToken(token,res,next);
+			//verifyToken(token,res,next);
+			next();
 						
 		}else{
 			return res.status(403).send({ 
@@ -131,7 +132,7 @@ app.use(function(err, req, res, next) {
 
 //////////////////////////////////// TODO move in authorization
 
-var configAuth = {
+/*var configAuth = {
 	   'googleAuth' : {
         'clientID'      : '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
         'clientSecret'  : 'crk3KvehjxYlukK1z4U9TZPP',
@@ -146,18 +147,23 @@ var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleA
 
 var verifyToken = function(token,res,next){
 	console.log("VERIFY token ID");
-	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , function(err,result){
+	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , function(err,ticket){
 			console.log(err);
-			console.log(result);
+			console.log(ticket);
 			if(err){
 				res.status(403).send({ 
 					success: false, 
 					message: 'Invalid Token ->'+err
 				});
-			} else next();
+			} else {
+				
+				var data = ticket.getAttributes();
+				console.log(data);
+				next();
+			} 
 		});
 }
-
+*/
 
 
 
