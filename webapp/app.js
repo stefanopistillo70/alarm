@@ -149,8 +149,12 @@ var verifyToken = function(token,res,next){
 	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , function(err,result){
 			console.log(err);
 			console.log(result);
-			if(err) res.status(400).send(err);			
-			else next();
+			if(err){
+				res.status(403).send({ 
+					success: false, 
+					message: 'Invalid Token ->'+err
+				});
+			} else next();
 		});
 }
 
