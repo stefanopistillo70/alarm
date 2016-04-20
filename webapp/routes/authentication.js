@@ -47,14 +47,32 @@ router.post('/google', function(req, res, next) {
 					var data = ticket.getAttributes();
 					console.log(data);
 					
-					User.findOne({ 'google.email' : data.payload.email }, function(err, user) {
+					var query = { 'google.email' : data.payload.email }
+					
+					User.findOne(query, function(err, user) {
 		
 						if (err) res.status(400).send(new Response().error(400,err.errors));
 							
 						if (user) {
 							console.log("User Found token ->"+user.google.token);
 							// if a user is found, log them in
-							res.json(new Response(tokens));
+							
+							if(tokens.access_token != user.google.token){
+								console.log("ACEES TOKEN  DIFF ");
+								console.log("DB ->"+user.google.token);
+								console.log("google ->"+tokens.access_token);
+							}
+							
+							var update = { 'google.token': tokens.access_token, 'google.expiry_date' : tokens.expiry_date };
+							var opts = { strict: true };
+							User.update(query, update, opts, function(error,raw) {
+								if (error){
+									res.status(400).send(new Response().error(400,err.errors));
+								}else{
+									console.log(raw);
+								} res.json(new Response(tokens));		  
+							});			
+							
 						} else {
 							// if the user isnt in our database, create a new user
 							var newUser          = new User();
