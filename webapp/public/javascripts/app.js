@@ -69,9 +69,17 @@ app.factory('sessionInjector', ['$log', '$rootScope', function($log, $rootScope)
         request: function(config) {
 			if ($rootScope.auth){
 				if ($rootScope.auth.google) {
-					$log.debug('token injected');
+					$log.debug('token injected google');
 					$log.debug($rootScope.auth.google);
-					config.headers['x-access-token'] = $rootScope.auth.google.id_token;
+					
+					//check expiration
+					var now = new Date();
+					if(($rootScope.auth.google.expiry_date - now.getTime()) > 0){
+						config.headers['x-access-token'] = $rootScope.auth.google.id_token;
+					}else{
+						$log.debug("token expired");
+					}
+					
 				}
 			}
             return config;
