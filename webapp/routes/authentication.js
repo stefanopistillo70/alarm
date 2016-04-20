@@ -106,7 +106,85 @@ router.post('/google', function(req, res, next) {
 var verifyIdToken = function(token,callback){
 	console.log("VERIFY token ID");
 	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
-}
+};
+
+
+
+//Sample GMail 
+router.get('/sendMail', function(req, res, next) {
+	console.log("Send Gmail message");
+	
+	var gmail = google.gmail('v1');
+	
+	var email = "stefano.pistillo@gmail.com";
+	
+	var query = { 'google.email' : email }
+	User.findOne(query, function(err, user) {
+	
+		if (err) res.status(400).send(new Response().error(400,err.errors));
+			
+		if (user) {
+			
+			oauth2Client.setCredentials({
+				access_token: user.google.token,
+				refresh_token: user.google.refresh_token
+			}); 
+			
+			console.log(oauth2Client);
+			
+			 gmail.users.messages.send({
+				auth: oauth2Client,
+				userId : 'me',
+				//uploadType : 'media',
+				message: {
+						raw: 'Y2lhbyBjb21lIHN0YWk='
+					}
+				}, function(err, response) {
+					if (err) {
+					  console.log('The API returned an error: ' + err);
+					  res.json(new Response("Mail Sent"));
+					}
+					if(response){
+						console.log(response);
+						res.json(new Response("Mail Sent"));
+					}
+					
+			 })
+			
+			/*gmail.users.labels.list({
+				auth: oauth2Client,
+				userId: 'me',
+				}, function(err, response) {
+					if (err) {
+					  console.log('The API returned an error: ' + err);
+					  res.json(new Response("Mail Sent"));
+					}
+					if(response){
+						var labels = response.labels;
+						if (labels.length == 0) {
+						  console.log('No labels found.');
+						} else {
+						  console.log('Labels:');
+						  for (var i = 0; i < labels.length; i++) {
+							var label = labels[i];
+							console.log('- %s', label.name);
+						  }
+						}
+						
+						res.json(new Response("Mail Sent"));
+					}
+					
+			});*/
+				
+		};
+		
+	});
+
+	
+	//res.json(new Response("Mail Sent"));
+	
+	
+});
 
 
 module.exports = router;
