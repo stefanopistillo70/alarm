@@ -72,13 +72,24 @@ app.factory('sessionInjector', ['$log', '$rootScope', function($log, $rootScope)
 					$log.debug('token injected google');
 					$log.debug($rootScope.auth.google);
 					
+					if($rootScope.auth.google.gapi.auth2){
+						var auth2 = $rootScope.auth.google.gapi.auth2;
+						var googleUser = auth2.currentUser.get();
+						console.log("Google USER");
+						console.log(googleUser);
+						
+						console.log("SIGNED ->"+auth2.isSignedIn.get());
+						config.headers['x-access-token'] = googleUser.hg.id_token;
+						
+					}
+					
 					//check expiration
-					var now = new Date();
+					/*var now = new Date();
 					if(($rootScope.auth.google.expiry_date - now.getTime()) > 0){
 						config.headers['x-access-token'] = $rootScope.auth.google.id_token;
 					}else{
 						$log.debug("token expired");
-					}
+					}*/
 					
 				}
 			}
