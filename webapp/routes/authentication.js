@@ -132,12 +132,31 @@ router.get('/sendMail', function(req, res, next) {
 			
 			console.log(oauth2Client);
 			
+			
+			var to = 'someone@someone.nl',
+			subject = 'Hello World',
+			content = 'send a Gmail.'
+
+			var base64EncodedEmail = new Buffer(
+			  "Content-Type:  text/plain; charset=\"UTF-8\"\n" +
+			  "Content-length: 5000\n" +
+			  "Content-Transfer-Encoding: message/rfc2822\n" +
+			  "to: stefano.pistillo@gmail.com\n" +
+			  "from: \"Stefano Pistillo\" <stefano.pistillo@gmail.com>\n" +
+			  "subject: Hello world\n\n" +
+
+			  "The actual message text goes here"
+				).toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+
+			var mail= base64EncodedEmail;
+			
+			
 			 gmail.users.messages.send({
-				auth: oauth2Client,
-				userId : 'me',
+				'auth': oauth2Client,
+				'userId' : 'me',
 				//uploadType : 'media',
-				message: {
-						raw: 'Y2lhbyBjb21lIHN0YWk='
+				'resource': {
+					  'raw': mail
 					}
 				}, function(err, response) {
 					if (err) {
