@@ -1,7 +1,7 @@
 
 var apiVer = "/api/1.0/";
 
-var app = angular.module('DomusGuard', ['ngRoute','dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
+var app = angular.module('DomusGuard', ['ngRoute', 'ngCookies', 'dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
 
 app.config(['$routeProvider', function($routeProvider) {
             $routeProvider.
@@ -64,10 +64,18 @@ app.config(['$httpProvider', function($httpProvider) {
 
 
 
-app.factory('sessionInjector', ['$log', '$rootScope', function($log, $rootScope) {  
+app.factory('sessionInjector', ['$log', '$rootScope', '$cookies', function($log, $rootScope, $cookies) {  
     var sessionInjector = {
         request: function(config) {
-			if ($rootScope.auth){
+			
+			console.log($cookies);
+			console.log($cookies.getAll());
+			var token = $cookies.get('token');
+			var refresh_token = $cookies.get('refresh_token');
+			
+			config.headers['x-access-token'] = token;
+ 			
+/*			if ($rootScope.auth){
 				if ($rootScope.auth.google) {
 					$log.debug('token injected google');
 					$log.debug($rootScope.auth.google);
@@ -96,6 +104,7 @@ app.factory('sessionInjector', ['$log', '$rootScope', function($log, $rootScope)
 					
 				}
 			}
+*/
             return config;
         }
     };

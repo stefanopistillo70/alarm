@@ -47,6 +47,7 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 						if (response.result) {
 							console.log(response.result);
 						}
+						window.location = "http://localhost:3000/#/";
 												
 					}, function(reason) {
 						  console.log('Failed Login insert Code: ' + reason);

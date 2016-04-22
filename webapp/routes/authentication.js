@@ -21,7 +21,7 @@ var OAuth2 = google.auth.OAuth2;
 
 var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleAuth.clientSecret, configAuth.googleAuth.callbackURL);
 
-//Verify token
+//Verify and store Token
 router.post('/google', function(req, res, next) {
 	
 	console.log(req.body);
@@ -70,7 +70,11 @@ router.post('/google', function(req, res, next) {
 									res.status(400).send(new Response().error(400,err.errors));
 								}else{
 									console.log(raw);
-								} res.json(new Response(tokens));		  
+									res.cookie('token',user.google.token, { maxAge: 3600000 });
+									res.cookie('refresh_token',user.google.refresh_token);
+									console.log((new Date()).getTime());
+									res.json(new Response(tokens));
+								} 		  
 							});			
 							
 						} else {
@@ -86,7 +90,11 @@ router.post('/google', function(req, res, next) {
 							// save the user
 							newUser.save(function(err) {
 								if (err) res.status(400).send(new Response().error(400,err.errors));
-								res.json(new Response());
+								else {
+									res.cookie('token',tokens.access_token, { maxAge: 3600000 });
+									res.cookie('refresh_token',tokens.refresh_token);
+									res.json(new Response(tokens));
+								}
 							});
 						}
 										
@@ -107,6 +115,11 @@ var verifyIdToken = function(token,callback){
 	console.log("VERIFY token ID");
 	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
 };
+
+
+router.post('/google', function(req, res, next) {
+
+});
 
 
 
