@@ -70,8 +70,8 @@ router.post('/google', function(req, res, next) {
 									res.status(400).send(new Response().error(400,err.errors));
 								}else{
 									console.log(raw);
-									res.cookie('token',user.google.token, { maxAge: 3600000 });
-									res.cookie('refresh_token',user.google.refresh_token);
+									res.cookie('token',tokens.access_token, { maxAge: 3600000 });
+									if(user.google.refresh_token) res.cookie('refresh_token',user.google.refresh_token);
 									console.log((new Date()).getTime());
 									res.json(new Response(tokens));
 								} 		  
@@ -92,7 +92,7 @@ router.post('/google', function(req, res, next) {
 								if (err) res.status(400).send(new Response().error(400,err.errors));
 								else {
 									res.cookie('token',tokens.access_token, { maxAge: 3600000 });
-									res.cookie('refresh_token',tokens.refresh_token);
+									if(tokens.refresh_token) res.cookie('refresh_token',tokens.refresh_token);
 									res.json(new Response(tokens));
 								}
 							});

@@ -68,43 +68,11 @@ app.factory('sessionInjector', ['$log', '$rootScope', '$cookies', function($log,
     var sessionInjector = {
         request: function(config) {
 			
-			console.log($cookies);
-			console.log($cookies.getAll());
 			var token = $cookies.get('token');
 			var refresh_token = $cookies.get('refresh_token');
 			
 			config.headers['x-access-token'] = token;
- 			
-/*			if ($rootScope.auth){
-				if ($rootScope.auth.google) {
-					$log.debug('token injected google');
-					$log.debug($rootScope.auth.google);
-					
-					if($rootScope.auth.google.gapi.auth2){
-						var auth2 = $rootScope.auth.google.gapi.auth2;
-						var googleUser = auth2.currentUser.get();
-						console.log("Google USER");
-						console.log(googleUser);
-						
-						var isSignedIn = auth2.isSignedIn.get();
-						console.log("SIGNED ->"+isSignedIn);
-						
-						if(isSignedIn){
-							
-							console.log("EXPIRE DATE ->"+(new Date(googleUser.hg.expires_at)).toISOString());
-							
-							if((googleUser.hg.expires_at - (new Date()).getTime()) > 0){
-								config.headers['x-access-token'] = googleUser.hg.access_token;
-							}else{
-								$log.debug("token expired");
-							}
-						}
-						
-					}
-					
-				}
-			}
-*/
+
             return config;
         }
     };
