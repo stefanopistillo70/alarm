@@ -17,7 +17,8 @@ var zone = require('./routes/zone');
 var auth = require('./routes/authentication');
 
 
-
+var Response = require('./routes/response');
+var User       = require('./models/user');
 
 var mongoose = require('mongoose');
 
@@ -38,6 +39,8 @@ mongoose.connect(dbConfig.url, function(err) {
 
 var app = express();
 
+
+//Intercept all request and check for token
 app.use(function(req, res, next) {
 	var url = req.url;
 	console.log("CHECK ALL "+url);
@@ -52,14 +55,28 @@ app.use(function(req, res, next) {
 	if(url.substring(0, apiVer.length) == apiVer && !(url.substring(0, urlLogin.length) == urlLogin)){
 		console.log("Verify token on DB");
 		if (token) {
-			
-			next();
+			console.log("Token present");
+			var query = { 'google.token' : token }
+
+			User.findOne(query, function(err, user) {
+				
+				if (err){
+					console.log(err);
+					return res.status(403).send(new Response().error(403,"Authentication Problem: err user"));
+				}	
+
+				if (user) {
+					console.log("User Found token ->"+user.google.name);
+					next();
+				}else{
+					console.log("Authentication Problem: no user found");
+					return res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
+				}
+
+			});
 						
 		}else{
-			return res.status(403).send({ 
-				success: false, 
-				message: 'No token provided.' 
-			});
+			return res.status(403).send(new Response().error(403,"Authentication Problem : no token provided"));
 		}
 	}else next();
 });
