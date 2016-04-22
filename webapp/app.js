@@ -14,6 +14,7 @@ var eventLog = require('./routes/eventLog');
 var device = require('./routes/device');
 var config = require('./routes/config');
 var zone = require('./routes/zone');
+var message = require('./routes/message');
 var auth = require('./routes/authentication');
 
 
@@ -36,11 +37,13 @@ mongoose.connect(dbConfig.url, function(err) {
 });
 
 
-
 var app = express();
 
-
-//Intercept all request and check for token
+/**************************************
+/
+/	Intercept all request and check for token
+/
+***************************************/
 app.use(function(req, res, next) {
 	var url = req.url;
 	console.log("CHECK ALL "+url);
@@ -52,7 +55,13 @@ app.use(function(req, res, next) {
 	//console.log(token);
 	
 	var urlLogin = apiVer + "/auth"
-	if(url.substring(0, apiVer.length) == apiVer && !(url.substring(0, urlLogin.length) == urlLogin)){
+	//TODO remove message from here
+	var urlMessage = apiVer + "/message";
+	
+	if(url.substring(0, apiVer.length) == apiVer 
+		&& !(url.substring(0, urlLogin.length) == urlLogin)
+		&& !(url.substring(0, urlMessage.length) == urlMessage) ){
+			
 		console.log("Verify token on DB");
 		if (token) {
 			console.log("Token present");
@@ -117,6 +126,7 @@ app.use(apiVer+'/device', device);
 app.use(apiVer+'/config', config);
 app.use(apiVer+'/zone', zone);
 app.use(apiVer+'/auth', auth);
+app.use(apiVer+'/message', message);
 
 
 
