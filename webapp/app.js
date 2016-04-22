@@ -66,8 +66,16 @@ app.use(function(req, res, next) {
 				}	
 
 				if (user) {
-					console.log("User Found token ->"+user.google.name);
-					next();
+					
+					console.log("User Found token ->"+user.google.email);
+					
+					var expiry_date = user.google.expiry_date;
+					if((expiry_date - (new Date()).getTime()) > 0 ){
+						next();
+					}else{
+						console.log("Authentication Problem: token expired");
+						return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
+					}
 				}else{
 					console.log("Authentication Problem: no user found");
 					return res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
