@@ -46,7 +46,11 @@ var app = express();
 ***************************************/
 app.use(function(req, res, next) {
 	var url = req.url;
-	console.log("CHECK ALL "+url);
+	console.log("CHECK ALL URL -> "+url);
+	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+	//var ip = req.headers['x-forwarded-for'];
+	console.log("CHECK ALL IP ->"+ip);
+	
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
