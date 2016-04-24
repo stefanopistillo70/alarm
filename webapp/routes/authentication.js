@@ -71,10 +71,10 @@ router.post('/google', function(req, res, next) {
 									res.status(400).send(new Response().error(400,err.errors));
 								}else{
 									console.log(raw);
-									res.cookie('token',jwtToken.access_token, { maxAge: 60000 });
-									res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: 60000 });
+									res.cookie('token',jwtToken.access_token, { maxAge: jwtToken.duration_time });
+									res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: jwtToken.duration_time });
 									if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
-									res.json(new Response());
+									res.json(new Response(jwtToken));
 								} 		  
 							});			
 							
@@ -101,10 +101,10 @@ router.post('/google', function(req, res, next) {
 							newUser.save(function(err) {
 								if (err) res.status(400).send(new Response().error(400,err.errors));
 								else {
-									res.cookie('token',newUser.auth.local.token, { maxAge: 60000 });
-									res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: 60000 });
+									res.cookie('token',newUser.auth.local.token, { maxAge: jwtToken.duration_time });
+									res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: jwtToken.duration_time });
 									if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
-									res.json(new Response());
+									res.json(new Response(jwtToken));
 								}
 							});
 						}
@@ -126,11 +126,6 @@ var verifyIdToken = function(token,callback){
 	console.log("VERIFY token ID");
 	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
 };
-
-
-router.post('/google', function(req, res, next) {
-
-});
 
 
 
