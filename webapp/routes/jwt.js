@@ -1,18 +1,26 @@
 
 var jwtSimple = require('jwt-simple');
+var uuid = require('node-uuid');
+
 var secret = 'secret-pwd';
+var expire_time = 60000;
+//var expire_time = 36000000;
+
+
 
 var jwt = {
 	getJWT : function(user, refresh){
 		
-		var expires = new Date().getTime()+3600000;
+		var expires = new Date().getTime()+expire_time;
 		var access_token = jwtSimple.encode({
+			jti : uuid.v4(),
 			iss: user,
 			exp: expires
 		}, secret);
 
 		if(refresh){
 			var refresh_token = jwtSimple.encode({
+				jti : uuid.v4(),
 				iss: user,
 				exp: 0
 			}, secret);
@@ -31,4 +39,7 @@ var jwt = {
 		
 	}
 }
+
+
+
 module.exports = jwt;

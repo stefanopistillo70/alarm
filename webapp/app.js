@@ -20,6 +20,7 @@ var auth = require('./routes/authentication');
 
 var Response = require('./routes/response');
 var User       = require('./models/user');
+var jwt = require('./routes/jwt');
 
 var mongoose = require('mongoose');
 
@@ -66,7 +67,7 @@ app.use(function(req, res, next) {
 		&& !(url.substring(0, urlLogin.length) == urlLogin)
 		&& !(url.substring(0, urlMessage.length) == urlMessage) ){
 			
-		console.log("Verify token on DB");
+		console.log("Verify token on DB ->"+token);
 		if (token) {
 			console.log("Token present");
 			var query = { 'auth.local.token' : token }
@@ -80,10 +81,9 @@ app.use(function(req, res, next) {
 
 				if (user) {
 					
-					console.log("User Found token ->"+user.auth.google.email);
-					
-					var expiry_date = user.auth.local.expiry_date;
-					if((expiry_date - (new Date()).getTime()) > 0 ){
+					console.log("User Found token ->"+user.auth.local.email);
+
+					if(jwt.verifyJWT(token,user.auth.local.email)){
 						next();
 					}else{
 						console.log("Authentication Problem: token expired");

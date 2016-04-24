@@ -57,7 +57,7 @@ router.post('/google', function(req, res, next) {
 						if (err) res.status(400).send(new Response().error(400,err.errors));
 													
 						if (user) {
-							console.log("User Found token ->"+user.google.token);
+							console.log("User Found token ->"+user.auth.google.token);
 							// if a user is found, log them in
 							
 							var jwtToken = jwt.getJWT(ticketAttr.payload.email,false);
@@ -71,8 +71,8 @@ router.post('/google', function(req, res, next) {
 									res.status(400).send(new Response().error(400,err.errors));
 								}else{
 									console.log(raw);
-									res.cookie('token',user.token, { maxAge: 3600000 });
-									if(user.refresh_token) res.cookie('refresh_token',user.refresh_token);
+									res.cookie('token',jwtToken.access_token, { maxAge: 3600000 });
+									if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
 									res.json(new Response());
 								} 		  
 							});			
@@ -85,6 +85,7 @@ router.post('/google', function(req, res, next) {
 							console.log("JWT ->");
 							console.log(jwtToken);
 						
+							newUser.auth.local.email = ticketAttr.payload.email;
 							newUser.auth.local.token = jwtToken.access_token;
 							newUser.auth.local.refresh_token = jwtToken.refresh_token;
 							
@@ -147,8 +148,8 @@ router.get('/sendMail', function(req, res, next) {
 		if (user) {
 			
 			oauth2Client.setCredentials({
-				access_token: user.google.token,
-				refresh_token: user.google.refresh_token
+				access_token: user.auth.google.token,
+				refresh_token: user.auth.google.refresh_token
 			}); 
 			
 			console.log(oauth2Client);
