@@ -80,7 +80,7 @@ dgModuleLogin.factory('LoginService', ['$resource',
     return response;
 
 }]);
-  
+
 
 
 

@@ -63,8 +63,8 @@ app.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
-
-app.factory('sessionInjector', ['$log', '$rootScope', '$cookies', function($log, $rootScope, $cookies) {  
+//Inject token in each request
+app.factory('sessionInjector', ['$log', '$cookies', function($log, $cookies) {  
     var sessionInjector = {
         request: function(config) {
 			
@@ -74,7 +74,26 @@ app.factory('sessionInjector', ['$log', '$rootScope', '$cookies', function($log,
 			var now = (new Date()).getTime();
 			if((token_expire_at - now) > 0) config.headers['x-access-token'] = token;
 			else{
-				console.log("refersh token");
+				console.log("refresh token");
+				
+				var data = "refresh_token="+refresh_token;
+				
+				var xhttp = new XMLHttpRequest();
+				xhttp.open("POST", apiVer+"auth/refresh", true);
+				xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				xhttp.send(data);
+				
+				/*refreshTokenPost = LoginServiceLocation.refreshToken(data).$promise;
+
+				refreshTokenPost.then(function(response) {
+					if (response.result) {
+					console.log(response.result);
+					}
+							
+				}, function(reason) {
+					console.log('Failed Login insert Code: ' + reason);
+				});				
+				*/
 			}
 
             return config;

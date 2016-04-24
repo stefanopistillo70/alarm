@@ -5,6 +5,8 @@ var User       = require('../models/user');
 var express = require('express');
 var router = express.Router();
 
+var jwt = require('./jwt');
+
 
 //create a jwt Token 
 router.post('/token', function(req, res, next) {
@@ -69,11 +71,13 @@ router.post('/token', function(req, res, next) {
 //refresh jwt token
 router.post('/refresh', function(req, res, next) {
 
+	
 	console.log(req.body);
 	
-	var refresh_token = req.body;
+	var refresh_token = req.body.refresh_token;
+	console.log("Refresh Token ->"+refresh_token);
 	
-	var query = { 'local.refresh_token' : email }
+	var query = { 'auth.local.refresh_token' : refresh_token }
 	
 	User.findOne(query, function(err, user) {
 
@@ -88,7 +92,7 @@ router.post('/refresh', function(req, res, next) {
 				console.log("JWT ->");
 				console.log(jwtToken);
 			
-				var update = { 'local.auth.token': jwtToken.access_token};
+				var update = { 'auth.local.token': jwtToken.access_token};
 				var opts = { strict: true };
 				User.update(query, update, opts, function(error,raw) {
 					if (error){

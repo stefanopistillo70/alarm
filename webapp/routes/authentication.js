@@ -25,7 +25,7 @@ var OAuth2 = google.auth.OAuth2;
 var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleAuth.clientSecret, configAuth.googleAuth.callbackURL);
 
 //Verify and store Token
-router.post('/google', function(req, res, next) {
+router.post('/', function(req, res, next) {
 	
 	console.log(req.body);
 	

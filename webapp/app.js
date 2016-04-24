@@ -15,7 +15,8 @@ var device = require('./routes/device');
 var config = require('./routes/config');
 var zone = require('./routes/zone');
 var message = require('./routes/message');
-var auth = require('./routes/authentication');
+var auth_google = require('./routes/authentication');
+var local_auth = require('./routes/local-authentication');
 
 
 var Response = require('./routes/response');
@@ -59,13 +60,15 @@ app.use(function(req, res, next) {
 	var token = req.headers['x-access-token'];
 	//console.log(token);
 	
-	var urlLogin = apiVer + "/auth"
+	var urlLogin = apiVer + "/auth";
+	var urlRefresh = apiVer + "/auth/refresh"
 	//TODO remove message from here
 	var urlMessage = apiVer + "/message";
 	
 	if(url.substring(0, apiVer.length) == apiVer 
 		&& !(url.substring(0, urlLogin.length) == urlLogin)
-		&& !(url.substring(0, urlMessage.length) == urlMessage) ){
+		&& !(url.substring(0, urlMessage.length) == urlMessage) 
+		&& !(url.substring(0, urlRefresh.length) == urlRefresh) ){
 			
 		console.log("Verify token on DB ->"+token);
 		if (token) {
@@ -129,7 +132,8 @@ app.use(apiVer+'/eventLog', eventLog);
 app.use(apiVer+'/device', device);
 app.use(apiVer+'/config', config);
 app.use(apiVer+'/zone', zone);
-app.use(apiVer+'/auth', auth);
+app.use(apiVer+'/auth/google', auth_google);
+app.use(apiVer+'/auth', local_auth);
 app.use(apiVer+'/message', message);
 
 
