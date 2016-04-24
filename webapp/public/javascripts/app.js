@@ -69,9 +69,13 @@ app.factory('sessionInjector', ['$log', '$rootScope', '$cookies', function($log,
         request: function(config) {
 			
 			var token = $cookies.get('token');
+			var token_expire_at = $cookies.get('token_expire_at');
 			var refresh_token = $cookies.get('refresh_token');
-			
-			config.headers['x-access-token'] = token;
+			var now = (new Date()).getTime();
+			if((token_expire_at - now) > 0) config.headers['x-access-token'] = token;
+			else{
+				console.log("refersh token");
+			}
 
             return config;
         }

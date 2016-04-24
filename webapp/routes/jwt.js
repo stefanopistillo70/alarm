@@ -11,11 +11,11 @@ var expire_time = 60000;
 var jwt = {
 	getJWT : function(user, refresh){
 		
-		var expires = new Date().getTime()+expire_time;
+		var expire_at = new Date().getTime()+expire_time;
 		var access_token = jwtSimple.encode({
 			jti : uuid.v4(),
 			iss: user,
-			exp: expires
+			exp: expire_at
 		}, secret);
 
 		if(refresh){
@@ -25,9 +25,9 @@ var jwt = {
 				exp: 0
 			}, secret);
 			
-			return { access_token: access_token,  refresh_token: refresh_token};
+			return { access_token: access_token, expire_at: expire_at, refresh_token: refresh_token};
 		}else{
-			return { access_token: access_token};
+			return { access_token: access_token, expire_at: expire_at};
 		}
 	},
 
