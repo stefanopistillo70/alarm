@@ -5,8 +5,11 @@ var Schema = mongoose.Schema;
 
 // create a schema
 var userSchema = new Schema({
-  google: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date },
-  insertDate: Date
+	auth : {
+	  local	: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date },
+	  google: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date }
+	},
+	insertDate: Date
 });
 
 

@@ -69,7 +69,7 @@ app.use(function(req, res, next) {
 		console.log("Verify token on DB");
 		if (token) {
 			console.log("Token present");
-			var query = { 'google.token' : token }
+			var query = { 'auth.local.token' : token }
 
 			User.findOne(query, function(err, user) {
 				
@@ -80,9 +80,9 @@ app.use(function(req, res, next) {
 
 				if (user) {
 					
-					console.log("User Found token ->"+user.google.email);
+					console.log("User Found token ->"+user.auth.google.email);
 					
-					var expiry_date = user.google.expiry_date;
+					var expiry_date = user.auth.local.expiry_date;
 					if((expiry_date - (new Date()).getTime()) > 0 ){
 						next();
 					}else{

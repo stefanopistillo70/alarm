@@ -5,8 +5,11 @@ var User       = require('../models/user');
 var express = require('express');
 var router = express.Router();
 
+
 // load up the user model
 var User       = require('../models/user');
+
+var jwt = require('./jwt');
 
 var configAuth = {
 	   'googleAuth' : {
@@ -29,61 +32,66 @@ router.post('/google', function(req, res, next) {
 	var code = req.body.code;
 	console.log("code ->"+code);
 	
-	oauth2Client.getToken(code, function(err, tokens) {
+	oauth2Client.getToken(code, function(err, googleTokens) {
 		
 		console.log("TOKEN ->");
-		console.log(tokens);
+		console.log(googleTokens);
 		
 		
 		if(err) res.status(400).send(new Response().error(400,err));			
 		else{
 
-			verifyIdToken(tokens.id_token,function(err,ticket){
+			verifyIdToken(googleTokens.id_token,function(err,ticket){
 				
 				if(err){
 					res.status(403).send(new Response().error(403,"Invalid ID Token ->"+err));
 				} else {
 				
-					var data = ticket.getAttributes();
-					console.log(data);
+					var ticketAttr = ticket.getAttributes();
+					console.log(ticketAttr);
 					
-					var query = { 'google.email' : data.payload.email }
+					var query = { 'auth.google.email' : ticketAttr.payload.email }
 					
 					User.findOne(query, function(err, user) {
 		
 						if (err) res.status(400).send(new Response().error(400,err.errors));
-							
+													
 						if (user) {
 							console.log("User Found token ->"+user.google.token);
 							// if a user is found, log them in
 							
-							if(tokens.access_token != user.google.token){
-								console.log("ACEES TOKEN  DIFF ");
-								console.log("DB ->"+user.google.token);
-								console.log("google ->"+tokens.access_token);
-							}
-							
-							var update = { 'google.token': tokens.access_token, 'google.expiry_date' : tokens.expiry_date };
+							var jwtToken = jwt.getJWT(ticketAttr.payload.email,false);
+							console.log("JWT ->");
+							console.log(jwtToken);
+														
+							var update = { 'auth.local.token': jwtToken.access_token, 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date };
 							var opts = { strict: true };
 							User.update(query, update, opts, function(error,raw) {
 								if (error){
 									res.status(400).send(new Response().error(400,err.errors));
 								}else{
 									console.log(raw);
-									res.cookie('token',tokens.access_token, { maxAge: 3600000 });
-									if(user.google.refresh_token) res.cookie('refresh_token',user.google.refresh_token);
-									console.log((new Date()).getTime());
-									res.json(new Response(tokens));
+									res.cookie('token',user.token, { maxAge: 3600000 });
+									if(user.refresh_token) res.cookie('refresh_token',user.refresh_token);
+									res.json(new Response());
 								} 		  
 							});			
 							
 						} else {
 							// if the user isnt in our database, create a new user
 							var newUser          = new User();
-							newUser.google.email = data.payload.email;
-							newUser.google.token = tokens.access_token;
-							newUser.google.refresh_token  = tokens.refresh_token;
-							newUser.google.expiry_date = tokens.expiry_date;
+						
+							var jwtToken = jwt.getJWT(ticketAttr.payload.email,true);
+							console.log("JWT ->");
+							console.log(jwtToken);
+						
+							newUser.auth.local.token = jwtToken.access_token;
+							newUser.auth.local.refresh_token = jwtToken.refresh_token;
+							
+							newUser.auth.google.email = ticketAttr.payload.email;
+							newUser.auth.google.token = googleTokens.access_token;
+							newUser.auth.google.refresh_token  = googleTokens.refresh_token;
+							newUser.auth.google.expiry_date = googleTokens.expiry_date;
 
 							console.log("NEW User");
 							console.log(newUser);
@@ -91,9 +99,9 @@ router.post('/google', function(req, res, next) {
 							newUser.save(function(err) {
 								if (err) res.status(400).send(new Response().error(400,err.errors));
 								else {
-									res.cookie('token',tokens.access_token, { maxAge: 3600000 });
-									if(tokens.refresh_token) res.cookie('refresh_token',tokens.refresh_token);
-									res.json(new Response(tokens));
+									res.cookie('token',newUser.auth.local.token, { maxAge: 3600000 });
+									if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
+									res.json(new Response());
 								}
 							});
 						}
