@@ -59,7 +59,7 @@ router.post('/', function(req, res, next) {
 							console.log("User Found token ->"+user.auth.google.token);
 							// if a user is found, log them in
 							
-							var jwtToken = jwt.getJWT(ticketAttr.payload.email,false);
+							var jwtToken = jwt.getJWT(ticketAttr.payload.email,false,"web");
 							console.log("JWT ->");
 							console.log(jwtToken);
 														
@@ -83,7 +83,7 @@ router.post('/', function(req, res, next) {
 							// if the user isnt in our database, create a new user
 							var newUser          = new User();
 						
-							var jwtToken = jwt.getJWT(ticketAttr.payload.email,true);
+							var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web");
 							console.log("JWT ->");
 							console.log(jwtToken);
 						

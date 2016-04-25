@@ -88,7 +88,7 @@ router.post('/refresh', function(req, res, next) {
 			// if a user is found, log them in
 			if(jwt.verifyJWT(refresh_token,user.auth.local.email)){
 				
-				var jwtToken = jwt.getJWT(user.auth.local.email,false);
+				var jwtToken = jwt.getJWT(user.auth.local.email,false,"web");
 				console.log("JWT ->");
 				console.log(jwtToken);
 			

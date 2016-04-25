@@ -8,6 +8,7 @@ var Schema = mongoose.Schema;
 // create a schema
 var locationSchema = new Schema({
 	name: { type: String},
+	controller : { type: String},
 	insertDate: Date
 });
 

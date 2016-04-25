@@ -9,19 +9,23 @@ var duration_time = 60000;
 
 
 var jwt = {
-	getJWT : function(user, refresh){
+	getJWT : function(user, refresh, audience){
 		
 		var expire_at = new Date().getTime()+duration_time;
 		var access_token = jwtSimple.encode({
 			jti : uuid.v4(),
-			iss: user,
+			sub : user,
+			aud : audience,
+			iss: "account.domusguard.com",
 			exp: expire_at
 		}, secret);
 
 		if(refresh){
 			var refresh_token = jwtSimple.encode({
 				jti : uuid.v4(),
-				iss: user,
+				sub : user,
+				aud : audience,
+				iss: "account.domusguard.com",
 				exp: 0
 			}, secret);
 			
@@ -34,7 +38,7 @@ var jwt = {
 	verifyJWT : function(token, iss){
 		var decoded = jwtSimple.decode(token, secret);
 		var now = new Date().getTime();
-		if ((iss === decoded.iss) && ((decoded.exp == 0) || ((decoded.exp - now) > 0 )) ) return true;
+		if ((iss === decoded.sub) && ((decoded.exp == 0) || ((decoded.exp - now) > 0 )) ) return true;
 		else return false
 		
 	}
