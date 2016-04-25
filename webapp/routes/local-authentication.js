@@ -115,6 +115,49 @@ router.post('/refresh', function(req, res, next) {
 
 
 
+//register controller
+router.post('/controller', function(req, res, next) {
+
+	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+	console.log("Controller ->"+ip);
+	console.log(req.body);
+	
+	var controllerId = req.body.id;
+	console.log("controllerId ->"+controllerId);
+	
+	var query = { 'router_ip' : ip }
+	
+	Location.findOne(query, function(err, location) {
+
+		if (err) res.status(400).send(new Response().error(400,err.errors));
+			
+		if (location) {
+			console.log("Location Found token ->"+location.name);
+			// if a user is found, log them in
+				
+				var jwtToken = jwt.getJWT(controllerId,true,"controller");
+			
+				var update = { 'controllerId': controllerId};
+				var opts = { strict: true };
+				User.update({'_id' : location._id}, update, opts, function(error,raw) {
+					if (error){
+						res.status(400).send(new Response().error(400,err.errors));
+					}else{
+						res.json(new Response(jwtToken));
+					} 		  
+				});		
+			
+		} else res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
+						
+	});
+
+});
+
+
+
+
+
+
 module.exports = router;
 
 

@@ -8,7 +8,8 @@ var Schema = mongoose.Schema;
 // create a schema
 var locationSchema = new Schema({
 	name: { type: String},
-	controller : { type: String},
+	router_ip : { type: String},
+	controllerId : { type: String},
 	insertDate: Date
 });
 
