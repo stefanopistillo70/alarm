@@ -35,12 +35,12 @@ var jwt = {
 		}
 	},
 
-	verifyJWT : function(token, iss){
+	verifyJWT : function(token, sub){
 		var decoded = jwtSimple.decode(token, secret);
+		console.log(decoded);
 		var now = new Date().getTime();
-		if ((iss === decoded.sub) && ((decoded.exp == 0) || ((decoded.exp - now) > 0 )) ) return true;
+		if ((sub === decoded.sub) && (decoded.iss === "account.domusguard.com") && ((decoded.exp == 0) || ((decoded.exp - now) > 0 )) ) return true;
 		else return false
-		
 	}
 }
 

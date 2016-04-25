@@ -104,7 +104,7 @@ router.post('/refresh', function(req, res, next) {
 						res.json(new Response(jwtToken));
 					} 		  
 				});		
-			}			
+			} else res.status(403).send(new Response().error(403,"Authentication Problem: jwt varification failed"));			
 			
 		} else res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
 						
