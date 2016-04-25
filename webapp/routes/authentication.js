@@ -1,13 +1,12 @@
 
 var Response = require('./response');
-var User       = require('../models/user');
+var User     = require('../models/user');
+
+var userLogic = require('../logic/userLogic');
 
 var express = require('express');
 var router = express.Router();
 
-
-// load up the user model
-var User       = require('../models/user');
 
 var jwt = require('./jwt');
 
@@ -79,6 +78,8 @@ router.post('/', function(req, res, next) {
 							});			
 							
 						} else {
+							
+							
 							// if the user isnt in our database, create a new user
 							var newUser          = new User();
 						
@@ -94,11 +95,8 @@ router.post('/', function(req, res, next) {
 							newUser.auth.google.token = googleTokens.access_token;
 							newUser.auth.google.refresh_token  = googleTokens.refresh_token;
 							newUser.auth.google.expiry_date = googleTokens.expiry_date;
-
-							console.log("NEW User");
-							console.log(newUser);
-							// save the user
-							newUser.save(function(err) {
+							
+							userLogic.createUser(newUser, function(err) {
 								if (err) res.status(400).send(new Response().error(400,err.errors));
 								else {
 									res.cookie('token',newUser.auth.local.token, { maxAge: jwtToken.duration_time });
@@ -107,6 +105,7 @@ router.post('/', function(req, res, next) {
 									res.json(new Response(jwtToken));
 								}
 							});
+
 						}
 										
 					});

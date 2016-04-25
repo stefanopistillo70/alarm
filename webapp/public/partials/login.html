@@ -6,16 +6,33 @@
     <div class="jumbotron text-center">
         <h1><span class="fa fa-lock"></span> DomusGuard Authentication </h1>
 
-        <p>Login or Register with:</p>
+        
 				
-		<!--<button id="signinButton" onClick="signinButton" >Sign in with Google</button>-->
+		<button class="btn btn-danger" type="button" ng-click="login()"><span class="fa fa-google-plus"></span>Continue with Google</button>
 		
-		<!--<google-plus-signin clientid="347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd" ></google-plus-signin>-->
+		<p>-------------- or -----------------</p>
+		
+		
+		<form class="form-horizontal" role="form">
 
-		<!--<div class="g-signin2" data-onsuccess="onSignIn">Sign in</div>-->
+			<div class="form-group">
+				<div class="col-sm-10">
+					<input type="text" class="form-control" ng-model="device.id"   placeholder="Email"/>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-10">
+					<input type="text" class="form-control" ng-model="device.name" placeholder="Crea una password" />
+				</div>
+			</div>
+			
+			<button class="btn btn-warning" type="button" ng-click="">Register</button>
 		
-        <!--<a href="/auth/google" class="btn btn-danger"><span class="fa fa-google-plus"></span> Google</a>-->
-		<button class="btn btn-danger" type="button" ng-click="login()"><span class="fa fa-google-plus"></span> Google</button>
+	</form>
+
+		
+		
 
     </div>
 
