@@ -1,21 +1,96 @@
 
 "use strict";
 
+var fs = require('fs');
+var uuid = require('node-uuid');
 var logger = require('./logger.js')('WebRepository');
 var Repository = require('./Repository.js');
 
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
+var apiVersion = "api/1.0";
+var url = 'http://127.0.0.1:3000/'+apiVersion;
+
+
+
+var controllerInfo = {};
+
+var readControllerInfo = function(callback){
+
+	fs.readFile('config/controller.json', 'utf8', function (err,data) {
+	  callback(err,data);
+	});
+}
+
+var saveControllerInfo = function(data,callback){
+
+	fs.writeFile('config/controller.json.def', JSON.stringify(data), function (err) {
+	  callback(err);
+	});	
+}
+	
+var registerController = function(controllerId){
+	logger.log('info',"Register Controller ->"+controllerId);
+		
+	var args = {
+		data: { controllerId: "hello" },
+		headers: { "Content-Type": "application/json" }
+	};
+		
+	var onResponseEvent = function(data, response) {
+		console.log(data);
+		if(response.statusCode == 200){
+				console.log("OK");
+		}else{
+			console.log(data.errors);
+		} 
+	};
+		
+	client.post(url+"/auth/controller", args, onResponseEvent).on('error', function (err) {
+		error(err);
+	});
+		
+}
+
+
 class WebRepository extends Repository{
 	
 	constructor(){	
 		super();
 		logger.info('WebRepository init');
-		this.url = 'http://127.0.0.1:3000';
 		
-		this.checkForRemoteUpdate(this.devices, this.url);
-		this.client = new Client();
+		readControllerInfo(function(err, data){
+			
+				if (err) {
+					logger.log('error',err);
+					throw err;
+				}
+
+				logger.log("info","Read controller info");
+				var controllerInfo = JSON.parse(data);
+				if(controllerInfo.controllerId == "" ){
+					controllerInfo.controllerId = uuid.v4();
+					logger.log("info","Generated Controller ID : "+controllerInfo.controllerId);
+					saveControllerInfo(controllerInfo, function(err){
+						if (err) {
+							logger.log('error',err);
+							throw err;
+						}
+						registerController(controllerInfo.controllerId);
+					});
+					
+				}else{
+					logger.log("info","Controller ID : "+controllerInfo.controllerId);
+					if(controllerInfo.token === ""){
+						registerController(controllerInfo.controllerId);
+					}
+				} 
+		});
+		
+		//this.checkForRemoteUpdate(this.devices, url);
+		//this.client = new Client();
+			
 	}
 	
 	
@@ -28,7 +103,7 @@ class WebRepository extends Repository{
 			headers: { "Content-Type": "application/json" }
 		};
 
-		client.post(this.url+"/eventLog", args, function (data, response) {
+		client.post(url+"/eventLog", args, function (data, response) {
 			var err = undefined;
 			if(response.statusCode != 200){
 				err = data.errors;
@@ -66,7 +141,7 @@ class WebRepository extends Repository{
 		};
 
 		client.get(url+"/device", args, onResponseEvent).on('error', function (err) {
-			logger.log('error',data.errors);
+			logger.log('error',err);
 			setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,devices,url),10000);
 		});
 					
@@ -92,7 +167,7 @@ class WebRepository extends Repository{
 			} 
 		};
 		
-		client.post(this.url+"/device", args, onResponseEvent).on('error', function (err) {
+		client.post(url+"/device", args, onResponseEvent).on('error', function (err) {
 			error(err);
 		});
 
@@ -119,7 +194,7 @@ class WebRepository extends Repository{
 			} 
 		};
 		
-		client.put(this.url+"/config/"+id, args, onResponseEvent).on('error', function (err) {
+		client.put(url+"/config/"+id, args, onResponseEvent).on('error', function (err) {
 			error(err);
 		});
 	}
@@ -141,10 +216,11 @@ class WebRepository extends Repository{
 			} 
 		};
 		
-		client.get(this.url+"/config", args, onResponseEvent).on('error', function (err) {
+		client.get(url+"/config", args, onResponseEvent).on('error', function (err) {
 			error(err);
 		});
 	}
+	
 
 };
 

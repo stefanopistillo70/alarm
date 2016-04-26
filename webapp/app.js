@@ -62,13 +62,15 @@ app.use(function(req, res, next) {
 	
 	var urlLogin = apiVer + "/auth";
 	var urlRefresh = apiVer + "/auth/refresh"
+	var urlController = apiVer + "/auth/controller"
 	//TODO remove message from here
 	var urlMessage = apiVer + "/message";
 	
 	if(url.substring(0, apiVer.length) == apiVer 
 		&& !(url.substring(0, urlLogin.length) == urlLogin)
 		&& !(url.substring(0, urlMessage.length) == urlMessage) 
-		&& !(url.substring(0, urlRefresh.length) == urlRefresh) ){
+		&& !(url.substring(0, urlRefresh.length) == urlRefresh)
+		&& !(url.substring(0, urlController.length) == urlController)		){
 			
 		console.log("Verify token on DB ->"+token);
 		if (token) {

@@ -6,6 +6,7 @@
     "mongodb": "1.4.7",
     "net": "1.0.2",
     "node-rest-client": "^1.8.0",
+    "node-uuid": "^1.4.7",
     "nodemailer": "^2.3.1",
     "requestify": ">=0.1.16",
     "serialport": ">=1.4.5",

@@ -1,6 +1,7 @@
 
 var Response = require('./response');
 var User       = require('../models/user');
+var Location       = require('../models/location');
 
 var express = require('express');
 var router = express.Router();
