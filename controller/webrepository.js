@@ -69,9 +69,9 @@ var registerController = function(controllerId, callback){
 
 
 
-
-
-
+var commonHeaders = function(){
+	return { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token };
+}
 
 class WebRepository extends Repository{
 	
@@ -128,13 +128,14 @@ class WebRepository extends Repository{
 	
 	
 	
+	
 	savePersistantEvent(event, callback){
 	
 		logger.info('Save Event');
 		
 		var args = {
 			data: { event },
-			headers: { "Content-Type": "application/json" }
+			headers: commonHeaders()
 		};
 
 		client.post(url+"/eventLog", args, function (data, response) {
@@ -151,10 +152,11 @@ class WebRepository extends Repository{
 	savePersistantMessage(message, callback){
 	
 		logger.info('Save Message');
+		console.log(commonHeaders());
 		
 		var args = {
 			data: { message },
-			headers: { "Content-Type": "application/json" }
+			headers: commonHeaders()
 		};
 
 		client.post(url+"/message", args, function (data, response) {

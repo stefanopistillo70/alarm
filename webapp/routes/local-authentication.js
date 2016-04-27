@@ -140,7 +140,9 @@ router.post('/controller', function(req, res, next) {
 				
 			var jwtToken = jwt.getJWT(controllerId,true,"controller");
 		
-			var update = { 'controllerId': controllerId};
+			var update = { controller : { "controllerId": controllerId, 
+										  "token" : jwtToken.access_token,
+										  "refresh_token" : jwtToken.refresh_token } };
 			var opts = { strict: true };
 			Location.update({'_id' : location._id}, update, opts, function(error,raw) {
 				if (error){

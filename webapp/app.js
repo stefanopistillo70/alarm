@@ -75,42 +75,48 @@ app.use(function(req, res, next) {
 		console.log("Verify token on DB ->"+token);
 		if (token) {
 			console.log("Token present");
-			var query = { 'auth.local.token' : token }
-
-			User.findOne(query, function(err, user) {
-				
-				if (err){
-					console.log(err);
-					return res.status(403).send(new Response().error(403,"Authentication Problem: err user"));
-				}	
-
-				if (user) {
-					
-					console.log("User Found token ->"+user.auth.local.email);
-
-					if(jwt.verifyJWT(token,user.auth.local.email)){
-						
-						if (user.location_view){
-							req.locations = user.location_view;
-						}else{
-							req.locations = "";
-							for(var i=0; i< user.locations.length;i++){
-								if(i < (user.locations.length -1) ) req.locations += user.locations[i]._id+"#";
-								else req.locations += user.locations[i]._id;
-							}
-						}
-						
-						next();
-					}else{
-						console.log("Authentication Problem: token expired");
-						return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
-					}
-				}else{
-					console.log("Authentication Problem: no user found");
-					return res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
+			var aud = jwt.getAudience(token);
+			if(aud === "controller"){
+				if (jwt.verifyJWT(token,user.auth.local.email)){
 				}
+			} else {
+				var query = { 'auth.local.token' : token }
 
-			});
+				User.findOne(query, function(err, user) {
+					
+					if (err){
+						console.log(err);
+						return res.status(403).send(new Response().error(403,"Authentication Problem: err user"));
+					}	
+
+					if (user) {
+						
+						console.log("User Found token ->"+user.auth.local.email);
+
+						if(jwt.verifyJWT(token,user.auth.local.email)){
+							
+							if (user.location_view){
+								req.locations = user.location_view;
+							}else{
+								req.locations = "";
+								for(var i=0; i< user.locations.length;i++){
+									if(i < (user.locations.length -1) ) req.locations += user.locations[i]._id+"#";
+									else req.locations += user.locations[i]._id;
+								}
+							}
+							
+							next();
+						}else{
+							console.log("Authentication Problem: token expired");
+							return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
+						}
+					}else{
+						console.log("Authentication Problem: no user found");
+						return res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
+					}
+
+				});
+			}
 						
 		}else{
 			return res.status(403).send(new Response().error(403,"Authentication Problem : no token provided"));

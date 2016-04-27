@@ -9,7 +9,10 @@ var Schema = mongoose.Schema;
 var locationSchema = new Schema({
 	name: { type: String},
 	router_ip : { type: String},
-	controllerId : { type: String},
+	controller : { controllerId : String,
+				   token : String,
+				   refresh_token : String
+				},
 	config : {enableNewDevice: { type: Boolean, default: false }},
 	insertDate: Date
 });
