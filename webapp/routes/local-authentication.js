@@ -137,24 +137,21 @@ router.post('/controller', function(req, res, next) {
 			
 		if (location) {
 			console.log("Location Found token ->"+location.name);
-			// if a user is found, log them in
 				
-				var jwtToken = jwt.getJWT(controllerId,true,"controller");
+			var jwtToken = jwt.getJWT(controllerId,true,"controller");
+		
+			var update = { 'controllerId': controllerId};
+			var opts = { strict: true };
+			Location.update({'_id' : location._id}, update, opts, function(error,raw) {
+				if (error){
+					res.status(400).send(new Response().error(400,err.errors));
+				}else{
+					res.json(new Response(jwtToken));
+				} 		  
+			});		
 			
-				var update = { 'controllerId': controllerId};
-				var opts = { strict: true };
-				User.update({'_id' : location._id}, update, opts, function(error,raw) {
-					if (error){
-						res.status(400).send(new Response().error(400,err.errors));
-					}else{
-						res.json(new Response(jwtToken));
-					} 		  
-				});		
-			
-		} else res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
-						
+		} else res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));				
 	});
-
 });
 
 

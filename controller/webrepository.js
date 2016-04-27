@@ -12,7 +12,10 @@ var client = new Client();
 var apiVersion = "api/1.0";
 var url = 'http://127.0.0.1:3000/'+apiVersion;
 
+/************************
 
+Handle security comunication with webapp 
+*************************/
 
 var controllerInfo = {};
 
@@ -56,11 +59,17 @@ var registerController = function(controllerId){
 	};
 		
 	client.post(url+"/auth/controller", args, onResponseEvent).on('error', function (err) {
-		logger.error("Connection problem for "+err.address+""+err.port+" -> "+ err.code);
+		logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
 		setTimeout(registerController.bind(this,controllerId),10000);
 	});
 		
 }
+
+
+
+
+
+
 
 
 class WebRepository extends Repository{
@@ -93,6 +102,8 @@ class WebRepository extends Repository{
 					logger.log("info","Controller ID : "+controllerInfo.controllerId);
 					if(controllerInfo.token === ""){
 						registerController(controllerInfo.controllerId);
+					}else{
+						logger.log("info","System is registered with webapp");
 					}
 				} 
 		});
