@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var Device = require('../models/device');
-var Config = require('../models/config');
+var Location = require('../models/location');
 var Response = require('./response');
 
 /* GET Device listing. */
@@ -22,31 +22,39 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
 	console.log(req.body);
 	
-	Config.find({}, function(err, configs) {
-				if (err){
-					res.status(400).send(new Response().error(400,err.errors));
-				}else{
-					if((configs != undefined) && (configs.length > 0)){
-						if(configs[0].enableNewDevice){
-							
-								var device = new Device();
-	
-								device.id = req.body.id;
-								device.name = req.body.name;
-								device.deviceType = req.body.deviceType;
-								device.technology = req.body.technology;
-									
-								device.save(function(err) {
-									if (err){
-										res.status(400).send(new Response().error(400,err.errors));;
-									}else res.json(new Response("Device Created"));
-								});
-							
-						}
-						else res.status(400).send(new Response().error(400,"enableNewDevice is false"));
-					}else{ res.status(400).send(new Response().error(400,"No Config found...")); }
-				} 
-			});
+	var locations = req.locations.split("#");
+	if(locations.length > 1) res.status(400).send(new Response().error(400,"More than one location specified"));
+	else{
+
+		query = { locationId :  locations[0]}
+		Location.find(query, function(err, locations) {
+					if (err){
+						res.status(400).send(new Response().error(400,err.errors));
+					}else{
+						if((locations != undefined) && (locations.length > 0)){
+							if(locations[0].config.enableNewDevice){
+								
+									var device = new Device();
+		
+									device.id = req.body.id;
+									device.name = req.body.name;
+									device.deviceType = req.body.deviceType;
+									device.technology = req.body.technology;
+									device.locationId = locations[0]._id;
+										
+									device.save(function(err) {
+										if (err){
+											res.status(400).send(new Response().error(400,err.errors));;
+										}else res.json(new Response("Device Created"));
+									});
+								
+							}
+							else res.status(400).send(new Response().error(400,"enableNewDevice is false"));
+						}else{ res.status(400).send(new Response().error(400,"No Config found...")); }
+					} 
+				});
+			
+	};
 		
 });
 

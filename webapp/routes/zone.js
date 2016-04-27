@@ -6,7 +6,11 @@ var Response = require('./response');
 
 /* GET Zone listing. */
 router.get('/', function(req, res, next) {
-	Zone.find({}, function(err, devices) {
+	
+	var locations = req.locations.split("#");
+	query = { locationId : { $in: locations }};
+	
+	Zone.find(query, function(err, devices) {
 				if (err){
 					res.status(400).send(err);
 				}else res.json(new Response(devices));
@@ -17,17 +21,23 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
 	console.log(req.body);
 	
-	var zone = new Zone();
+	var locations = req.locations.split("#");
+	if(locations.length > 1) res.status(400).send(new Response().error(400,"More than one location specified"));
+	else{
+	
+		var zone = new Zone();
 
-	zone.name = req.body.name;
-	zone.armed = req.body.armed;
-	zone.devices = req.body.devices;
-		
-	zone.save(function(err) {
-		if (err){
-			res.status(400).send(new Response().error(400,err.errors));
-		}else res.json(new Response("Zone Created"));
-	});
+		zone.name = req.body.name;
+		zone.armed = req.body.armed;
+		zone.devices = req.body.devices;
+		zone.locationId = locations[0];
+			
+		zone.save(function(err) {
+			if (err){
+				res.status(400).send(new Response().error(400,err.errors));
+			}else res.json(new Response("Zone Created"));
+		});
+	}
 		
 });
 
@@ -76,8 +86,6 @@ router.delete('/:id', function(req, res, next) {
 		});
 		
 });
-
-
 
 
 
