@@ -32,7 +32,7 @@ var saveControllerInfo = function(data,callback){
 	});	
 }
 	
-var registerController = function(controllerId){
+var registerController = function(controllerId, callback){
 	logger.log('info',"Register Controller ->"+controllerId);
 		
 	var args = {
@@ -51,16 +51,17 @@ var registerController = function(controllerId){
 							logger.log('error',err);
 							throw err;
 						}
+						callback();
 				});
 		}else{
 			logger.error(data.errors);
-			setTimeout(registerController.bind(this,controllerId),10000);
+			setTimeout(registerController.bind(this,controllerId,callback),10000);
 		} 
 	};
 		
 	client.post(url+"/auth/controller", args, onResponseEvent).on('error', function (err) {
 		logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-		setTimeout(registerController.bind(this,controllerId),10000);
+		setTimeout(registerController.bind(this,controllerId,callback),10000);
 	});
 		
 }
@@ -78,7 +79,7 @@ class WebRepository extends Repository{
 		super();
 		logger.info('WebRepository init');
 		
-		readControllerInfo(function(err, data){
+		var register = function(err, data){
 			
 				if (err) {
 					logger.log('error',err);
@@ -95,28 +96,41 @@ class WebRepository extends Repository{
 							logger.log('error',err);
 							throw err;
 						}
-						registerController(controllerInfo.controllerId);
+						registerController(controllerInfo.controllerId, this.ready);
 					});
 					
 				}else{
 					logger.log("info","Controller ID : "+controllerInfo.controllerId);
 					if(controllerInfo.token === ""){
-						registerController(controllerInfo.controllerId);
+						registerController(controllerInfo.controllerId, this.ready);
 					}else{
-						logger.log("info","System is registered with webapp");
+						this.ready();
 					}
 				} 
-		});
+		};
+		
+		readControllerInfo(register.bind(this));
 		
 		//this.checkForRemoteUpdate(this.devices, url);
 		//this.client = new Client();
 			
 	}
 	
+	ready(){
+		logger.log("info","System is registered with webapp");
+		var message = {};
+		message.level = "info";
+		message.message = "Controller has started.";
+		this.savePersistantMessage(message,function(err){
+			console.log(err);
+		});
+	};
+	
+	
 	
 	savePersistantEvent(event, callback){
 	
-		logger.info('savePersistantEvent');
+		logger.info('Save Event');
 		
 		var args = {
 			data: { event },
@@ -133,6 +147,27 @@ class WebRepository extends Repository{
 			callback(err);
 		});
 	}
+	
+	savePersistantMessage(message, callback){
+	
+		logger.info('Save Message');
+		
+		var args = {
+			data: { message },
+			headers: { "Content-Type": "application/json" }
+		};
+
+		client.post(url+"/message", args, function (data, response) {
+			var err = undefined;
+			if(response.statusCode != 200){
+				err = data.errors;
+			}
+			callback(err);
+		}).on('error', function (err) {
+			callback(err);
+		});
+	}
+	
 	
 	checkForRemoteUpdate(devices,url){
 		
