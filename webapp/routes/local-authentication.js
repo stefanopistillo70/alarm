@@ -120,10 +120,10 @@ router.post('/refresh', function(req, res, next) {
 router.post('/controller', function(req, res, next) {
 
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
-	console.log("Controller ->"+ip);
+	console.log("Controller IP ->"+ip);
 	console.log(req.body);
 	
-	var controllerId = req.body.id;
+	var controllerId = req.body.controllerId;
 	console.log("controllerId ->"+controllerId);
 	
 	var query = { 'router_ip' : ip }

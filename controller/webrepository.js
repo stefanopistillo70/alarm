@@ -34,7 +34,7 @@ var registerController = function(controllerId){
 	logger.log('info',"Register Controller ->"+controllerId);
 		
 	var args = {
-		data: { controllerId: "hello" },
+		data: { controllerId: controllerId },
 		headers: { "Content-Type": "application/json" }
 	};
 		
@@ -43,12 +43,14 @@ var registerController = function(controllerId){
 		if(response.statusCode == 200){
 				console.log("OK");
 		}else{
-			console.log(data.errors);
+			logger.error(data.errors);
+			setTimeout(registerController.bind(this,controllerId),10000);
 		} 
 	};
 		
 	client.post(url+"/auth/controller", args, onResponseEvent).on('error', function (err) {
-		error(err);
+		logger.error("Connection problem for "+err.address+""+err.port+" -> "+ err.code);
+		setTimeout(registerController.bind(this,controllerId),10000);
 	});
 		
 }
