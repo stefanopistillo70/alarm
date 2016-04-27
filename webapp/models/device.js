@@ -9,7 +9,8 @@ var deviceSchema = new Schema({
   id: { type: String, required: true},
   name: { type: String},
   deviceType : { type: String, enum : ['RC','']},
-  technology: { type: String, enum : ['433','NRF24'], required: true },
+  technology : { type: String, enum : ['433','NRF24'], required: true },
+  locationId : { type: Schema.Types.ObjectId, required: true}, 
   sensors: [
 		{ name: { type: String},
 		description: { type: String},

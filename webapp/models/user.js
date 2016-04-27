@@ -5,7 +5,8 @@ var Schema = mongoose.Schema;
 
 // create a schema
 var userSchema = new Schema({
-	locations : [{_id : Schema.Types.ObjectId}],
+	location_view : Schema.Types.ObjectId,
+	locations : { type:[{_id : Schema.Types.ObjectId}] , required: true},
 	auth : {
 	  local	: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date },
 	  google: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date }

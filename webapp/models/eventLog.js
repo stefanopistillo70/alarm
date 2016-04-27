@@ -7,6 +7,7 @@ var eventLogSchema = new Schema({
   device: { type: String, required: true},
   sensor: { type: String},
   event: { type: String, required: true },
+  locationId : { type: Schema.Types.ObjectId, required: true},
   insertDate: Date
 });
 

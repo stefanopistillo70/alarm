@@ -7,7 +7,11 @@ var Response = require('./response');
 
 /* GET Device listing. */
 router.get('/', function(req, res, next) {
-	Device.find({}, function(err, devices) {
+	
+	var locations = req.locations.split("#");
+	query = { locationId : { $in: locations }};
+	
+	Device.find(query, function(err, devices) {
 				if (err){
 					res.status(400).send(err);
 				}else res.json(new Response(devices));

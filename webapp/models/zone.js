@@ -8,6 +8,7 @@ var zoneSchema = new Schema({
   name: { type: String},
   armed : { type: Boolean},
   devices: [{_id : Schema.Types.ObjectId, id : String, name : String}],
+  locationId : { type: Schema.Types.ObjectId, required: true},
   insertDate: Date
 });
 

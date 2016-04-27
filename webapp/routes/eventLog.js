@@ -2,35 +2,37 @@ var express = require('express');
 var router = express.Router();
 
 var EventLog = require('../models/eventLog');
-
 var Response = require('./response');
-
-
 
 /* GET EventLog listing. */
 router.get('/', function(req, res, next) {
-	EventLog.find({}, function(err, eventLogs) {
+	var locations = req.locations.split("#");
+	query = { locationId : { $in: locations }};
+	
+	EventLog.find(query, function(err, eventLogs) {
 			if (err) res.status(400).send(new Response().error(400,err.errors));
 			res.json(new Response(eventLogs));
 	});	
 });
 
-
+/* Insert Event */
 router.post('/', function(req, res, next) {
 	console.log(req.body);
 	
-	var e = new EventLog();
-	e.device = req.body.event.device;
-	e.sensor = req.body.event.sensor;
-	e.event = req.body.event.event;
+	var locations = req.locations.split("#");
+	query = { locationId : { $in: locations }};
 	
+	var eventLog = new EventLog();
+	eventLog.device = req.body.event.device;
+	eventLog.sensor = req.body.event.sensor;
+	eventLog.event = req.body.event.event;
+	eventLog.locationId = locations[0];
 		
-	e.save(function(err) {
+	eventLog.save(function(err) {
 		if (err) res.status(400).send(new Response().error(400,err.errors));
-		else res.json(new Response(e));
+		else res.json(new Response(eventLog));
 	});
 		
 });
-
 
 module.exports = router;

@@ -10,6 +10,7 @@ var locationSchema = new Schema({
 	name: { type: String},
 	router_ip : { type: String},
 	controllerId : { type: String},
+	config : {enableNewDevice: { type: Boolean, default: false }},
 	insertDate: Date
 });
 

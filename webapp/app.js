@@ -58,6 +58,9 @@ app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
 	
 	var token = req.headers['x-access-token'];
+	
+
+	
 	//console.log(token);
 	
 	var urlLogin = apiVer + "/auth";
@@ -89,6 +92,17 @@ app.use(function(req, res, next) {
 					console.log("User Found token ->"+user.auth.local.email);
 
 					if(jwt.verifyJWT(token,user.auth.local.email)){
+						
+						if (user.location_view){
+							req.locations = user.location_view;
+						}else{
+							req.locations = "";
+							for(var i=0; i< user.locations.length;i++){
+								if(i < (user.locations.length -1) ) req.locations += user.locations[i]._id+"#";
+								else req.locations += user.locations[i]._id;
+							}
+						}
+						
 						next();
 					}else{
 						console.log("Authentication Problem: token expired");

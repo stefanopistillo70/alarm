@@ -83,7 +83,6 @@ router.post('/', function(req, res, next) {
 							
 						} else {
 							
-							
 							// if the user isnt in our database, create a new user
 							var newUser          = new User();
 						
