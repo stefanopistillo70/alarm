@@ -126,7 +126,10 @@ router.post('/controller', function(req, res, next) {
 	var controllerId = req.body.controllerId;
 	console.log("controllerId ->"+controllerId);
 	
-	var query = { 'router_ip' : ip }
+	var query = { 'router_ip' : ip };
+	if(ip =="::1" || ip =="::ffff:127.0.0.1"){
+		query = { 'router_ip' : { $in: [ "::1", "::ffff:127.0.0.1" ] } }
+	}
 	
 	Location.findOne(query, function(err, location) {
 

@@ -27,6 +27,9 @@ var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleA
 router.post('/', function(req, res, next) {
 	
 	console.log(req.body);
+	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+	console.log("IP ->"+ip);
+
 	
 	var code = req.body.code;
 	console.log("code ->"+code);
@@ -71,7 +74,7 @@ router.post('/', function(req, res, next) {
 								}else{
 									console.log(raw);
 									var sec_expire_time = jwtToken.duration_time/4;
-									res.cookie('token',jwtToken.access_token, { maxAge: jwtToken.duration_time });
+									res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
 									res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
 									if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
 									res.json(new Response(jwtToken));
@@ -97,10 +100,11 @@ router.post('/', function(req, res, next) {
 							newUser.auth.google.refresh_token  = googleTokens.refresh_token;
 							newUser.auth.google.expiry_date = googleTokens.expiry_date;
 							
-							userLogic.createUser(newUser, function(err) {
+							userLogic.createUser(newUser, ip, function(err) {
 								if (err) res.status(400).send(new Response().error(400,err.errors));
 								else {
-									res.cookie('token',newUser.auth.local.token, { maxAge: jwtToken.duration_time });
+									var sec_expire_time = jwtToken.duration_time/4;
+									res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
 									res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
 									if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
 									res.json(new Response(jwtToken));

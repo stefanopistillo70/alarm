@@ -24,8 +24,7 @@ var readControllerInfo = function(callback){
 }
 
 var saveControllerInfo = function(data,callback){
-
-	fs.writeFile('config/controller.json.def', JSON.stringify(data), function (err) {
+	fs.writeFile('config/controller.json', JSON.stringify(data), function (err) {
 	  callback(err);
 	});	
 }
@@ -39,9 +38,17 @@ var registerController = function(controllerId){
 	};
 		
 	var onResponseEvent = function(data, response) {
-		console.log(data);
 		if(response.statusCode == 200){
-				console.log("OK");
+				logger.log('info',"Response arrived - save  on disk");
+				controllerInfo.token = data.result.access_token;
+				controllerInfo.expire_at = data.result.expire_at;
+				controllerInfo.refresh_token = data.result.refresh_token;
+				saveControllerInfo(controllerInfo, function(err){
+						if (err) {
+							logger.log('error',err);
+							throw err;
+						}
+				});
 		}else{
 			logger.error(data.errors);
 			setTimeout(registerController.bind(this,controllerId),10000);
@@ -70,7 +77,7 @@ class WebRepository extends Repository{
 				}
 
 				logger.log("info","Read controller info");
-				var controllerInfo = JSON.parse(data);
+				controllerInfo = JSON.parse(data);
 				if(controllerInfo.controllerId == "" ){
 					controllerInfo.controllerId = uuid.v4();
 					logger.log("info","Generated Controller ID : "+controllerInfo.controllerId);
