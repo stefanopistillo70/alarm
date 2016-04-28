@@ -21,6 +21,7 @@ var local_auth = require('./routes/local-authentication');
 
 var Response = require('./routes/response');
 var User       = require('./models/user');
+var Location       = require('./models/location');
 var jwt = require('./routes/jwt');
 
 var mongoose = require('mongoose');
@@ -77,8 +78,32 @@ app.use(function(req, res, next) {
 			console.log("Token present");
 			var aud = jwt.getAudience(token);
 			if(aud === "controller"){
-				if (jwt.verifyJWT(token,user.auth.local.email)){
-				}
+					
+				var query = { 'controller.token' : token }
+				Location.findOne(query, function(err, location) {
+					if (err){
+						console.log(err);
+						return res.status(403).send(new Response().error(403,"Authentication Problem: err location"));
+					}	
+
+					if (location) {
+						
+						console.log("Location Found token ->"+location.controllerId);
+
+						if(jwt.verifyJWT(token,location.controllerId)){
+															
+							next();
+						}else{
+							console.log("Authentication Problem: token expired");
+							return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
+						}
+					}else{
+						console.log("Authentication Problem: no location found");
+						return res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
+					}
+
+				});
+					
 			} else {
 				var query = { 'auth.local.token' : token }
 

@@ -67,10 +67,53 @@ var registerController = function(controllerId, callback){
 }
 
 
+var refreshToken = function(callback){
+	
+	logger.log('info',"Refresh Token...");
+		
+	var args = {
+		data: { refresh_token: controllerInfo.refresh_token },
+		headers: { "Content-Type": "application/json" }
+	};
+		
+	var onResponseEvent = function(data, response) {
+		if(response.statusCode == 200){
+				logger.log('info',"Response arrived - save  on disk");
+				controllerInfo.token = data.result.access_token;
+				controllerInfo.expire_at = data.result.expire_at;
+				saveControllerInfo(controllerInfo, function(err){
+						if (err) {
+							logger.log('error',err);
+							throw err;
+						}
+						callback();
+				});
+		}else{
+			logger.error(data.errors);
+			callback(data.errors)
+		} 
+	};
+		
+	client.post(url+"/auth/refresh", args, onResponseEvent).on('error', function (err) {
+		logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+	});
+
+} 
+
+
 
 
 var commonHeaders = function(){
-	return { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token };
+	
+	var now = (new Date()).getTime();
+	if((controllerInfo.expire_at - now) > 0){ 
+		return { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token };
+	}else{
+		refreshToken(function(err){
+			return { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token };
+		});
+	}
+
 }
 
 class WebRepository extends Repository{
