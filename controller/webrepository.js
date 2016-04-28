@@ -169,6 +169,14 @@ class WebRepository extends Repository{
 		
 		if(systemIsRegistered){
 			logger.info('WebRepository init');
+			
+			var msg = {};
+			msg.level = "info";
+			msg.message = "Controller startup";
+			this.savePersistantMessage(msg, function(){
+				
+			});
+			
 		}else{
 			setTimeout(WebRepository.prototype.waitForInit.bind(this),10000);
 		}
@@ -199,7 +207,6 @@ class WebRepository extends Repository{
 	savePersistantMessage(message, callback){
 	
 		logger.info('Save Message');
-		console.log(commonHeaders());
 		
 		var args = {
 			data: { message },

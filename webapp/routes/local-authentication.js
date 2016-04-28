@@ -72,44 +72,88 @@ router.post('/token', function(req, res, next) {
 //refresh jwt token
 router.post('/refresh', function(req, res, next) {
 
-	
-	console.log(req.body);
+	//console.log(req.body);
 	
 	var refresh_token = req.body.refresh_token;
 	console.log("Refresh Token ->"+refresh_token);
 	
-	var query = { 'auth.local.refresh_token' : refresh_token }
-	
-	User.findOne(query, function(err, user) {
+	var aud = jwt.getAudience(refresh_token);
+	console.log("Audience ->"+aud);
+	if(aud === "controller"){
+		
+		var query = { 'controller.refresh_token' : refresh_token }
+		Location.findOne(query, function(err, location) {
+			if (err){
+				console.log(err);
+				return res.status(403).send(new Response().error(403,"Authentication Problem: err location"));
+			}	
 
-		if (err) res.status(400).send(new Response().error(400,err.errors));
-			
-		if (user) {
-			console.log("User Found token ->"+user.auth.local.email);
-			// if a user is found, log them in
-			if(jwt.verifyJWT(refresh_token,user.auth.local.email)){
+			if (location) {
 				
-				var jwtToken = jwt.getJWT(user.auth.local.email,false,"web");
-				console.log("JWT ->");
-				console.log(jwtToken);
-			
-				var update = { 'auth.local.token': jwtToken.access_token};
-				var opts = { strict: true };
-				User.update(query, update, opts, function(error,raw) {
-					if (error){
-						res.status(400).send(new Response().error(400,err.errors));
-					}else{
-						console.log(raw);
-						res.cookie('token',jwtToken.access_token, { maxAge: jwtToken.duration_time });
-						res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: jwtToken.duration_time });
-						res.json(new Response(jwtToken));
-					} 		  
-				});		
-			} else res.status(403).send(new Response().error(403,"Authentication Problem: jwt varification failed"));			
-			
-		} else res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
-						
-	});
+				console.log("Location Found token ->"+location.controller.controllerId);
+
+				if(jwt.verifyJWT(refresh_token,location.controller.controllerId)){
+													
+					var jwtToken = jwt.getJWT(location.controller.controllerId,true,"controller");
+				
+					var update = { controller : { "token" : jwtToken.access_token} };
+					var opts = { strict: true };
+					Location.update({'_id' : location._id}, update, opts, function(error,raw) {
+						if (error){
+							res.status(400).send(new Response().error(400,err.errors));
+						}else{
+							res.json(new Response(jwtToken));
+						} 		  
+					});		
+
+				}else{
+					console.log("Authentication Problem: token expired");
+					return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
+				}
+			}else{
+				console.log("Authentication Problem: no location found");
+				return res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
+			}
+
+		});
+
+		
+	} else {
+
+		var query = { 'auth.local.refresh_token' : refresh_token }
+		
+		User.findOne(query, function(err, user) {
+
+			if (err) res.status(400).send(new Response().error(400,err.errors));
+				
+			if (user) {
+				console.log("User Found token ->"+user.auth.local.email);
+				// if a user is found, log them in
+				if(jwt.verifyJWT(refresh_token,user.auth.local.email)){
+					
+					var jwtToken = jwt.getJWT(user.auth.local.email,false,"web");
+					console.log("JWT ->");
+					console.log(jwtToken);
+				
+					var update = { 'auth.local.token': jwtToken.access_token};
+					var opts = { strict: true };
+					User.update(query, update, opts, function(error,raw) {
+						if (error){
+							res.status(400).send(new Response().error(400,err.errors));
+						}else{
+							console.log(raw);
+							res.cookie('token',jwtToken.access_token, { maxAge: jwtToken.duration_time });
+							res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: jwtToken.duration_time });
+							res.json(new Response(jwtToken));
+						} 		  
+					});		
+				} else res.status(403).send(new Response().error(403,"Authentication Problem: jwt varification failed"));			
+				
+			} else res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
+							
+		});
+	
+	}
 
 });
 
