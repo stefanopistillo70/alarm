@@ -18,15 +18,17 @@ Handle security comunication with webapp
 *************************/
 
 var controllerInfo = {};
+var systemIsRegistered = false;
 
 var readControllerInfo = function(callback){
-
+	logger.log('info',"Read controller.json from disk");
 	fs.readFile('config/controller.json', 'utf8', function (err,data) {
 	  callback(err,data);
 	});
 }
 
 var saveControllerInfo = function(data,callback){
+	logger.log('info',"Save controller.json on disk");
 	fs.writeFile('config/controller.json', JSON.stringify(data), function (err) {
 	  callback(err);
 	});	
@@ -102,7 +104,6 @@ var refreshToken = function(callback){
 
 
 
-
 var commonHeaders = function(){
 	
 	var now = (new Date()).getTime();
@@ -116,62 +117,64 @@ var commonHeaders = function(){
 
 }
 
-class WebRepository extends Repository{
+var ready = function(){
+	logger.log("info","System is registered with webapp");
+	systemIsRegistered = true;
+};
+
+//Initialize common structure
+readControllerInfo(function(err, data){
 	
-	constructor(){	
-		super();
-		logger.info('WebRepository init');
-		
-		var register = function(err, data){
-			
+		if (err) {
+			logger.log('error',err);
+			throw err;
+		}
+
+		logger.log("info","Read controller info");
+		controllerInfo = JSON.parse(data);
+		if(controllerInfo.controllerId == "" ){
+			controllerInfo.controllerId = uuid.v4();
+			logger.log("info","Generated Controller ID : "+controllerInfo.controllerId);
+			saveControllerInfo(controllerInfo, function(err){
 				if (err) {
 					logger.log('error',err);
 					throw err;
 				}
+				registerController(controllerInfo.controllerId, ready);
+			});
+			
+		}else{
+			logger.log("info","Controller ID : "+controllerInfo.controllerId);
+			if(controllerInfo.token === ""){
+				registerController(controllerInfo.controllerId, ready);
+			}else{
+				ready();
+			}
+		} 
+});
 
-				logger.log("info","Read controller info");
-				controllerInfo = JSON.parse(data);
-				if(controllerInfo.controllerId == "" ){
-					controllerInfo.controllerId = uuid.v4();
-					logger.log("info","Generated Controller ID : "+controllerInfo.controllerId);
-					saveControllerInfo(controllerInfo, function(err){
-						if (err) {
-							logger.log('error',err);
-							throw err;
-						}
-						registerController(controllerInfo.controllerId, this.ready);
-					});
-					
-				}else{
-					logger.log("info","Controller ID : "+controllerInfo.controllerId);
-					if(controllerInfo.token === ""){
-						registerController(controllerInfo.controllerId, this.ready);
-					}else{
-						this.ready();
-					}
-				} 
-		};
-		
-		readControllerInfo(register.bind(this));
-		
+
+
+class WebRepository extends Repository{
+	
+	constructor(){	
+		super();		
 		//this.checkForRemoteUpdate(this.devices, url);
 		//this.client = new Client();
-			
+		this.waitForInit();	
 	}
 	
-	ready(){
-		logger.log("info","System is registered with webapp");
-		var message = {};
-		message.level = "info";
-		message.message = "Controller has started.";
-		this.savePersistantMessage(message,function(err){
-			console.log(err);
-		});
-	};
+	waitForInit(){
+		logger.info('Wait For Init');
+		
+		if(systemIsRegistered){
+			logger.info('WebRepository init');
+		}else{
+			setTimeout(WebRepository.prototype.waitForInit.bind(this),10000);
+		}
+	}
 	
-	
-	
-	
+
 	savePersistantEvent(event, callback){
 	
 		logger.info('Save Event');
@@ -191,6 +194,7 @@ class WebRepository extends Repository{
 			callback(err);
 		});
 	}
+	
 	
 	savePersistantMessage(message, callback){
 	
@@ -212,7 +216,7 @@ class WebRepository extends Repository{
 			callback(err);
 		});
 	}
-	
+
 	
 	checkForRemoteUpdate(devices,url){
 		
@@ -323,6 +327,7 @@ class WebRepository extends Repository{
 	
 
 };
+
 
 
 module.exports = WebRepository; 
