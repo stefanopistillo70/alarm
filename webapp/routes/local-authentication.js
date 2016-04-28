@@ -96,7 +96,7 @@ router.post('/refresh', function(req, res, next) {
 													
 					var jwtToken = jwt.getJWT(location.controller.controllerId,true,"controller");
 				
-					var update = { controller : { "token" : jwtToken.access_token} };
+					var update = { "controller.token" : jwtToken.access_token };
 					var opts = { strict: true };
 					Location.update({'_id' : location._id}, update, opts, function(error,raw) {
 						if (error){

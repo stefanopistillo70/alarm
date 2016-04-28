@@ -49,10 +49,10 @@ var app = express();
 ***************************************/
 app.use(function(req, res, next) {
 	var url = req.url;
-	console.log("CHECK ALL URL -> "+url);
+	console.log("****** CHECK ALL URL -> "+url);
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 	//var ip = req.headers['x-forwarded-for'];
-	console.log("CHECK ALL IP ->"+ip);
+	console.log("****** CHECK ALL IP ->"+ip);
 	
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
@@ -75,6 +75,7 @@ app.use(function(req, res, next) {
 		if (token) {
 			console.log("Token present");
 			var aud = jwt.getAudience(token);
+			console.log("Audience ->"+aud);
 			if(aud === "controller"){
 					
 				var query = { 'controller.token' : token }
@@ -86,10 +87,10 @@ app.use(function(req, res, next) {
 
 					if (location) {
 						
-						console.log("Location Found token ->"+location.controllerId);
+						console.log("Location Found token ->"+location.controller.controllerId);
 
-						if(jwt.verifyJWT(token,location.controllerId)){
-															
+						if(jwt.verifyJWT(token,location.controller.controllerId)){
+							req.locations = location._id;								
 							next();
 						}else{
 							console.log("Authentication Problem: token expired");
@@ -144,7 +145,10 @@ app.use(function(req, res, next) {
 		}else{
 			return res.status(403).send(new Response().error(403,"Authentication Problem : no token provided"));
 		}
-	}else next();
+	}else{
+		console.log("****** skip auth check...continue...");
+		next();
+	} 
 });
 
 

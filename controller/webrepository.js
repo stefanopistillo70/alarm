@@ -102,20 +102,9 @@ var refreshToken = function(callback){
 
 } 
 
+//var commonHeaders = { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token };
 
 
-var commonHeaders = function(){
-	
-	var now = (new Date()).getTime();
-	if((controllerInfo.expire_at - now) > 0){ 
-		return { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token };
-	}else{
-		refreshToken(function(err){
-			return { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token };
-		});
-	}
-
-}
 
 var ready = function(){
 	logger.log("info","System is registered with webapp");
@@ -174,7 +163,7 @@ class WebRepository extends Repository{
 			msg.level = "info";
 			msg.message = "Controller startup";
 			this.savePersistantMessage(msg, function(){
-				
+				logger.info('Message Sent');
 			});
 			
 		}else{
@@ -189,7 +178,7 @@ class WebRepository extends Repository{
 		
 		var args = {
 			data: { event },
-			headers: commonHeaders()
+			headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
 		};
 
 		client.post(url+"/eventLog", args, function (data, response) {
@@ -208,19 +197,23 @@ class WebRepository extends Repository{
 	
 		logger.info('Save Message');
 		
-		var args = {
-			data: { message },
-			headers: commonHeaders()
-		};
+		this.checkCommonHeaders(function(){
+			var args = {
+				data: { message },
+				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
+			};
 
-		client.post(url+"/message", args, function (data, response) {
-			var err = undefined;
-			if(response.statusCode != 200){
-				err = data.errors;
-			}
-			callback(err);
-		}).on('error', function (err) {
-			callback(err);
+			logger.info('Sending Message...');
+			client.post(url+"/message", args, function (data, response) {
+				var err = undefined;
+				if(response.statusCode != 200){
+					err = data.errors;
+				}
+				callback(err);
+			}).on('error', function (err) {
+				callback(err);
+			});
+
 		});
 	}
 
@@ -330,6 +323,21 @@ class WebRepository extends Repository{
 		client.get(url+"/config", args, onResponseEvent).on('error', function (err) {
 			error(err);
 		});
+	}
+	
+	
+	checkCommonHeaders(callback){
+	
+		var now = (new Date()).getTime();
+		if((controllerInfo.expire_at - now) > 0){ 
+			callback();
+		}else{
+			refreshToken(function(err){
+				logger.info("Token refreshed.");
+				callback();
+			});
+		}
+
 	}
 	
 
