@@ -1,4 +1,6 @@
 
+var logger = require('../config/logger.js')('Web');
+
 var User       = require('../models/user');
 var Location       = require('../models/location');
 
@@ -18,13 +20,13 @@ var logic = {
 			newLocation.save(function(err, location) {
 				if (err) res.status(400).send(new Response().error(400,err.errors));
 				else {
-					console.log("location");
-					console.log(location);
+					logger.info("location");
+					logger.info(location);
 					newUser.locations = [];
 					newUser.locations.push(location._id);
 					
-					console.log("NEW User");
-					console.log(newUser);
+					logger.info("NEW User");
+					logger.info(newUser);
 					// save the user
 					newUser.save(function(err) {
 						callback(err);
@@ -40,23 +42,23 @@ var logic = {
 		var query = { '_id' : locationId }
 		Location.findOne(query, function(err, location) {
 			if (err){
-				console.log(err);
+				logger.error(err);
 			}	
 
 			if (location) {
 				
-				console.log("Location Found token ->"+location.controller.controllerId);
+				logger.info("Location Found token ->"+location.controller.controllerId);
 
 				var update = { "config.hasNewUpdates" : value };
 				var opts = { strict: true };
 				Location.update({'_id' : location._id}, update, opts, function(error,raw) {
 					if (error){
-						console.log("Error on update location config : "+error);
+						logger.error("Error on update location config : "+error);
 					} 		  
 				});		
 
 			}else{
-				console.log("userUpdate Problem: no location found");
+				logger.error("userUpdate Problem: no location found");
 			}
 		});
 

@@ -18,9 +18,7 @@ router.get('/', function(req, res, next) {
 router.put	('/:id', function(req, res, next) {
 				 
 		var config = req.body;
-		
-		console.log(config);
-		
+				
 		var update = { 'enableNewDevice': config.enableNewDevice };
 		var opts = { strict: true };
 		Config.update({}, update, opts, function(err) {

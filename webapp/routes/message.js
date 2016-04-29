@@ -1,16 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-//var Message = require('../models/message');
 var Response = require('./response');
 
 var Message = require('../models/message');
 
-/* POST Message listing. */
+/* Insert new message */
 router.post('/', function(req, res, next) {
-	
-	console.log(req.body);
-	//res.json(new Response({ level : "info", message : "System Disarmed"}))
 	
 	var message = new Message();
 	
@@ -24,16 +20,20 @@ router.post('/', function(req, res, next) {
 					res.json(new Response(message));
 				}
 	});
+});
+
+
+//get most recent message
+router.post('/last', function(req, res, next) {
 	
-	/*Message.find({}, function(err, messages) {
+	query = { locationId : req.locations}
+	Message.find(query, function(err, messages) {
 				if (err){
 					res.status(400).send(err);
 				}else res.json(new Response(messages));
 	});	
-	*/
+	
 });
-
-
 
 
 module.exports = router;

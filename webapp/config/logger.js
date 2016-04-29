@@ -31,39 +31,16 @@ var transport = new winston.transports.Console(buildOptions());
 winston.loggers.options.transports = [transport];
 
 
-
-
-
 //Control Config
 
-var optController = buildOptions();
-optController.formatter = function(options) {
-        return myFormatter('Controller',options);
+var optWeb = buildOptions();
+optWeb.formatter = function(options) {
+        return myFormatter('Web',options);
 }
 
-var optGateway = buildOptions();
-optGateway.formatter = function(options) {
-        return myFormatter('Gateway',options);
-}
-
-var optWebRepository = buildOptions();
-optWebRepository.formatter = function(options) {
-        return myFormatter('WebRepository',options);
-}
-
-winston.loggers.add('Controller', {
-		transports: [new winston.transports.Console(optController)]
+winston.loggers.add('Web', {
+		transports: [new winston.transports.Console(optWeb)]
 });
-
-winston.loggers.add('Gateway', {
-		transports: [new winston.transports.Console(optGateway)]
-});
-
-winston.loggers.add('WebRepository', {
-		transports: [new winston.transports.Console(optWebRepository)]
-});
-
-
 
 module.exports = function(arg) {
 	return winston.loggers.get(arg);

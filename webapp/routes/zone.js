@@ -20,7 +20,6 @@ router.get('/', function(req, res, next) {
 
 /* create Zone. */
 router.post('/', function(req, res, next) {
-	console.log(req.body);
 	
 	var locations = req.locations.split("#");
 	if(locations.length > 1) res.status(400).send(new Response().error(400,"More than one location specified"));
@@ -59,8 +58,6 @@ router.get('/:id', function(req, res, next) {
 //update Zone
 router.put('/:id', function(req, res, next) {
 		
-		console.log(req.body);
-		
 		var zone = req.body;
 		
 		var locations = req.locations.split("#");
@@ -98,7 +95,6 @@ router.delete('/:id', function(req, res, next) {
 			});
 		}
 });
-
 
 
 module.exports = router;

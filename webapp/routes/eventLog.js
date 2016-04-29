@@ -17,7 +17,6 @@ router.get('/', function(req, res, next) {
 
 /* Insert Event */
 router.post('/', function(req, res, next) {
-	console.log(req.body);
 	
 	var locations = req.locations.split("#");
 	query = { locationId : { $in: locations }};

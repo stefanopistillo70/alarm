@@ -24,6 +24,7 @@ var Response = require('./routes/response');
 var User       = require('./models/user');
 var Location       = require('./models/location');
 var jwt = require('./logic/jwt');
+var logger = require('./config/logger.js')('Web');
 
 var mongoose = require('mongoose');
 
@@ -34,9 +35,9 @@ var apiVer = "/api/1.0";
 
 mongoose.connect(dbConfig.url, function(err) {
     if(err) {
-        console.log('connection error', err);
+        logger.error('connection error', err);
     } else {
-        console.log('connection successful');
+        logger.info('connection successful');
     }
 });
 
@@ -50,10 +51,10 @@ var app = express();
 ***************************************/
 app.use(function(req, res, next) {
 	var url = req.url;
-	console.log("****** CHECK ALL URL -> "+url);
+	logger.info("****** CHECK ALL URL -> "+url);
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 	//var ip = req.headers['x-forwarded-for'];
-	console.log("****** CHECK ALL IP ->"+ip);
+	logger.info("****** CHECK ALL IP ->"+ip);
 	
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
@@ -61,7 +62,6 @@ app.use(function(req, res, next) {
 	
 	var token = req.headers['x-access-token'];
 	
-	//console.log(token);
 	
 	var urlLogin = apiVer + "/auth";
 	var urlRefresh = apiVer + "/auth/refresh"
@@ -72,33 +72,33 @@ app.use(function(req, res, next) {
 		&& !(url.substring(0, urlRefresh.length) == urlRefresh)
 		&& !(url.substring(0, urlController.length) == urlController)		){
 			
-		console.log("Verify token on DB ->"+token);
+		logger.info("Verify token on DB ->"+token);
 		if (token) {
-			console.log("Token present");
+			logger.info("Token present");
 			var aud = jwt.getAudience(token);
-			console.log("Audience ->"+aud);
+			logger.info("Audience ->"+aud);
 			if(aud === "controller"){
 					
 				var query = { 'controller.token' : token }
 				Location.findOne(query, function(err, location) {
 					if (err){
-						console.log(err);
+						logger.error(err);
 						return res.status(403).send(new Response().error(403,"Authentication Problem: err location"));
 					}	
 
 					if (location) {
 						
-						console.log("Location Found token ->"+location.controller.controllerId);
+						logger.info("Location Found token ->"+location.controller.controllerId);
 
 						if(jwt.verifyJWT(token,location.controller.controllerId)){
 							req.locations = location._id;								
 							next();
 						}else{
-							console.log("Authentication Problem: token expired");
+							logger.error("Authentication Problem: token expired");
 							return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
 						}
 					}else{
-						console.log("Authentication Problem: no location found");
+						logger.error("Authentication Problem: no location found");
 						return res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
 					}
 
@@ -110,13 +110,13 @@ app.use(function(req, res, next) {
 				User.findOne(query, function(err, user) {
 					
 					if (err){
-						console.log(err);
+						logger.error(err);
 						return res.status(403).send(new Response().error(403,"Authentication Problem: err user"));
 					}	
 
 					if (user) {
 						
-						console.log("User Found token ->"+user.auth.local.email);
+						logger.info("User Found token ->"+user.auth.local.email);
 
 						if(jwt.verifyJWT(token,user.auth.local.email)){
 							
@@ -132,11 +132,11 @@ app.use(function(req, res, next) {
 							
 							next();
 						}else{
-							console.log("Authentication Problem: token expired");
+							logger.error("Authentication Problem: token expired");
 							return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
 						}
 					}else{
-						console.log("Authentication Problem: no user found");
+						logger.error("Authentication Problem: no user found");
 						return res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
 					}
 
@@ -147,7 +147,7 @@ app.use(function(req, res, next) {
 			return res.status(403).send(new Response().error(403,"Authentication Problem : no token provided"));
 		}
 	}else{
-		console.log("****** skip auth check...continue...");
+		logger.info("****** skip auth check...continue...");
 		next();
 	} 
 });
@@ -166,7 +166,7 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+//app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

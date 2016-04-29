@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+var logger = require('../config/logger.js')('Web');
 var Device = require('../models/device');
 var Location = require('../models/location');
 var Response = require('./response');
@@ -20,7 +21,6 @@ router.get('/', function(req, res, next) {
 
 /* create Device. */
 router.post('/', function(req, res, next) {
-	console.log(req.body);
 	
 	var locations = req.locations.split("#");
 	if(locations.length > 1) res.status(400).send(new Response().error(400,"More than one location specified"));
@@ -60,7 +60,7 @@ router.post('/', function(req, res, next) {
 
 
 router.get('/:id', function(req, res, next) {
-	console.log('ID -> '+req.params.id)
+	logger.info('ID -> '+req.params.id)
 	//TODO
 	Device.find({}, function(err, eventLogs) {
 				if (err){
@@ -72,8 +72,6 @@ router.get('/:id', function(req, res, next) {
 
 router.put('/:id', function(req, res, next) {
 		
-		console.log(req.body);
-		
 		var device = req.body;
 		
 		var query = { '_id' : device._id}
@@ -83,32 +81,25 @@ router.put('/:id', function(req, res, next) {
 			if (error){
 				res.status(400).send(new Response().error(400,err.errors));
 			}else{
-				console.log(raw);
 				res.json(new Response("Device Updated"));
 			} 		  
 		});			
 });
 
 
-
 router.delete('/:id', function(req, res, next) {
 		
-		console.log('ID -> '+req.params.id)
+		logger.info('ID -> '+req.params.id)
 		
 		Device.remove({ _id: req.params.id }, function(error,raw) {
 			if (error) {
 				res.status(400).send(new Response().error(400,err.errors));
 			} else {
-				console.log(raw);
 				res.json(new Response("Device Removed"));	
 			}
 		});
 		
 });
-
-
-
-
 
 
 module.exports = router;

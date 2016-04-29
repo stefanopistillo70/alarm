@@ -1,4 +1,5 @@
 
+var logger = require('../config/logger.js')('Web');
 var Response = require('./response');
 var User     = require('../models/user');
 
@@ -26,18 +27,17 @@ var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleA
 //Verify and store Token
 router.post('/', function(req, res, next) {
 	
-	console.log(req.body);
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
-	console.log("IP ->"+ip);
+	logger.info("IP ->"+ip);
 
 	
 	var code = req.body.code;
-	console.log("code ->"+code);
+	logger.info("code ->"+code);
 	
 	oauth2Client.getToken(code, function(err, googleTokens) {
 		
-		console.log("TOKEN ->");
-		console.log(googleTokens);
+		logger.info("TOKEN ->");
+		logger.info(googleTokens);
 		
 		
 		if(err) res.status(400).send(new Response().error(400,err));			
@@ -50,7 +50,7 @@ router.post('/', function(req, res, next) {
 				} else {
 				
 					var ticketAttr = ticket.getAttributes();
-					console.log(ticketAttr);
+					logger.info(ticketAttr);
 					
 					var query = { 'auth.google.email' : ticketAttr.payload.email }
 					
@@ -59,12 +59,12 @@ router.post('/', function(req, res, next) {
 						if (err) res.status(400).send(new Response().error(400,err.errors));
 													
 						if (user) {
-							console.log("User Found token ->"+user.auth.google.token);
+							logger.info("User Found token ->"+user.auth.google.token);
 							// if a user is found, log them in
 							
 							var jwtToken = jwt.getJWT(ticketAttr.payload.email,false,"web");
-							console.log("JWT ->");
-							console.log(jwtToken);
+							logger.info("JWT ->");
+							logger.info(jwtToken);
 														
 							var update = { 'auth.local.token': jwtToken.access_token, 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date };
 							var opts = { strict: true };
@@ -72,7 +72,6 @@ router.post('/', function(req, res, next) {
 								if (error){
 									res.status(400).send(new Response().error(400,err.errors));
 								}else{
-									console.log(raw);
 									var sec_expire_time = jwtToken.duration_time/4;
 									res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
 									res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
@@ -87,8 +86,8 @@ router.post('/', function(req, res, next) {
 							var newUser          = new User();
 						
 							var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web");
-							console.log("JWT ->");
-							console.log(jwtToken);
+							logger.info("JWT ->");
+							logger.info(jwtToken);
 						
 							newUser.auth.local.email = ticketAttr.payload.email;
 							newUser.auth.local.token = jwtToken.access_token;
@@ -126,7 +125,7 @@ router.post('/', function(req, res, next) {
 
 
 var verifyIdToken = function(token,callback){
-	console.log("VERIFY token ID");
+	logger.info("VERIFY token ID");
 	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
 };
 

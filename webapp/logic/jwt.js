@@ -37,7 +37,7 @@ var jwt = {
 
 	verifyJWT : function(token, sub){
 		var decoded = jwtSimple.decode(token, secret);
-		console.log(decoded);
+//console.log(decoded);
 		var now = new Date().getTime();
 		if ((sub === decoded.sub) && (decoded.iss === "account.domusguard.com") && ((decoded.exp == 0) || ((decoded.exp - now) > 0 )) ) return true;
 		else return false
@@ -45,10 +45,9 @@ var jwt = {
 	
 	getAudience : function(token){
 		var decoded = jwtSimple.decode(token, secret);
-		console.log(decoded);
+//console.log(decoded);
 		return decoded.aud;
 	}
-	
 }
 
 
