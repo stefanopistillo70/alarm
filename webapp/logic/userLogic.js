@@ -32,8 +32,37 @@ var logic = {
 					
 				}
 			});
+	},
+	
+	
+	userUpdateHasNewUpdates : function(locationId, value){
 		
+		var query = { '_id' : locationId }
+		Location.findOne(query, function(err, location) {
+			if (err){
+				console.log(err);
+			}	
+
+			if (location) {
+				
+				console.log("Location Found token ->"+location.controller.controllerId);
+
+				var update = { "config.hasNewUpdates" : value };
+				var opts = { strict: true };
+				Location.update({'_id' : location._id}, update, opts, function(error,raw) {
+					if (error){
+						console.log("Error on update location config : "+error);
+					} 		  
+				});		
+
+			}else{
+				console.log("userUpdate Problem: no location found");
+			}
+		});
+
 	}
+	
+	
 }
 
 

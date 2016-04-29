@@ -3,6 +3,7 @@ var router = express.Router();
 
 var Zone = require('../models/zone');
 var Response = require('./response');
+var userLogic = require('../logic/userLogic');
 
 /* GET Zone listing. */
 router.get('/', function(req, res, next) {
@@ -35,7 +36,10 @@ router.post('/', function(req, res, next) {
 		zone.save(function(err) {
 			if (err){
 				res.status(400).send(new Response().error(400,err.errors));
-			}else res.json(new Response("Zone Created"));
+			}else{
+				userLogic.userUpdateHasNewUpdates(zone.locationId, true);
+				res.json(new Response("Zone Created"));
+			} 
 		});
 	}
 		
@@ -46,45 +50,53 @@ router.get('/:id', function(req, res, next) {
 	console.log('ID -> '+req.params.id)
 	//TODO
 	Zone.find({}, function(err, eventLogs) {
-				if (err){
-					res.status(400).send(new Response().error(400,err.errors));
-				}else res.json(eventLogs);
+		if (err){
+			res.status(400).send(new Response().error(400,err.errors));
+		}else res.json(eventLogs);
 	});	
 });
 
-
+//update Zone
 router.put('/:id', function(req, res, next) {
 		
 		console.log(req.body);
 		
 		var zone = req.body;
 		
-		var query = { '_id' : zone._id}
-		var update = { 'name' : zone.name, 'armed' : zone.armed, 'devices' : zone.devices };
-		var opts = { strict: true };
-		Zone.update(query, update, opts, function(error,raw) {
-			if (error){
-				res.status(400).send(new Response().error(400,err.errors));
-			}else{
-				console.log(raw);
-			} res.json(new Response("Zone Updated"));		  
-		});			
+		var locations = req.locations.split("#");
+		if(locations.length > 1) res.status(400).send(new Response().error(400,"More than one location specified"));
+		else{
+			var query = { '_id' : zone._id}
+			var update = { 'name' : zone.name, 'armed' : zone.armed, 'devices' : zone.devices };
+			var opts = { strict: true };
+			Zone.update(query, update, opts, function(error,raw) {
+				if (error){
+					res.status(400).send(new Response().error(400,err.errors));
+				}else{
+					userLogic.userUpdateHasNewUpdates(zone.locationId, true);
+					res.json(new Response("Zone Updated"));
+				} 		  
+			});			
+		}
 });
 
 
+//delete Zone
 router.delete('/:id', function(req, res, next) {
 		
 		console.log('ID -> '+req.params.id)
-		
-		Zone.remove({ _id: req.params.id }, function(error,raw) {
-			if (error) {
-				res.status(400).send(new Response().error(400,err.errors));
-			} else {
-				console.log(raw);
-				res.json(new Response("Zone Removed"));	
-			}
-		});
-		
+		var locations = req.locations.split("#");
+		if(locations.length > 1) res.status(400).send(new Response().error(400,"More than one location specified"));
+		else{
+			Zone.remove({ _id: req.params.id }, function(error,raw) {
+				if (error) {
+					res.status(400).send(new Response().error(400,err.errors));
+				} else {
+					userLogic.userUpdateHasNewUpdates(zone.locationId, true);
+					res.json(new Response("Zone Removed"));	
+				}
+			});
+		}
 });
 
 

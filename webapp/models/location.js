@@ -13,7 +13,7 @@ var locationSchema = new Schema({
 				   token : String,
 				   refresh_token : String
 				},
-	config : {enableNewDevice: { type: Boolean, default: false }},
+	config : {enableNewDevice: { type: Boolean, default: false }, hasNewUpdates : { type: Boolean, default: false }},
 	insertDate: Date
 });
 

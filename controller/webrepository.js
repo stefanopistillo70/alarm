@@ -92,12 +92,13 @@ var refreshToken = function(callback){
 				});
 		}else{
 			logger.error(data.errors);
-			callback(data.errors)
+			callback(data.errors);
 		} 
 	};
 		
 	client.post(url+"/auth/refresh", args, onResponseEvent).on('error', function (err) {
 		logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+		callback(err);
 	});
 
 } 
@@ -163,9 +164,10 @@ class WebRepository extends Repository{
 			msg.level = "info";
 			msg.message = "Controller startup";
 			this.savePersistantMessage(msg, function(){
-				logger.info('Message Sent');
+				logger.info('Message Sent');			
 			});
-			
+			WebRepository.prototype.checkForRemoteUpdate(url);
+
 		}else{
 			setTimeout(WebRepository.prototype.waitForInit.bind(this),10000);
 		}
@@ -218,7 +220,45 @@ class WebRepository extends Repository{
 	}
 
 	
-	checkForRemoteUpdate(devices,url){
+	checkForRemoteUpdate(url){
+		
+		logger.info('CHECK Web remote update');
+		
+		WebRepository.prototype.checkCommonHeaders(function(){
+			var args = {
+				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
+			};
+
+			var onResponseEvent = function(data, response) {
+				var err = undefined;
+				if(response.statusCode == 200){		
+						console.log(data);
+						var hasUpdate = data.result;
+						console.log("New Updates :"+hasUpdate);
+						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
+
+				}else{
+					logger.error(data.errors);
+					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
+				} 
+			};
+
+			client.get(url+"/controller", args, onResponseEvent).on('error', function (err) {
+				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
+			});
+			
+		});
+					
+	}
+
+	
+	
+	
+	
+	
+	
+	checkForRemoteUpdate2(devices,url){
 		
 		logger.info('CHECK Web remote update :'+devices.length);
 		
@@ -245,7 +285,7 @@ class WebRepository extends Repository{
 		};
 
 		client.get(url+"/device", args, onResponseEvent).on('error', function (err) {
-			logger.log('error',err);
+			logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
 			setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,devices,url),10000);
 		});
 					
@@ -333,7 +373,9 @@ class WebRepository extends Repository{
 			callback();
 		}else{
 			refreshToken(function(err){
-				logger.info("Token refreshed.");
+				if(err){
+					logger.error("Token refresh err.");
+				} else logger.info("Token refreshed.");
 				callback();
 			});
 		}

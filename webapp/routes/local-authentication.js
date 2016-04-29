@@ -6,7 +6,7 @@ var Location       = require('../models/location');
 var express = require('express');
 var router = express.Router();
 
-var jwt = require('./jwt');
+var jwt = require('../logic/jwt');
 
 
 //create a jwt Token 

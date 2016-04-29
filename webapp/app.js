@@ -17,12 +17,13 @@ var zone = require('./routes/zone');
 var message = require('./routes/message');
 var auth_google = require('./routes/authentication');
 var local_auth = require('./routes/local-authentication');
+var controller = require('./routes/controller');
 
 
 var Response = require('./routes/response');
 var User       = require('./models/user');
 var Location       = require('./models/location');
-var jwt = require('./routes/jwt');
+var jwt = require('./logic/jwt');
 
 var mongoose = require('mongoose');
 
@@ -181,6 +182,7 @@ app.use(apiVer+'/zone', zone);
 app.use(apiVer+'/auth/google', auth_google);
 app.use(apiVer+'/auth', local_auth);
 app.use(apiVer+'/message', message);
+app.use(apiVer+'/controller', controller);
 
 
 
