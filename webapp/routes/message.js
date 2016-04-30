@@ -5,6 +5,8 @@ var Response = require('./response');
 
 var Message = require('../models/message');
 
+var userLogic = require('../logic/userLogic');
+
 /* Insert new message */
 router.post('/', function(req, res, next) {
 	
@@ -17,6 +19,7 @@ router.post('/', function(req, res, next) {
 	message.save(function(err) {
 				if (err) res.status(400).send(new Response().error(400,err.errors));
 				else {
+					userLogic.sendNotifyToAllUsers(message.locationId,message);
 					res.json(new Response(message));
 				}
 	});
