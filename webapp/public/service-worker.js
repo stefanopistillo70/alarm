@@ -2,7 +2,7 @@
 
 'use strict';
 
-console.log('Started', self);
+
 self.addEventListener('install', function(event) {
 	self.skipWaiting();
 	console.log('Installed', event);
@@ -19,14 +19,14 @@ self.addEventListener('push', function(event) {
   // an API and use it to populate a notification  
   event.waitUntil(  
 		self.registration.pushManager.getSubscription().then(function(subscription) {
-			fetch('/api/1.0/message/', {
+			fetch('/api/1.0/message/last', {
 				method: 'post',
 				headers: {
-				'Authorization': 'Bearer ' + self.token,
+				'x-access-token': subscription.endpoint,
 				'Accept': 'application/json',
 				'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(subscription)
+				body: {}
 			})
 			.then(function(response) { return response.json(); })
 			.then(function(data) {
@@ -47,19 +47,6 @@ self.addEventListener('push', function(event) {
 
 
 
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length,c.length);
-        }
-    }
-    return "";
-}
+
 
 

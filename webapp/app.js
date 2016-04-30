@@ -65,48 +65,22 @@ app.use(function(req, res, next) {
 	
 	
 	var urlLogin = apiVer + "/auth";
-	var urlRefresh = apiVer + "/auth/refresh"
-	var urlController = apiVer + "/auth/controller"
+	var urlRefresh = apiVer + "/auth/refresh";
+	var urlController = apiVer + "/auth/controller";
+	
+	var urlLastMsg = apiVer + "/message/last";
 	
 	if(url.substring(0, apiVer.length) == apiVer 
 		&& !(url.substring(0, urlLogin.length) == urlLogin)
 		&& !(url.substring(0, urlRefresh.length) == urlRefresh)
 		&& !(url.substring(0, urlController.length) == urlController)		){
 			
-		logger.info("Verify token on DB ->"+token);
 		if (token) {
-			logger.info("Token present");
-			var aud = jwt.getAudience(token);
-			logger.info("Audience ->"+aud);
-			if(aud === "controller"){
-					
-				var query = { 'controller.token' : token }
-				Location.findOne(query, function(err, location) {
-					if (err){
-						logger.error(err);
-						return res.status(403).send(new Response().error(403,"Authentication Problem: err location"));
-					}	
-
-					if (location) {
-						
-						logger.info("Location Found token ->"+location.controller.controllerId);
-
-						if(jwt.verifyJWT(token,location.controller.controllerId)){
-							req.locations = location._id;								
-							next();
-						}else{
-							logger.error("Authentication Problem: token expired");
-							return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
-						}
-					}else{
-						logger.error("Authentication Problem: no location found");
-						return res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
-					}
-
-				});
-					
-			} else {
-				var query = { 'auth.local.token' : token }
+			if(urlLastMsg === url){
+				var gcm = token.replace("https://android.googleapis.com/gcm/send/", "");
+				logger.info("Last msg GCM : "+gcm);
+				
+				var query = { 'google.gcm.web' : gcm };
 
 				User.findOne(query, function(err, user) {
 					
@@ -117,33 +91,96 @@ app.use(function(req, res, next) {
 
 					if (user) {
 						
-						logger.info("User Found token ->"+user.auth.local.email);
-
-						if(jwt.verifyJWT(token,user.auth.local.email)){
-							
-							req.userId = user._id;
-							if (user.location_view){
-								req.locations = user.location_view;
-							}else{
-								req.locations = "";
-								for(var i=0; i< user.locations.length;i++){
-									if(i < (user.locations.length -1) ) req.locations += user.locations[i]._id+"#";
-									else req.locations += user.locations[i]._id;
-								}
-							}
-							
-							next();
+						if (user.location_view){
+							req.locations = user.location_view;
 						}else{
-							logger.error("Authentication Problem: token expired");
-							return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
-						}
+							req.locations = "";
+							for(var i=0; i< user.locations.length;i++){
+								if(i < (user.locations.length -1) ) req.locations += user.locations[i]._id+"#";
+								else req.locations += user.locations[i]._id;
+							}
+						}						
+						next();
 					}else{
 						logger.error("Authentication Problem: no user found");
 						return res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
 					}
 
 				});
-			}
+
+				
+			}else{
+				logger.info("Verify token on DB ->"+token);
+				logger.info("Token present");
+				var aud = jwt.getAudience(token);
+				logger.info("Audience ->"+aud);
+				if(aud === "controller"){
+						
+					var query = { 'controller.token' : token }
+					Location.findOne(query, function(err, location) {
+						if (err){
+							logger.error(err);
+							return res.status(403).send(new Response().error(403,"Authentication Problem: err location"));
+						}	
+
+						if (location) {
+							
+							logger.info("Location Found token ->"+location.controller.controllerId);
+
+							if(jwt.verifyJWT(token,location.controller.controllerId)){
+								req.locations = location._id;								
+								next();
+							}else{
+								logger.error("Authentication Problem: token expired");
+								return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
+							}
+						}else{
+							logger.error("Authentication Problem: no location found");
+							return res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
+						}
+
+					});
+						
+				} else {
+					var query = { 'auth.local.token' : token }
+
+					User.findOne(query, function(err, user) {
+						
+						if (err){
+							logger.error(err);
+							return res.status(403).send(new Response().error(403,"Authentication Problem: err user"));
+						}	
+
+						if (user) {
+							
+							logger.info("User Found token ->"+user.auth.local.email);
+
+							if(jwt.verifyJWT(token,user.auth.local.email)){
+								
+								req.userId = user._id;
+								if (user.location_view){
+									req.locations = user.location_view;
+								}else{
+									req.locations = "";
+									for(var i=0; i< user.locations.length;i++){
+										if(i < (user.locations.length -1) ) req.locations += user.locations[i]._id+"#";
+										else req.locations += user.locations[i]._id;
+									}
+								}
+								
+								next();
+							}else{
+								logger.error("Authentication Problem: token expired");
+								return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
+							}
+						}else{
+							logger.error("Authentication Problem: no user found");
+							return res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
+						}
+
+					});
+				};
+			};
 						
 		}else{
 			return res.status(403).send(new Response().error(403,"Authentication Problem : no token provided"));

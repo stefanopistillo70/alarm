@@ -6,6 +6,7 @@ var Response = require('./response');
 var Message = require('../models/message');
 
 var userLogic = require('../logic/userLogic');
+var logger = require('../config/logger.js')('Web');
 
 /* Insert new message */
 router.post('/', function(req, res, next) {
@@ -28,6 +29,8 @@ router.post('/', function(req, res, next) {
 
 //get most recent message
 router.post('/last', function(req, res, next) {
+	
+	logger.info("Get Last Msg for location :"+req.locations);
 	
 	query = { locationId : req.locations}
 	Message.find(query, function(err, messages) {
