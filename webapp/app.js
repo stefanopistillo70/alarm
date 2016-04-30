@@ -15,9 +15,10 @@ var device = require('./routes/device');
 var config = require('./routes/config');
 var zone = require('./routes/zone');
 var message = require('./routes/message');
-var auth_google = require('./routes/authentication');
+var auth_google = require('./routes/google-authentication');
 var local_auth = require('./routes/local-authentication');
 var controller = require('./routes/controller');
+var google = require('./routes/google');
 
 
 var Response = require('./routes/response');
@@ -120,6 +121,7 @@ app.use(function(req, res, next) {
 
 						if(jwt.verifyJWT(token,user.auth.local.email)){
 							
+							req.userId = user._id;
 							if (user.location_view){
 								req.locations = user.location_view;
 							}else{
@@ -183,6 +185,7 @@ app.use(apiVer+'/auth/google', auth_google);
 app.use(apiVer+'/auth', local_auth);
 app.use(apiVer+'/message', message);
 app.use(apiVer+'/controller', controller);
+app.use(apiVer+'/google', google);
 
 
 

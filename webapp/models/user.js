@@ -11,6 +11,9 @@ var userSchema = new Schema({
 	  local	: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date },
 	  google: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date }
 	},
+	google : {
+		gcm : { web : String, app : String}
+	},
 	insertDate: Date
 });
 
