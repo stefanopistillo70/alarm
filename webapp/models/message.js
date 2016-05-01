@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 // create a schema
 var messageSchema = new Schema({
 	level: { type: String},
-	message : { type: Boolean},
+	message : { type: String},
 	locationId : { type: Schema.Types.ObjectId, required: true},
 	insertDate: Date
 });

@@ -30,11 +30,13 @@ self.addEventListener('push', function(event) {
 			})
 			.then(function(response) { return response.json(); })
 			.then(function(data) {
+				console.log("***********");
+				console.log(data);
 				var title = "Message "+ data.result.level;
 				var body = data.result.message;
 				self.registration.showNotification(title, {
 					body: body,
-					icon: 'favicon-196x196.png'
+					icon: 'favicon.ico'
 				});
 			})
 			.catch(function(err) {
