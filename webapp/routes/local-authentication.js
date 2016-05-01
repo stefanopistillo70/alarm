@@ -85,7 +85,7 @@ router.post('/refresh', function(req, res, next) {
 
 			if (location) {
 				
-				logger.info("Location Found token ->"+location.controller.controllerId);
+				logger.info("Location Found controllerId ->"+location.controller.controllerId);
 
 				if(jwt.verifyJWT(refresh_token,location.controller.controllerId)){
 													

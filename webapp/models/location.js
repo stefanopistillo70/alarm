@@ -11,7 +11,8 @@ var locationSchema = new Schema({
 	router_ip : { type: String},
 	controller : { controllerId : String,
 				   token : String,
-				   refresh_token : String
+				   refresh_token : String,
+				   lastCheck : Date
 				},
 	config : {enableNewDevice: { type: Boolean, default: false }, hasNewUpdates : { type: Boolean, default: false }},
 	insertDate: Date

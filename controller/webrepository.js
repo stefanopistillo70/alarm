@@ -232,9 +232,10 @@ class WebRepository extends Repository{
 			var onResponseEvent = function(data, response) {
 				var err = undefined;
 				if(response.statusCode == 200){		
-						console.log(data);
 						var hasUpdate = data.result;
-						console.log("New Updates :"+hasUpdate);
+						if(hasUpdate) {
+							logger.info('New updates');
+						}
 						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
 
 				}else{
