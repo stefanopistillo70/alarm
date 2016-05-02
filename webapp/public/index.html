@@ -43,6 +43,20 @@
 				<li><a href="#/devices">Devices</a></li> 
 				<li><a href="#/events">Events</a></li> 
 			</ul>
+			
+			
+			
+			<div class="navbar-header pull-right" ng-controller="MenuHeaderCtrl" >
+				<a class="navbar-brand">
+                    Welcome {{userName}}
+                </a>
+				<p class="navbar-text">
+                    Location : {{location}} 
+                </p>
+				<button type="button" class="btn btn-default navbar-btn" ng-click="logout()" >Logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></button>
+ 			</div>
+ 
+			
 		
 		</div><!-- /.container-fluid -->
 	</nav>

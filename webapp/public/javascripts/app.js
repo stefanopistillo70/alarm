@@ -3,6 +3,9 @@ var apiVer = "/api/1.0/";
 
 var app = angular.module('DomusGuard', ['ngRoute', 'ngCookies', 'dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
 
+
+
+
 app.config(['$routeProvider', function($routeProvider) {
             $routeProvider.
 				when('/events', { templateUrl: 'partials/events.html', controller: 'EventCtrl' }).
@@ -13,9 +16,11 @@ app.config(['$routeProvider', function($routeProvider) {
           }]);
 
 
-		  
-//Intercept authenticator error 403 
-
+/*********************************
+*
+*	Intercept authenticator error 403 
+*
+********************************/
 app.factory('myInterceptor', ['$log', '$q','$location', function ($log, $q, $location){
 
     var myInterceptor = {
@@ -63,7 +68,13 @@ app.config(['$httpProvider', function($httpProvider) {
 }]);
 
 
-//Inject token in each request
+
+
+/********************************
+*
+*	Inject token in each request
+*
+********************************/
 app.factory('sessionInjector', ['$log', '$cookies', function($log, $cookies) {  
     var sessionInjector = {
         request: function(config) {
@@ -101,3 +112,62 @@ app.factory('sessionInjector', ['$log', '$cookies', function($log, $cookies) {
 app.config(['$httpProvider', function($httpProvider) {  
     $httpProvider.interceptors.push('sessionInjector');
 }]);
+
+
+
+
+/********************
+*
+*  Main Header Controll
+*
+**********************/
+app.controller('MenuHeaderCtrl', ['$log' ,'$scope', 'HeaderService', function($log, $scope, HeaderService) {
+		
+		
+		userInfoQuery = HeaderService.query().$promise;
+		
+		userInfoQuery.then(function(response) {
+			if (response.result) {
+				
+			}
+		}, function(reason) {
+			  console.log('Failed MenuHeaderCtrl: ' + reason);
+		});
+
+		
+		
+		
+		$scope.userName = "Paperino";
+		$scope.location = "Default";
+		
+		
+		$scope.logout = function () {
+			$log.info("Logout")
+		}
+
+}]);
+
+
+
+/***************************************************
+*
+* 		Service
+*
+****************************************************/
+
+ app.factory('HeaderService', ['$resource',
+  function($resource){
+	var response = $resource(apiVer+'userInfo', {
+			query: { method: 'GET', params: {} },
+    });
+    return response;
+
+  }]);
+  
+
+
+
+
+
+
+
