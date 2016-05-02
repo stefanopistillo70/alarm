@@ -19,7 +19,7 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Goo
 		});
 
 		
-		if (!$rootScope.auth) $rootScope.auth = {};
+/*		if (!$rootScope.auth) $rootScope.auth = {};
 		if (!$rootScope.auth.google) $rootScope.auth.google = {} 
 		if (!$rootScope.auth.google.gapi){
 			$rootScope.auth.google.gapi = {};
@@ -33,11 +33,22 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Goo
 					});
 			});
 		} 
+*/
 		
 		$scope.login = function() {
 			console.log("Login");
 			
-			var auth2 = $rootScope.auth.google.gapi.auth2;
+			
+			gapi.load('auth2', function() {
+					var auth2 = gapi.auth2.init({
+					  client_id: googleClientID,
+					  // Scopes to request in addition to 'profile' and 'email'
+					  scope:'openid profile email',
+					  //access_type: "offline"
+					});
+			
+			
+			//var auth2 = $rootScope.auth.google.gapi.auth2;
 			
 			console.log("SIGNED ->"+auth2.isSignedIn.get());
 			
@@ -70,7 +81,9 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Goo
 					console.log("ERROR");
 				  }
 				  
-				});
+			});
+			
+			});
 		};
 }]);
 

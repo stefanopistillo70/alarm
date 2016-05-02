@@ -1,4 +1,8 @@
 
+
+var Client = require('node-rest-client').Client;
+var client = new Client();
+
 var logger = require('../config/logger.js')('Web');
 var Response = require('./response');
 var User     = require('../models/user');
@@ -52,67 +56,72 @@ router.post('/', function(req, res, next) {
 					var ticketAttr = ticket.getAttributes();
 					logger.info(ticketAttr);
 					
-					var query = { 'auth.google.email' : ticketAttr.payload.email }
+					getUserInfo(googleTokens.access_token, function(userInfo){
 					
-					User.findOne(query, function(err, user) {
-		
-						if (err) res.status(400).send(new Response().error(400,err.errors));
-													
-						if (user) {
-							logger.info("User Found token ->"+user.auth.google.token);
-							// if a user is found, log them in
-							
-							var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web");
-							logger.info("JWT ->");
-							logger.info(jwtToken);
+						var query = { 'auth.google.email' : ticketAttr.payload.email }
+						
+						User.findOne(query, function(err, user) {
+			
+							if (err) res.status(400).send(new Response().error(400,err.errors));
 														
-							var update = { 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token, 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date };
-							var opts = { strict: true };
-							User.update(query, update, opts, function(error,raw) {
-								if (error){
-									res.status(400).send(new Response().error(400,error));
-								}else{
-									var sec_expire_time = jwtToken.duration_time/4;
-									res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
-									res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-									res.cookie('refresh_token',jwtToken.refresh_token);
-									if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
-									res.json(new Response(jwtToken));
-								} 		  
-							});			
+							if (user) {
+								logger.info("User Found token ->"+user.auth.google.token);
+								// if a user is found, log them in
+								
+								var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web");
+								logger.info("JWT ->");
+								logger.info(jwtToken);
+															
+								var update = { 'auth.local.name': userInfo.given_name, 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token, 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date };
+								var opts = { strict: true };
+								User.update(query, update, opts, function(error,raw) {
+									if (error){
+										res.status(400).send(new Response().error(400,error));
+									}else{
+										var sec_expire_time = jwtToken.duration_time/4;
+										res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+										res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+										res.cookie('refresh_token',jwtToken.refresh_token);
+										if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
+										res.json(new Response(jwtToken));
+									} 		  
+								});			
+								
+							} else {
+								
+								// if the user isnt in our database, create a new user
+								var newUser          = new User();
 							
-						} else {
+								var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web");
+								logger.info("JWT ->");
+								logger.info(jwtToken);
 							
-							// if the user isnt in our database, create a new user
-							var newUser          = new User();
-						
-							var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web");
-							logger.info("JWT ->");
-							logger.info(jwtToken);
-						
-							newUser.auth.local.email = ticketAttr.payload.email;
-							newUser.auth.local.token = jwtToken.access_token;
-							newUser.auth.local.refresh_token = jwtToken.refresh_token;
-							
-							newUser.auth.google.email = ticketAttr.payload.email;
-							newUser.auth.google.token = googleTokens.access_token;
-							newUser.auth.google.refresh_token  = googleTokens.refresh_token;
-							newUser.auth.google.expiry_date = googleTokens.expiry_date;
-							
-							userLogic.createUser(newUser, ip, function(err) {
-								if (err) res.status(400).send(new Response().error(400,err.errors));
-								else {
-									var sec_expire_time = jwtToken.duration_time/4;
-									res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
-									res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-									if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
-									res.json(new Response(jwtToken));
-								}
-							});
+								newUser.auth.local.email = ticketAttr.payload.email;
+								newUser.auth.local.token = jwtToken.access_token;
+								newUser.auth.local.refresh_token = jwtToken.refresh_token;
+								
+								newUser.auth.google.email = ticketAttr.payload.email;
+								newUser.auth.google.token = googleTokens.access_token;
+								newUser.auth.google.refresh_token  = googleTokens.refresh_token;
+								newUser.auth.google.expiry_date = googleTokens.expiry_date;
+								
+								userLogic.createUser(newUser, ip, function(err) {
+									if (err) res.status(400).send(new Response().error(400,err.errors));
+									else {
+										var sec_expire_time = jwtToken.duration_time/4;
+										res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+										res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+										if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
+										res.json(new Response(jwtToken));
+									}
+								});
 
-						}
-										
+							}
+											
+						});
+					
 					});
+
 
 				} 
 				
@@ -138,6 +147,27 @@ router.get('/', function(req, res, next) {
 var verifyIdToken = function(token,callback){
 	logger.info("VERIFY token ID");
 	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
+};
+
+var getUserInfo = function(token,callback){
+	logger.info("Get  User Info");
+	
+	var args = {
+		headers: { "Content-Type": "application/json" }
+	};
+		
+	var onResponseEvent = function(data, response) {
+		if(response.statusCode == 200){
+			callback(data);
+		}else{
+			logger.error("ERROR getting user info : "+response.statusCode);
+		} 
+	};
+	
+	var url = "https://www.googleapis.com/oauth2/v3/userinfo?access_token="+token;
+	client.get(url, args, onResponseEvent).on('error', function (err) {
+		logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+	});
 };
 
 
