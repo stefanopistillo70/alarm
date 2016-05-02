@@ -58,6 +58,7 @@ router.post('/', function(req, res, next) {
 					
 					getUserInfo(googleTokens.access_token, function(userInfo){
 					
+						console.log(userInfo);
 						var query = { 'auth.google.email' : ticketAttr.payload.email }
 						
 						User.findOne(query, function(err, user) {
@@ -89,32 +90,37 @@ router.post('/', function(req, res, next) {
 								
 							} else {
 								
-								// if the user isnt in our database, create a new user
-								var newUser          = new User();
-							
-								var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web");
-								logger.info("JWT ->");
-								logger.info(jwtToken);
-							
-								newUser.auth.local.email = ticketAttr.payload.email;
-								newUser.auth.local.token = jwtToken.access_token;
-								newUser.auth.local.refresh_token = jwtToken.refresh_token;
+								getUserInfo(googleTokens.access_token, function(userInfo){
+
+									// if the user isnt in our database, create a new user
+									var newUser          = new User();
 								
-								newUser.auth.google.email = ticketAttr.payload.email;
-								newUser.auth.google.token = googleTokens.access_token;
-								newUser.auth.google.refresh_token  = googleTokens.refresh_token;
-								newUser.auth.google.expiry_date = googleTokens.expiry_date;
+									var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web");
+									logger.info("JWT ->");
+									logger.info(jwtToken);
 								
-								userLogic.createUser(newUser, ip, function(err) {
-									if (err) res.status(400).send(new Response().error(400,err.errors));
-									else {
-										var sec_expire_time = jwtToken.duration_time/4;
-										res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
-										res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-										if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
-										res.json(new Response(jwtToken));
-									}
-								});
+									newUser.auth.local.name = userInfo.given_name;
+									newUser.auth.local.email = ticketAttr.payload.email;
+									newUser.auth.local.token = jwtToken.access_token;
+									newUser.auth.local.refresh_token = jwtToken.refresh_token;
+									
+									newUser.auth.google.email = ticketAttr.payload.email;
+									newUser.auth.google.token = googleTokens.access_token;
+									newUser.auth.google.refresh_token  = googleTokens.refresh_token;
+									newUser.auth.google.expiry_date = googleTokens.expiry_date;
+									
+									userLogic.createUser(newUser, ip, function(err) {
+										if (err) res.status(400).send(new Response().error(400,err.errors));
+										else {
+											logger.info("New User Created : "+newUser.auth.local);
+											var sec_expire_time = jwtToken.duration_time/4;
+											res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+											res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+											if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
+											res.json(new Response(jwtToken));
+										}
+									});
+								});	
 
 							}
 											

@@ -1,7 +1,8 @@
 
 var apiVer = "/api/1.0/";
 
-var app = angular.module('DomusGuard', ['ngRoute', 'ngCookies', 'dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
+var app = angular.module('DomusGuard', ['ngResource', 'ngRoute', 'ngCookies', 'dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
+
 
 
 
@@ -54,7 +55,7 @@ app.factory('myInterceptor', ['$log', '$q','$location', function ($log, $q, $loc
 		   $log.debug('RESPONSE ERROR');
 			if (rejection.status === 403) {
 				$log.debug('REDIRECT');
-				$location.url('login');
+				$location.url('/login');
 			}
 			return $q.reject(rejection);
 	   }
@@ -116,6 +117,23 @@ app.factory('sessionInjector', ['$log', '$cookies', function($log, $cookies) {
 app.config(['$httpProvider', function($httpProvider) {  
     $httpProvider.interceptors.push('sessionInjector');
 }]);
+
+
+
+
+
+app.controller('DomusGuardCtrl', ['$scope', '$cookies', function($scope, $cookies) {
+		
+		if($cookies.get('refresh_token')){
+			$scope.isLoggedIn = true;
+		}else{
+			$scope.isLoggedIn = false;
+		}
+		
+}]);
+
+
+
 
 
 

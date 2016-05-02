@@ -22,13 +22,10 @@ var logic = {
 			newLocation.save(function(err, location) {
 				if (err) res.status(400).send(new Response().error(400,err.errors));
 				else {
-					logger.info("location");
-					logger.info(location);
+					logger.info("Created a new location with router ip : "+router_ip);
 					newUser.locations = [];
 					newUser.locations.push(location._id);
 					
-					logger.info("NEW User");
-					logger.info(newUser);
 					// save the user
 					newUser.save(function(err) {
 						callback(err);

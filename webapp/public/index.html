@@ -29,7 +29,16 @@
 	<script src="/javascripts/module-config.js"></script>
 	<script src="/javascripts/module-zone.js"></script>
 </head>
-<body >
+<body ng-controller="DomusGuardCtrl" >
+
+<div ng-hide="isLoggedIn" class="ng-hide">
+	<div class="container">
+		<div ng-view>
+		</div>
+	</div>
+</div>
+
+<div ng-show="isLoggedIn" class="ng-hide">
 
 	<nav class="navbar navbar-default">
 		<div class="container-fluid">
@@ -66,6 +75,7 @@
 		</div>
 	</div>
 	
+</div>
 </body>
 
 </html>
