@@ -6,6 +6,18 @@ var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap'
 
 dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'GoogleLoginService', function($scope, $rootScope, $uibModal, GoogleLoginService) {
 		
+		var getGoogleAccoutClientId = GoogleLoginService.getGoogleAccoutClientId().$promise;
+
+		var googleClientID = "";
+		
+		getGoogleAccoutClientId.then(function(response) {
+				if (response.result) {
+					googleClientID = response.result;
+				}
+			}, function(reason) {
+				console.log('Failed get google Client ID: ' + reason);
+		});
+
 		
 		if (!$rootScope.auth) $rootScope.auth = {};
 		if (!$rootScope.auth.google) $rootScope.auth.google = {} 
@@ -14,7 +26,7 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Goo
 			console.log("**************** gapi.auth2.init");
 			gapi.load('auth2', function() {
 					$rootScope.auth.google.gapi.auth2 = gapi.auth2.init({
-					  client_id: '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
+					  client_id: googleClientID,
 					  // Scopes to request in addition to 'profile' and 'email'
 					  scope:'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/userinfo.email',
 					  access_type: "offline"
@@ -75,6 +87,7 @@ dgModuleLogin.factory('GoogleLoginService', ['$resource',
   function($resource){
 	var response = $resource(apiVer+'auth/google', {}, {
 			getToken: {method:'POST', params: {}},
+			getGoogleAccoutClientId: {method:'GET', params: {}}
     });
     return response;
 
@@ -89,6 +102,10 @@ dgModuleLogin.factory('LoginService', ['$resource',
     return response;
 
 }]);
+
+
+
+
 
 
 

@@ -125,7 +125,7 @@ app.config(['$httpProvider', function($httpProvider) {
 *  Main Header Controll
 *
 **********************/
-app.controller('MenuHeaderCtrl', ['$log' ,'$scope', 'HeaderService','LoginService', function($log, $scope, HeaderService, LoginService) {
+app.controller('MenuHeaderCtrl', ['$log' ,'$scope', '$cookies', 'HeaderService','LoginService', function($log, $scope, $cookies, HeaderService, LoginService) {
 		
 		
 		userInfoQuery = HeaderService.query(0).$promise;

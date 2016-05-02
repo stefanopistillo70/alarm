@@ -125,6 +125,16 @@ router.post('/', function(req, res, next) {
 });
 
 
+/********************************
+*
+* Get Google Client ID 
+*
+*********************************/
+router.get('/', function(req, res, next) {
+	res.json(new Response(configAuth.googleAuth.clientID));
+});
+
+
 var verifyIdToken = function(token,callback){
 	logger.info("VERIFY token ID");
 	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
