@@ -195,6 +195,36 @@ router.post('/controller', function(req, res, next) {
 
 
 
+
+//register controller
+router.post('/sendEmail', function(req, res, next) {
+	
+	var nodemailer = require('nodemailer');
+	 
+	// create reusable transporter object using the default SMTP transport 
+	var transporter = nodemailer.createTransport('smtps://pistillo.stefano%40libero.it:Magacirce1@smtp.libero.it');
+	 
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '<pistillo.stefano@libero.it>', // sender address 
+		to: 'stefano.pistillo@gmail.com', // list of receivers 
+		subject: 'DomusGuard', // Subject line 
+		text: 'Hello world', // plaintext body 
+		html: '<b>Hello world</b>' // html body 
+	};
+	 
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+			return console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+});
+
+
+
 module.exports = router;
 
 
