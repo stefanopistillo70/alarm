@@ -124,22 +124,17 @@ app.config(['$httpProvider', function($httpProvider) {
 app.controller('MenuHeaderCtrl', ['$log' ,'$scope', 'HeaderService', function($log, $scope, HeaderService) {
 		
 		
-		userInfoQuery = HeaderService.query().$promise;
+		userInfoQuery = HeaderService.query(0).$promise;
 		
 		userInfoQuery.then(function(response) {
+			console.log(response);
 			if (response.result) {
-				
+						$scope.userName = response.result.name;
+						$scope.location = response.result.location;
 			}
 		}, function(reason) {
 			  console.log('Failed MenuHeaderCtrl: ' + reason);
 		});
-
-		
-		
-		
-		$scope.userName = "Paperino";
-		$scope.location = "Default";
-		
 		
 		$scope.logout = function () {
 			$log.info("Logout")
@@ -157,8 +152,8 @@ app.controller('MenuHeaderCtrl', ['$log' ,'$scope', 'HeaderService', function($l
 
  app.factory('HeaderService', ['$resource',
   function($resource){
-	var response = $resource(apiVer+'userInfo', {
-			query: { method: 'GET', params: {} },
+	var response = $resource(apiVer+'main/userInfo/:entryId', {}, {
+			query: { method: 'GET', params: {entryId: '@entryId'}, isArray : false }
     });
     return response;
 

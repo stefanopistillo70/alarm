@@ -19,6 +19,7 @@ var auth_google = require('./routes/google-authentication');
 var local_auth = require('./routes/local-authentication');
 var controller = require('./routes/controller');
 var google = require('./routes/google');
+var main = require('./routes/main');
 
 
 var Response = require('./routes/response');
@@ -90,7 +91,7 @@ app.use(function(req, res, next) {
 					}	
 
 					if (user) {
-						
+						req.userId = user._id;
 						if (user.location_view){
 							req.locations = user.location_view;
 						}else{
@@ -223,6 +224,7 @@ app.use(apiVer+'/auth', local_auth);
 app.use(apiVer+'/message', message);
 app.use(apiVer+'/controller', controller);
 app.use(apiVer+'/google', google);
+app.use(apiVer+'/main', main);
 
 
 
