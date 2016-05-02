@@ -4,7 +4,7 @@ var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap'
 
 
 
-dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'GoogleLoginService', function($scope, $rootScope, $uibModal, GoogleLoginService) {
+dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$uibModal', 'GoogleLoginService', function($scope, $rootScope, $location, $uibModal, GoogleLoginService) {
 		
 		var getGoogleAccoutClientId = GoogleLoginService.getGoogleAccoutClientId().$promise;
 
@@ -69,8 +69,10 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Goo
 					loginGetToken.then(function(response) {
 						if (response.result) {
 							console.log(response.result);
+							$rootScope.isLoggedIn = true;
 						}
-						window.location = "http://localhost:3000/#/";
+						$location.url('/');
+						//window.location = "http://localhost:3000/#/";
 												
 					}, function(reason) {
 						  console.log('Failed Login insert Code: ' + reason);

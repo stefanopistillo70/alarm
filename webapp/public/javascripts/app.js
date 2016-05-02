@@ -89,23 +89,25 @@ app.factory('sessionInjector', ['$log', '$cookies', function($log, $cookies) {
 				config.headers['x-access-token'] = token;
 				return config;
 			}else{
-				console.log("refresh token");
 				
-				var data = "refresh_token="+refresh_token;
-				
-				var xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function() {
-					if (xhttp.readyState == 4) {
-						console.log("Respons arrived");
-						var new_token = $cookies.get('token');
-						console.log("inject token");
-						config.headers['x-access-token'] = new_token;
-						return config;
+				if(refresh_token){
+					console.log("refresh token");
+					var data = "refresh_token="+refresh_token;
+					
+					var xhttp = new XMLHttpRequest();
+					xhttp.onreadystatechange = function() {
+						if (xhttp.readyState == 4) {
+							console.log("Respons arrived");
+							var new_token = $cookies.get('token');
+							console.log("inject token");
+							config.headers['x-access-token'] = new_token;
+							return config;
+						}
 					}
-				}
-				xhttp.open("POST", apiVer+"auth/refresh", false);
-				xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				xhttp.send(data);
+					xhttp.open("POST", apiVer+"auth/refresh", false);
+					xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+					xhttp.send(data);
+				};
 				return config;
 			}
 
@@ -122,12 +124,13 @@ app.config(['$httpProvider', function($httpProvider) {
 
 
 
-app.controller('DomusGuardCtrl', ['$scope', '$cookies', function($scope, $cookies) {
+app.controller('DomusGuardCtrl', ['$log', '$rootScope', '$cookies', function($log, $rootScope, $cookies) {
+		$log.info("DomusGuard Ctrl");
 		
 		if($cookies.get('refresh_token')){
-			$scope.isLoggedIn = true;
+			$rootScope.isLoggedIn = true;
 		}else{
-			$scope.isLoggedIn = false;
+			$rootScope.isLoggedIn = false;
 		}
 		
 }]);
@@ -143,7 +146,7 @@ app.controller('DomusGuardCtrl', ['$scope', '$cookies', function($scope, $cookie
 *  Main Header Controll
 *
 **********************/
-app.controller('MenuHeaderCtrl', ['$log' ,'$scope', '$cookies', 'HeaderService','LoginService', function($log, $scope, $cookies, HeaderService, LoginService) {
+app.controller('MenuHeaderCtrl', ['$log' ,'$scope', '$rootScope', '$location',  '$cookies', 'HeaderService','LoginService', function($log, $scope, $rootScope, $location, $cookies, HeaderService, LoginService) {
 		
 		
 		userInfoQuery = HeaderService.query(0).$promise;
@@ -169,6 +172,8 @@ app.controller('MenuHeaderCtrl', ['$log' ,'$scope', '$cookies', 'HeaderService',
 					$cookies.remove('token');
 					$cookies.remove('token_expire_at');
 					$cookies.remove('refresh_token');
+					$rootScope.isLoggedIn = false;
+					$location.url('/login');
 				}
 			}, function(reason) {
 				  console.log('Failed MenuHeaderCtrl: ' + reason);

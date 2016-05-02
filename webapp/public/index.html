@@ -30,52 +30,51 @@
 	<script src="/javascripts/module-zone.js"></script>
 </head>
 <body ng-controller="DomusGuardCtrl" >
-
-<div ng-hide="isLoggedIn" class="ng-hide">
-	<div class="container">
-		<div ng-view>
-		</div>
-	</div>
-</div>
-
-<div ng-show="isLoggedIn" class="ng-hide">
-
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-		
-			<div class="navbar-header">
-				<a class="navbar-brand" href="#">DomusGuard</a>
+	<div ng-hide="isLoggedIn" class="ng-hide">
+		<div class="container">
+			<div ng-view>
 			</div>
-			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Home</a></li>
-				<li><a href="#/zones">Zones</a></li>
-				<li><a href="#/devices">Devices</a></li> 
-				<li><a href="#/events">Events</a></li> 
-			</ul>
-			
-			
-			
-			<div class="navbar-header pull-right" ng-controller="MenuHeaderCtrl" >
-				<a class="navbar-brand">
-                    Welcome {{userName}}
-                </a>
-				<p class="navbar-text">
-                    Location : {{location}} 
-                </p>
-				<button type="button" class="btn btn-default navbar-btn" ng-click="logout()" >Logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></button>
- 			</div>
- 
-			
-		
-		</div><!-- /.container-fluid -->
-	</nav>
-
-	<div class="container">
-		<div ng-view>
 		</div>
 	</div>
-	
-</div>
+
+	<div ng-show="isLoggedIn" class="ng-hide">
+
+		<nav class="navbar navbar-default">
+			<div class="container-fluid">
+			
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">DomusGuard</a>
+				</div>
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#/zones">Zones</a></li>
+					<li><a href="#/devices">Devices</a></li> 
+					<li><a href="#/events">Events</a></li> 
+				</ul>
+				
+				
+				
+				<div class="navbar-header pull-right" ng-controller="MenuHeaderCtrl" >
+					<a class="navbar-brand">
+						Welcome {{userName}}
+					</a>
+					<p class="navbar-text">
+						Location : {{location}} 
+					</p>
+					<button type="button" class="btn btn-default navbar-btn" ng-click="logout()" >Logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></button>
+				</div>
+	 
+				
+			
+			</div><!-- /.container-fluid -->
+		</nav>
+
+		<div class="container">
+			<div ng-view>
+			</div>
+		</div>
+		
+	</div>
 </body>
 
 </html>
