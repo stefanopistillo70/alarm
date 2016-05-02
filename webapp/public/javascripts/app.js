@@ -121,13 +121,12 @@ app.config(['$httpProvider', function($httpProvider) {
 *  Main Header Controll
 *
 **********************/
-app.controller('MenuHeaderCtrl', ['$log' ,'$scope', 'HeaderService', function($log, $scope, HeaderService) {
+app.controller('MenuHeaderCtrl', ['$log' ,'$scope', 'HeaderService','LoginService', function($log, $scope, HeaderService, LoginService) {
 		
 		
 		userInfoQuery = HeaderService.query(0).$promise;
 		
 		userInfoQuery.then(function(response) {
-			console.log(response);
 			if (response.result) {
 						$scope.userName = response.result.name;
 						$scope.location = response.result.location;
@@ -137,7 +136,19 @@ app.controller('MenuHeaderCtrl', ['$log' ,'$scope', 'HeaderService', function($l
 		});
 		
 		$scope.logout = function () {
-			$log.info("Logout")
+			$log.info("Logout");
+			
+			logoutPost = LoginService.logout().$promise;
+			
+			logoutPost.then(function(response) {
+				console.log(response);
+				if (response.status == 200) {
+					$log.info("delete cookies");
+				}
+			}, function(reason) {
+				  console.log('Failed MenuHeaderCtrl: ' + reason);
+			});
+						
 		}
 
 }]);

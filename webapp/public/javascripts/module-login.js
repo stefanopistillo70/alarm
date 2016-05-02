@@ -4,7 +4,7 @@ var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap'
 
 
 
-dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'LoginService', function($scope, $rootScope, $uibModal, LoginService) {
+dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'GoogleLoginService', function($scope, $rootScope, $uibModal, GoogleLoginService) {
 		
 		
 		if (!$rootScope.auth) $rootScope.auth = {};
@@ -71,11 +71,20 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Log
 *
 ****************************************************/
 
-dgModuleLogin.factory('LoginService', ['$resource',
+dgModuleLogin.factory('GoogleLoginService', ['$resource',
   function($resource){
 	var response = $resource(apiVer+'auth/google', {}, {
-			query: { method: 'GET', params: {} },
 			getToken: {method:'POST', params: {}},
+    });
+    return response;
+
+}]);
+
+
+dgModuleLogin.factory('LoginService', ['$resource',
+  function($resource){
+	var response = $resource(apiVer+'main/logout', {}, {
+			logout: {method:'POST', params: {}},
     });
     return response;
 
