@@ -41,7 +41,7 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$uibModal', 'Goo
 					
 					var data = {};
 					data.code = authResult['code'];
-					loginGetToken = LoginService.getToken(data).$promise;
+					loginGetToken = GoogleLoginService.getToken(data).$promise;
 
 					loginGetToken.then(function(response) {
 						if (response.result) {

@@ -96,6 +96,10 @@ app.factory('sessionInjector', ['$log', '$cookies', function($log, $cookies) {
 				xhttp.onreadystatechange = function() {
 					if (xhttp.readyState == 4) {
 						console.log("Respons arrived");
+						var new_token = $cookies.get('token');
+						console.log("inject token");
+						config.headers['x-access-token'] = new_token;
+						return config;
 					}
 				}
 				xhttp.open("POST", apiVer+"auth/refresh", false);
@@ -144,6 +148,9 @@ app.controller('MenuHeaderCtrl', ['$log' ,'$scope', 'HeaderService','LoginServic
 				console.log(response);
 				if (response.status == 200) {
 					$log.info("delete cookies");
+					$cookies.remove('token');
+					$cookies.remove('token_expire_at');
+					$cookies.remove('refresh_token');
 				}
 			}, function(reason) {
 				  console.log('Failed MenuHeaderCtrl: ' + reason);
