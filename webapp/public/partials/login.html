@@ -1,38 +1,31 @@
 
 
 
-<div ng-controller="LoginCtrl">		
 
+<div ng-controller="LoginCtrl">		
     <div class="jumbotron text-center">
         <h1><span class="fa fa-lock"></span> DomusGuard Authentication </h1>
 
-        
-				
-		<button class="btn btn-danger" type="button" ng-click="login()"><span class="fa fa-google-plus"></span>Continue with Google</button>
-		
-		<p>-------------- or -----------------</p>
-		
-		
-		<form class="form-horizontal" role="form">
-
-			<div class="form-group">
-				<div class="col-sm-10">
-					<input type="text" class="form-control" ng-model="device.id"   placeholder="Email"/>
-				</div>
-			</div>
-
-			<div class="form-group">
-				<div class="col-sm-10">
-					<input type="text" class="form-control" ng-model="device.name" placeholder="Crea una password" />
-				</div>
-			</div>
+		<button class="btn btn-danger col-xs-3 col-xs-offset-4" type="button" ng-click="login()"><span class="fa fa-google-plus"></span>Continue with Google</button>
+		<br><br>		
+		<hr>
 			
-			<button class="btn btn-warning" type="button" ng-click="">Register</button>
+		<div class="container">
 		
-	</form>
+			<form class="form-horizontal col-xs-3 col-xs-offset-4" >
 
-		
-		
+				<div class="form-group ">
+						<input type="text" class="form-control" ng-model="device.id"   placeholder="Email"/>
+				</div>
+
+				<div class="form-group">
+						<input type="text" class="form-control" ng-model="device.name" placeholder="Crea una password" />
+				</div>
+				
+				<button class="btn btn-warning" type="button" ng-click="">Register</button>
+			
+			</form>	
+		</div>
 
     </div>
 
