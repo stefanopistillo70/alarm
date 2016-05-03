@@ -1,7 +1,7 @@
 
 var apiVer = "/api/1.0/";
 
-var app = angular.module('DomusGuard', ['ngResource', 'ngRoute', 'ngCookies', 'dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin']);
+var app = angular.module('DomusGuard', ['ngResource', 'ngRoute', 'ngCookies', 'dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin','dgModuleSystem']);
 
 
 
@@ -13,6 +13,7 @@ app.config(['$routeProvider', function($routeProvider) {
 				when('/devices', { templateUrl: 'partials/devices.html', controller: 'DeviceCtrl' }).
 				when('/zones', { templateUrl: 'partials/zones.html', controller: 'ZoneCtrl' }).
 				when('/login', { templateUrl: 'partials/login.html' }).
+				when('/configuration', { templateUrl: 'partials/system.html' }).
 				otherwise({ redirectTo: '/' });
           }]);
 
@@ -179,7 +180,13 @@ app.controller('MenuHeaderCtrl', ['$log' ,'$scope', '$rootScope', '$location',  
 				  console.log('Failed MenuHeaderCtrl: ' + reason);
 			});
 						
-		}
+		};
+		
+		$scope.configuration = function () {
+			$log.info("System Config");
+			$location.url('/configuration');
+		};
+		
 
 }]);
 

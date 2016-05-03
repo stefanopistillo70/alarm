@@ -28,6 +28,7 @@
 	<script src="/javascripts/module-event.js"></script>
 	<script src="/javascripts/module-config.js"></script>
 	<script src="/javascripts/module-zone.js"></script>
+	<script src="/javascripts/module-system.js"></script>
 </head>
 <body ng-controller="DomusGuardCtrl" >
 	<div ng-hide="isLoggedIn" class="ng-hide">
@@ -61,7 +62,20 @@
 					<p class="navbar-text">
 						Location : {{location}} 
 					</p>
-					<button type="button" class="btn btn-default navbar-btn" ng-click="logout()" >Logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></button>
+									
+					<ul class="nav navbar-nav">
+							<li uib-dropdown>
+										<a href="#" uib-dropdown-toggle>Menu<b class="caret"></b></a>
+										<ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+										<li role="menuitem"><a href="" ng-click="configuration()">System</a></li>
+										<li role="menuitem"><a href="" ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></li>
+										</ul>
+							</li>
+					</ul>	
+					
+					<a class="navbar-brand">
+						                       
+					</a>
 				</div>
 	 
 				

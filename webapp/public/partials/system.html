@@ -1,0 +1,83 @@
+
+<div ng-controller="SystemCtrl">
+<h3><span class="label label-default">System Configuration</span></h3>
+
+
+<script type="text/ng-template" id="system-Notifications.html">
+    <div class="panel {{panelClass || 'panel-default'}}">
+      <div class="panel-heading">
+        <h4 class="panel-title" style="color:#fa39c3">
+          <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
+            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+        </h4>
+      </div>
+      <div class="panel-collapse collapse" uib-collapse="true">
+        <div class="panel-body" style="text-align: right" ng-transclude></div>
+      </div>
+    </div>
+  </script>
+
+
+
+<uib-accordion close-others="true">
+    <uib-accordion-group heading="Users" is-open="false" is-disabled="false">
+      This content is straight in the template.
+    </uib-accordion-group>
+	
+	<uib-accordion-group heading="Notifications" is-open="false" is-disabled="false"  >  
+	
+		<div class="container-fluid">
+			<div class="checkbox" >
+				<label>
+					<input type="checkbox" ng-model="enableEmailApi" >
+					Enable Email 
+				</label>
+			</div>
+			
+			<div class="btn-group" >
+				<label class="btn btn-primary" ng-model="enableGoogleEmailApi" uib-btn-radio="true"  ng-disabled="!enableEmailApi" >Google Api</label>
+				<label class="btn btn-primary" ng-model="enableGoogleEmailApi" uib-btn-radio="false" ng-disabled="!enableEmailApi" >Smpt</label>
+			</div>
+			
+			<br><br>
+			
+			<form class="form-horizontal" role="form">
+				<div class="form-group">
+					<label class="control-label col-sm-1" >Smtp:</label>
+					<div class="col-sm-3">
+						<input type="text" class="form-control" ng-model="zone.name" placeholder="Enter smpt url" ng-disabled="!(enableEmailApi && !enableGoogleEmailApi)"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-1" >Email:</label>
+					<div class="col-sm-3">
+						<input type="email" class="form-control" ng-model="zone.name" placeholder="Enter email" ng-disabled="!(enableEmailApi && !enableGoogleEmailApi)"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-1" >Password:</label>
+					<div class="col-sm-3">
+						<input type="text" class="form-control" ng-model="zone.name" placeholder="Password" ng-disabled="!(enableEmailApi && !enableGoogleEmailApi)"/>
+					</div>
+				</div>
+
+
+			</form>
+			
+
+		</div>
+		
+		<hr>
+		
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" ng-model="enablePushNotification">
+				Enable Push notifications
+			</label>
+		</div>
+    </uib-accordion-group>
+  </uib-accordion>
+
+</div>
+
+
