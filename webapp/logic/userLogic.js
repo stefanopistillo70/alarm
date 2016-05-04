@@ -8,7 +8,6 @@ var Client = require('node-rest-client').Client;
 var client = new Client();
 
 
-
 //TODO put on config file	
 var configAuth = {
 	   'googleAuth' : {
@@ -105,93 +104,130 @@ var logic = {
 			}
 		});
 	}
-	
 }
 
-
+//TODO key in config
 var sendPushNotification = function(user){
 		
-		logger.info("Send Notification to ->"+user.name);
-		
-		//TODO key in properties
-		var args = {
-			data: { 
-					"data": { },
-					"to" : user.google.gcm.web
-				  },
-			headers: { "Content-Type": "application/json", "Authorization" : "key=AIzaSyDSg-NrkWSxeMtxK7wAY7urk8_r2U9aW0s" }
-		};
-		
-		var onResponseEvent = function(data, response) {
-			console.log("GCM Response ->");
-			console.log(data);
-			if(response.statusCode == 200){
-					logger.log('info',"Response arrived");
-			}else{
-				logger.error(data.errors);
-			} 
-		};
-
-		client.post("https://gcm-http.googleapis.com/gcm/send", args, onResponseEvent).on('error', function (err) {
-			logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-			setTimeout(registerController.bind(this,controllerId,callback),10000);
-		});
-		
+	logger.info("Send Notification to ->"+user.name);
+	
+	//TODO key in properties
+	var args = {
+		data: { 
+				"data": { },
+				"to" : user.google.gcm.web
+			  },
+		headers: { "Content-Type": "application/json", "Authorization" : "key=AIzaSyDSg-NrkWSxeMtxK7wAY7urk8_r2U9aW0s" }
 	};
+	
+	var onResponseEvent = function(data, response) {
+		console.log("GCM Response ->");
+		console.log(data);
+		if(response.statusCode == 200){
+				logger.log('info',"Response arrived");
+		}else{
+			logger.error(data.errors);
+		} 
+	};
+
+	client.post("https://gcm-http.googleapis.com/gcm/send", args, onResponseEvent).on('error', function (err) {
+		logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+		setTimeout(registerController.bind(this,controllerId,callback),10000);
+	});
+		
+};
 	
 	
 
 	
 var	sendGoogleMailToUsers = function(user, msg){
-			logger.info("Send Mail to ->"+user.auth.local.email);
-			
+	logger.info("Send Mail to ->"+user.auth.local.email);
+	
+	//TODO find admin user in location
+	var adminUser = user;
+	
+	//Prepare email
+	var to = user.auth.local.email,
+	subject = 'DomusGuard '+msg.level+' Message',
+	content = msg.message;
 
-			oauth2Client.setCredentials({
-				access_token: user.auth.google.token,
-				refresh_token: user.auth.google.refresh_token
-			}); 
-			
-			console.log(oauth2Client);
-			
-			//TODO find admin user in location
-			var adminUser = user;
-			
-			var to = user.auth.local.email,
-			subject = 'DomusGuard '+msg.level+' Message',
-			content = msg.message;
+	var buff = new Buffer(
+		"Content-Type:  text/plain; charset=\"UTF-8\"\n" +
+		"Content-length: 5000\n" +
+		"Content-Transfer-Encoding: message/rfc2822\n" +
+		"to: "+to+"\n" +
+		"from: <"+adminUser.auth.local.email+">\n" +
+		"subject: "+subject+"\n\n" +
+		content
+	);
+				
+	var base64EncodedEmail = buff.toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
 
-			var buff = new Buffer(
-				"Content-Type:  text/plain; charset=\"UTF-8\"\n" +
-				"Content-length: 5000\n" +
-				"Content-Transfer-Encoding: message/rfc2822\n" +
-				"to: "+to+"\n" +
-				"from: <"+adminUser.auth.local.email+">\n" +
-				"subject: "+subject+"\n\n" +
-				content
-			);
+	var mail = base64EncodedEmail;
+	
+	
+	oauth2Client.setCredentials({
+		access_token: adminUser.auth.google.token,
+		refresh_token: adminUser.auth.google.refresh_token
+	}); 
+
+	var now = (new Date()).getTime();
+		
+	if(!((adminUser.auth.google.expiry_date) && ((adminUser.auth.google.expiry_date - now) > 0))){
+		logger.info("Token is expired. refresh");
+		oauth2Client.refreshAccessToken(function(err, tokens) {
+			
+			if (err){
+					logger.error(err);
+			}else{
+			
+				var query = { '_id' : adminUser._id };
+				var updates = { 'auth.google.expiry_date' : tokens.expiry_date, 'auth.google.token' : tokens.access_token};
+				User.findOneAndUpdate(query, updates, function(err, user) {
+					if (err){
+						logger.error(err.errors);
+					}else{
 						
-			var base64EncodedEmail = buff.toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+						gmail.users.messages.send({
+							'auth': oauth2Client,
+							'userId' : 'me',
+							//uploadType : 'media',
+							'resource': {
+								  'raw': mail
+								}
+							}, function(err, response) {
+								if (err) {
+								  logger.error(err);
+								}
+								if(response){
+									logger.info("Email sent.");
+								}
+						});	
 
-			var mail = base64EncodedEmail;
-			
-			
-			gmail.users.messages.send({
-				'auth': oauth2Client,
-				'userId' : 'me',
-				//uploadType : 'media',
-				'resource': {
-					  'raw': mail
-					}
-				}, function(err, response) {
-					if (err) {
-					  console.log('The API returned an error: ' + err);
-					}
-					if(response){
-						console.log(response);
-					}
-			});			
-	};
+					}	
+				});
+			}
 
+		});
+	}else{
+		
+		gmail.users.messages.send({
+			'auth': oauth2Client,
+			'userId' : 'me',
+			'resource': {
+				  'raw': mail
+				}
+			}, function(err, response) {
+				if (err) {
+				  logger.error(err);
+				}
+				if(response){
+					logger.info("Email sent.");
+				}
+		});
+		
+	}	
+};
 
 
 
