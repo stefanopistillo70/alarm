@@ -47,6 +47,7 @@ router.post('/saveGCM', function(req, res, next) {
 });
 
 
+
 //Sample GMail 
 router.get('/sendMail', function(req, res, next) {
 	console.log("Send Gmail message");

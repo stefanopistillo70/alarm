@@ -66,15 +66,12 @@ app.use(function(req, res, next) {
 	
 	
 	var urlLogin = apiVer + "/auth";
-	var urlRefresh = apiVer + "/auth/refresh";
-	var urlController = apiVer + "/auth/controller";
+	var urlGoogleUpdateConsensus = apiVer + "/auth/google/updateConsensus";
 	
 	var urlLastMsg = apiVer + "/message/last";
 	
 	if(url.substring(0, apiVer.length) == apiVer 
-		&& !(url.substring(0, urlLogin.length) == urlLogin)
-		&& !(url.substring(0, urlRefresh.length) == urlRefresh)
-		&& !(url.substring(0, urlController.length) == urlController)		
+		&&  ( !(url.substring(0, urlLogin.length) == urlLogin) || (url === urlGoogleUpdateConsensus) )
 	){
 			
 		if (token) {

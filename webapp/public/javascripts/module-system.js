@@ -1,14 +1,13 @@
 var dgModuleSystem = angular.module('dgModuleSystem', ['ngResource','ui.bootstrap']);
 
-dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'GoogleLoginService', function($log, $scope, SystemService, GoogleLoginService) {
+dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'GoogleLoginService', 'GoogleService', function($log, $scope, SystemService, GoogleLoginService, GoogleService) {
 			
 			$log.info("Init Controller");
-			var $accordionNotificationScope = $scope.accordion.groups[1].$$childHead;
-			$accordionNotificationScope.enableEmailApi = false;
-			$accordionNotificationScope.enableGoogleEmailApi = false;
 			
 			$scope.saveNotification = function () {
 				
+				var $accordionNotificationScope = $scope.accordion.groups[1].$$childHead;
+
 				$log.info("Save Notification "+$accordionNotificationScope.enableEmailApi+"   "+$accordionNotificationScope.enableGoogleEmailApi);
 				
 				if( $accordionNotificationScope.enableEmailApi && $accordionNotificationScope.enableGoogleEmailApi ){
@@ -17,7 +16,7 @@ dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'Goo
 					getGoogleAccoutClientId.then(function(response) {
 							if (response.result) {
 								googleClientID = response.result;
-								getGoogleEmailConsensus(googleClientID, GoogleLoginService);
+								getGoogleEmailConsensus(googleClientID, GoogleService);
 							}
 						}, function(reason) {
 							console.log('Failed get google Client ID: ' + reason);
@@ -28,7 +27,7 @@ dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'Goo
 }]);
 
 
-var getGoogleEmailConsensus = function(googleClientID, GoogleLoginService){
+var getGoogleEmailConsensus = function(googleClientID, GoogleService){
 	
 			gapi.load('auth2', function() {
 				var auth2 = gapi.auth2.init({
@@ -51,7 +50,7 @@ var getGoogleEmailConsensus = function(googleClientID, GoogleLoginService){
 						
 						var data = {};
 						data.code = authResult['code'];
-						saveEmailConsensus = GoogleLoginService.saveEmailConsensus(data).$promise;
+						saveEmailConsensus = GoogleService.saveEmailConsensus(data).$promise;
 
 						saveEmailConsensus.then(function(response) {
 							if (response.result) {

@@ -28,7 +28,11 @@ var OAuth2 = google.auth.OAuth2;
 
 var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleAuth.clientSecret, configAuth.googleAuth.callbackURL);
 
-//Verify and store Token
+/********************************
+*
+* Verify Google account and return a JWT
+*
+*********************************/
 router.post('/', function(req, res, next) {
 	
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
@@ -73,7 +77,6 @@ router.post('/', function(req, res, next) {
 								logger.info("JWT ->");
 								logger.info(jwtToken);
 															
-								//var update = { 'auth.local.name': userInfo.given_name, 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token, 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date };
 								var update = { 'auth.local.name': userInfo.given_name, 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token};
 								
 								var opts = { strict: true };
@@ -105,13 +108,7 @@ router.post('/', function(req, res, next) {
 									newUser.auth.local.email = ticketAttr.payload.email;
 									newUser.auth.local.token = jwtToken.access_token;
 									newUser.auth.local.refresh_token = jwtToken.refresh_token;
-									
-									/*newUser.auth.google.email = ticketAttr.payload.email;
-									newUser.auth.google.token = googleTokens.access_token;
-									newUser.auth.google.refresh_token  = googleTokens.refresh_token;
-									newUser.auth.google.expiry_date = googleTokens.expiry_date;
-									*/
-									
+																		
 									userLogic.createUser(newUser, ip, function(err) {
 										if (err) res.status(400).send(new Response().error(400,err.errors));
 										else {
@@ -137,15 +134,14 @@ router.post('/', function(req, res, next) {
 });
 
 
-
-
-
-
 //Store Token for email authorization
-router.put('/', function(req, res, next) {
+router.post('/updateConsensus', function(req, res, next) {
 	
 	var code = req.body.code;
 	logger.info("code ->"+code);
+	
+	var userId = req.userId;
+	query = { _id : userId};
 	
 	oauth2Client.getToken(code, function(err, googleTokens) {
 		
@@ -164,27 +160,28 @@ router.put('/', function(req, res, next) {
 					var ticketAttr = ticket.getAttributes();
 					logger.info(ticketAttr);
 					
-					var query = { 'auth.local.email' : ticketAttr.payload.email };
-					var update = { 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date, 'auth.google.refresh_token' : googleTokens.refresh_token };	
-					User.findOneAndUpdate(query, update, function(err, user) {
-		
-						if (err) res.status(400).send(new Response().error(400,err.errors));
-													
-						if (user) {
-							logger.info("User Update -> "+user.auth.name);
-							res.json(new Response());
-						} 									
-					});
+					if(googleTokens.refresh_token){
+						logger.info("Got refresh token , Update user. ");
+						var update = { 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date, 'auth.google.refresh_token' : googleTokens.refresh_token };	
+						User.findOneAndUpdate(query, update, function(err, user) {
+			
+							if (err) res.status(400).send(new Response().error(400,err.errors));
+														
+							if (user) {
+								logger.info("User Update -> "+user.auth.name);
+								res.json(new Response());
+							} 									
+						});
+
+					}else{
+						logger.info("refresh token is empty");
+						res.status(400).send(new Response().error(400,"Refresh token is empty"));
+					}
 				} 
 			});
 		}
 	});
 });
-
-
-
-
-
 
 
 
@@ -196,6 +193,7 @@ router.put('/', function(req, res, next) {
 router.get('/', function(req, res, next) {
 	res.json(new Response(configAuth.googleAuth.clientID));
 });
+
 
 
 var verifyIdToken = function(token,callback){

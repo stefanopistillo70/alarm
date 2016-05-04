@@ -2,8 +2,6 @@
 var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap']);
 
 
-
-
 dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$uibModal', 'GoogleLoginService', function($scope, $rootScope, $location, $uibModal, GoogleLoginService) {
 		
 		var getGoogleAccoutClientId = GoogleLoginService.getGoogleAccoutClientId().$promise;
@@ -102,12 +100,22 @@ dgModuleLogin.factory('GoogleLoginService', ['$resource',
   function($resource){
 	var response = $resource(apiVer+'auth/google', {}, {
 			getToken: {method:'POST', params: {}},
-			getGoogleAccoutClientId: {method:'GET', params: {}},
-			saveEmailConsensus: {method:'PUT', params: {}}
+			getGoogleAccoutClientId: {method:'GET', params: {}}
     });
     return response;
 
 }]);
+
+
+dgModuleLogin.factory('GoogleService', ['$resource',
+  function($resource){
+	var response = $resource(apiVer+'auth/google/updateConsensus', {}, {
+			saveEmailConsensus: {method:'POST', params: {}}
+    });
+    return response;
+
+}]);
+
 
 
 dgModuleLogin.factory('LoginService', ['$resource',
