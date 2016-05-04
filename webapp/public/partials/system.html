@@ -3,22 +3,6 @@
 <h3><span class="label label-default">System Configuration</span></h3>
 
 
-<script type="text/ng-template" id="system-Notifications.html">
-    <div class="panel {{panelClass || 'panel-default'}}">
-      <div class="panel-heading">
-        <h4 class="panel-title" style="color:#fa39c3">
-          <a href tabindex="0" class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span
-            ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
-        </h4>
-      </div>
-      <div class="panel-collapse collapse" uib-collapse="true">
-        <div class="panel-body" style="text-align: right" ng-transclude></div>
-      </div>
-    </div>
-  </script>
-
-
-
 <uib-accordion close-others="true">
     <uib-accordion-group heading="Users" is-open="false" is-disabled="false">
       This content is straight in the template.
@@ -75,6 +59,12 @@
 				Enable Push notifications
 			</label>
 		</div>
+		
+		<hr>
+		
+		<button class="btn btn-warning" type="button" ng-click="saveNotification()">Save</button>
+
+		
     </uib-accordion-group>
   </uib-accordion>
 
