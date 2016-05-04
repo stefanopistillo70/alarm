@@ -15,6 +15,7 @@ var router = express.Router();
 
 var jwt = require('../logic/jwt');
 
+//TODO put on config file
 var configAuth = {
 	   'googleAuth' : {
         'clientID'      : '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
