@@ -157,10 +157,10 @@ var	sendGoogleMailToUsers = function(user, msg){
 			var adminUser = user;
 			
 			var to = user.auth.local.email,
-			subject = 'DomusGuard Message',
-			content = 'send a Gmail.';
+			subject = 'DomusGuard '+msg.level+' Message',
+			content = msg.message;
 
-			/*var buff = new Buffer(
+			var buff = new Buffer(
 				"Content-Type:  text/plain; charset=\"UTF-8\"\n" +
 				"Content-length: 5000\n" +
 				"Content-Transfer-Encoding: message/rfc2822\n" +
@@ -168,21 +168,8 @@ var	sendGoogleMailToUsers = function(user, msg){
 				"from: <"+adminUser.auth.local.email+">\n" +
 				"subject: "+subject+"\n\n" +
 				content
-			);*/
-			
-			var buff = new Buffer(
-			  "Content-Type:  text/plain; charset=\"UTF-8\"\n" +
-			  "Content-length: 5000\n" +
-			  "Content-Transfer-Encoding: message/rfc2822\n" +
-			  "to: stefano.pistillo@gmail.com\n" +
-			  "from: \"Stefano Pistillo\" <stefano.pistillo@gmail.com>\n" +
-			  "subject: Hello world\n\n" +
-
-			  "The actual message text goes here"
-				);
-			
-			
-			
+			);
+						
 			var base64EncodedEmail = buff.toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
 
 			var mail = base64EncodedEmail;
