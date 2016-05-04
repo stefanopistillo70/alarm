@@ -102,7 +102,8 @@ dgModuleLogin.factory('GoogleLoginService', ['$resource',
   function($resource){
 	var response = $resource(apiVer+'auth/google', {}, {
 			getToken: {method:'POST', params: {}},
-			getGoogleAccoutClientId: {method:'GET', params: {}}
+			getGoogleAccoutClientId: {method:'GET', params: {}},
+			saveEmailConsensus: {method:'PUT', params: {}}
     });
     return response;
 

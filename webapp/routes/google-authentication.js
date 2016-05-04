@@ -59,7 +59,7 @@ router.post('/', function(req, res, next) {
 					getUserInfo(googleTokens.access_token, function(userInfo){
 					
 						console.log(userInfo);
-						var query = { 'auth.google.email' : ticketAttr.payload.email }
+						var query = { 'auth.local.email' : ticketAttr.payload.email }
 						
 						User.findOne(query, function(err, user) {
 			
@@ -73,7 +73,9 @@ router.post('/', function(req, res, next) {
 								logger.info("JWT ->");
 								logger.info(jwtToken);
 															
-								var update = { 'auth.local.name': userInfo.given_name, 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token, 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date };
+								//var update = { 'auth.local.name': userInfo.given_name, 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token, 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date };
+								var update = { 'auth.local.name': userInfo.given_name, 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token};
+								
 								var opts = { strict: true };
 								User.update(query, update, opts, function(error,raw) {
 									if (error){
@@ -104,10 +106,11 @@ router.post('/', function(req, res, next) {
 									newUser.auth.local.token = jwtToken.access_token;
 									newUser.auth.local.refresh_token = jwtToken.refresh_token;
 									
-									newUser.auth.google.email = ticketAttr.payload.email;
+									/*newUser.auth.google.email = ticketAttr.payload.email;
 									newUser.auth.google.token = googleTokens.access_token;
 									newUser.auth.google.refresh_token  = googleTokens.refresh_token;
 									newUser.auth.google.expiry_date = googleTokens.expiry_date;
+									*/
 									
 									userLogic.createUser(newUser, ip, function(err) {
 										if (err) res.status(400).send(new Response().error(400,err.errors));
@@ -127,17 +130,62 @@ router.post('/', function(req, res, next) {
 						});
 					
 					});
-
-
 				} 
-				
 			});
-		
 		}
-
 	});
-	
 });
+
+
+
+
+
+
+//Store Token for email authorization
+router.put('/', function(req, res, next) {
+	
+	var code = req.body.code;
+	logger.info("code ->"+code);
+	
+	oauth2Client.getToken(code, function(err, googleTokens) {
+		
+		logger.info("TOKEN ->");
+		logger.info(googleTokens);
+		
+		if(err) res.status(400).send(new Response().error(400,err));			
+		else{
+
+			verifyIdToken(googleTokens.id_token,function(err,ticket){
+				
+				if(err){
+					res.status(403).send(new Response().error(403,"Invalid ID Token ->"+err));
+				} else {
+				
+					var ticketAttr = ticket.getAttributes();
+					logger.info(ticketAttr);
+					
+					var query = { 'auth.local.email' : ticketAttr.payload.email };
+					var update = { 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date, 'auth.google.refresh_token' : googleTokens.refresh_token };	
+					User.findOneAndUpdate(query, update, function(err, user) {
+		
+						if (err) res.status(400).send(new Response().error(400,err.errors));
+													
+						if (user) {
+							logger.info("User Update -> "+user.auth.name);
+							res.json(new Response());
+						} 									
+					});
+				} 
+			});
+		}
+	});
+});
+
+
+
+
+
+
 
 
 /********************************

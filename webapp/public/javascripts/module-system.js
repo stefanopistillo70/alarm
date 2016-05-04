@@ -1,41 +1,38 @@
-var dgModuleSystem = angular.module('dgModuleSystem', ['ngResource','ui.bootstrap','ui.grid','ui.grid.selection']);
+var dgModuleSystem = angular.module('dgModuleSystem', ['ngResource','ui.bootstrap']);
 
-dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', '$uibModal', 'SystemService', 'GoogleLoginService', function($log, $scope, $uibModal, SystemService, GoogleLoginService) {
-			$scope.enableEmailApi = false;
-			$scope.enableGoogleEmailApi = false;
+dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'GoogleLoginService', function($log, $scope, SystemService, GoogleLoginService) {
+			
+			$log.info("Init Controller");
+			var $accordionNotificationScope = $scope.accordion.groups[1].$$childHead;
+			$accordionNotificationScope.enableEmailApi = false;
+			$accordionNotificationScope.enableGoogleEmailApi = false;
 			
 			$scope.saveNotification = function () {
-				$log.info("Save Notification");
 				
+				$log.info("Save Notification "+$accordionNotificationScope.enableEmailApi+"   "+$accordionNotificationScope.enableGoogleEmailApi);
 				
-				var getGoogleAccoutClientId = GoogleLoginService.getGoogleAccoutClientId().$promise;
-				var googleClientID = "";
-				getGoogleAccoutClientId.then(function(response) {
-						if (response.result) {
-							googleClientID = response.result;
-							
-							getGoogleEmailConsensum(googleClientID);
-						}
-					}, function(reason) {
-						console.log('Failed get google Client ID: ' + reason);
-				});
+				if( $accordionNotificationScope.enableEmailApi && $accordionNotificationScope.enableGoogleEmailApi ){
+					var getGoogleAccoutClientId = GoogleLoginService.getGoogleAccoutClientId().$promise;
+					var googleClientID = "";
+					getGoogleAccoutClientId.then(function(response) {
+							if (response.result) {
+								googleClientID = response.result;
+								getGoogleEmailConsensus(googleClientID, GoogleLoginService);
+							}
+						}, function(reason) {
+							console.log('Failed get google Client ID: ' + reason);
+					});
+				}
 								
-				
 			}
-		
 }]);
 
 
-
-
-
-
-var getGoogleEmailConsensum = function(googleClientID){
+var getGoogleEmailConsensus = function(googleClientID, GoogleLoginService){
 	
 			gapi.load('auth2', function() {
 				var auth2 = gapi.auth2.init({
 				  client_id: googleClientID,
-				  // Scopes to request in addition to 'profile' and 'email'
 				  scope:'https://www.googleapis.com/auth/gmail.send',
 				  access_type: "offline"
 				});
@@ -52,30 +49,24 @@ var getGoogleEmailConsensum = function(googleClientID){
 					  if (authResult['code']) {
 						console.log("CODE ->"+authResult['code']);
 						
-						/*var data = {};
+						var data = {};
 						data.code = authResult['code'];
-						loginGetToken = GoogleLoginService.getToken(data).$promise;
+						saveEmailConsensus = GoogleLoginService.saveEmailConsensus(data).$promise;
 
-						loginGetToken.then(function(response) {
+						saveEmailConsensus.then(function(response) {
 							if (response.result) {
 								console.log(response.result);
-								$rootScope.isLoggedIn = true;
 							}
-							$location.url('/');
-							//window.location = "http://localhost:3000/#/";
 													
 						}, function(reason) {
 							  console.log('Failed Login insert Code: ' + reason);
 						});
-						*/
 						
 					  } else {
 						console.log("ERROR");
 					  }
-					  
 				});
 			});
-	
 }
 
 
