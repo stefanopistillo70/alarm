@@ -10,6 +10,28 @@ var router = express.Router();
 var jwt = require('../logic/jwt');
 
 
+router.get('/token/:userId', function(req, res, next) {
+	var email = req.params.userId;
+	
+	console.log(email);
+	
+	var query = { 'auth.local.email' : email }
+	
+	User.findOne(query, function(err, user) {
+
+		if (err) res.status(400).send(new Response().error(400,err.errors));
+			
+		if (user) {
+			logger.info("User Found");
+			if (user.auth.local.passwd) res.json(new Response("local"));
+			else res.json(new Response(""));
+		} else {
+			res.status(404).send(new Response().error(404,""));
+		}				
+	});
+	
+});
+
 //create a jwt Token 
 router.post('/token', function(req, res, next) {
 	
@@ -17,7 +39,7 @@ router.post('/token', function(req, res, next) {
 	var pwd = req.body.pwd;
 	logger.info("email ->"+email);
 	
-	var query = { 'local.email' : email }
+	var query = { 'auth.local.email' : email }
 	
 	User.findOne(query, function(err, user) {
 

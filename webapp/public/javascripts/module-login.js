@@ -2,7 +2,13 @@
 var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap']);
 
 
-dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$uibModal', 'GoogleLoginService', function($scope, $rootScope, $location, $uibModal, GoogleLoginService) {
+dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$location', '$uibModal', 'GoogleLoginService', 'LocalLoginService', function($log, $scope, $rootScope, $location, $uibModal, GoogleLoginService, LocalLoginService) {
+		
+		$scope.local = false;
+		$scope.signup = false;
+		
+		
+		
 		
 		var getGoogleAccoutClientId = GoogleLoginService.getGoogleAccoutClientId().$promise;
 
@@ -33,7 +39,7 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$ui
 		} 
 */
 		
-		$scope.login = function() {
+		$scope.loginGoogle = function() {
 			console.log("Login");
 			
 			
@@ -85,6 +91,30 @@ dgModuleLogin.controller('LoginCtrl', ['$scope', '$rootScope', '$location', '$ui
 			
 			});
 		};
+		
+		
+		$scope.checkEmail = function() {
+			if($scope.user && $scope.user.email){
+				$log.info("checkEmail " + $scope.user.email);
+				var getUser = LocalLoginService.get({ entryId: $scope.user.email}).$promise;
+			
+				getUser.then(function(response) {
+						$log.info(response.result);
+						if(response.result != "local"){
+							console.log('email already registered on google');
+						}else{
+							console.log('email already registered on local');
+						}
+					}, function(reason) {
+						if(reason.status == 404){
+							console.log('email not exists');
+							$scope.signup = true;
+						}
+				});
+			}
+		}
+		
+		
 }]);
 
 
@@ -117,7 +147,6 @@ dgModuleLogin.factory('GoogleService', ['$resource',
 }]);
 
 
-
 dgModuleLogin.factory('LoginService', ['$resource',
   function($resource){
 	var response = $resource(apiVer+'main/logout', {}, {
@@ -126,6 +155,16 @@ dgModuleLogin.factory('LoginService', ['$resource',
     return response;
 
 }]);
+
+
+dgModuleLogin.factory('LocalLoginService', ['$resource',
+  function($resource){
+	var response = $resource(apiVer+'auth/token/:entryId', {entryId: '@entryId'}, {
+    });
+    return response;
+}]);
+
+
 
 
 

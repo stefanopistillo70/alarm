@@ -6,23 +6,28 @@
     <div class="jumbotron text-center">
         <h1><span class="fa fa-lock"></span> DomusGuard Authentication </h1>
 
-		<button class="btn btn-danger col-xs-3 col-xs-offset-4" type="button" ng-click="login()"><span class="fa fa-google-plus"></span>Continue with Google</button>
+		<button class="btn btn-danger col-xs-3 col-xs-offset-4" type="button" ng-click="loginGoogle()"><span class="fa fa-google-plus"></span>Continue with Google</button>
 		<br><br>		
 		<hr>
 			
 		<div class="container">
 		
-			<form class="form-horizontal col-xs-3 col-xs-offset-4" >
+			<form name="userForm" class="form-horizontal col-xs-3 col-xs-offset-4">
 
 				<div class="form-group ">
-						<input type="text" class="form-control" ng-model="device.id"   placeholder="Email"/>
+						<input name="email" type="email" class="form-control" ng-model="user.email"  ng-blur="checkEmail()" placeholder="Email"  />
+						<p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Enter a valid email.</p>
 				</div>
 
 				<div class="form-group">
-						<input type="text" class="form-control" ng-model="device.name" placeholder="Crea una password" />
+						<input type="password" class="form-control" ng-model="user.pwd" placeholder="Type a password" />
 				</div>
 				
-				<button class="btn btn-warning" type="button" ng-click="">Register</button>
+				<div class="form-group" ng-show="signup" >
+						<input type="password" class="form-control" ng-model="user.pwd2" placeholder="Retype a password" />
+				</div>
+				
+				<button class="btn btn-warning" type="button" ng-click="">{{(signup?'SignUp':'SignIn')}}</button>
 			
 			</form>	
 		</div>
