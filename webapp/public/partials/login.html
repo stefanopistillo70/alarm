@@ -13,22 +13,31 @@
 		<div class="container">
 		
 			<form name="userForm" class="form-horizontal col-xs-3 col-xs-offset-4">
-
-				<div class="form-group" ng-class="{'has-error' : (userForm.email.$invalid && !userForm.email.$pristine)}">
+				<div class="form-group" ng-class="{'has-error' : checkForError(userForm.email, true)}">
 						<input name="email" type="email" class="form-control" ng-model="user.email"  
-						ng-blur="checkEmail()" placeholder="Email"  
-						tooltip-placement="top" uib-tooltip="{{((userForm.email.$invalid && !userForm.email.$pristine)?'Email erron':'')}}"/>
+						ng-blur="checkEmail()" placeholder="Email"  required/>
 				</div>
 
-				<div class="form-group">
-						<input type="password" class="form-control" ng-model="user.pwd" placeholder="Type a password" />
+				<div class="form-group"  ng-class="{'has-error' : checkForError(userForm.pwd)}">
+						<input name="pwd" type="password" class="form-control" ng-model="user.pwd" placeholder="Type a password" 
+						uib-tooltip="{{userForm.pwd.$error.msg}}" />
+				</div>
+
+				<div class="form-group" ng-show="signup" ng-class="{'has-error' : checkForError(userForm.pwd2, true)}" >
+						<input name="pwd2" type="password" class="form-control" ng-model="user.pwd2" placeholder="Retype a password" 
+						uib-tooltip="{{userForm.pwd2.$error.msg}}"/>
 				</div>
 				
 				<div class="form-group" ng-show="signup" >
-						<input type="password" class="form-control" ng-model="user.pwd2" placeholder="Retype a password" />
+						<input type="text" class="form-control" ng-model="user.Name" placeholder="Name" />
 				</div>
 				
-				<button class="btn btn-warning" type="button" ng-click="">{{(signup?'SignUp':'SignIn')}}</button>
+				<div class="form-group" ng-show="signup" >
+						<input type="text" class="form-control" ng-model="user.Location" placeholder="Default Location" />
+				</div>
+
+				
+				<button class="btn btn-warning" type="button" ng-click="loginLocal()">{{(signup?'SignUp':'SignIn')}}</button>
 			
 			</form>	
 		</div>

@@ -94,6 +94,7 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 		
 		
 		$scope.checkEmail = function() {
+			
 			if($scope.user && $scope.user.email){
 				$log.info("checkEmail " + $scope.user.email);
 				var getUser = LocalLoginService.get({ entryId: $scope.user.email}).$promise;
@@ -113,7 +114,49 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 				});
 			}
 		}
+
 		
+		$scope.register = function() {
+			$log.info("register");
+		}	
+		
+		
+		$scope.loginLocal = function() {
+			$log.info("Form error : "+$scope.userForm.$invalid);
+			
+			if($scope.signup) {
+				$log.info("register");
+				console.log($scope);
+				if (!$scope.user.pwd){
+					$scope.userForm.pwd.$error = { msg : "no password"};
+				}else $scope.userForm.pwd.$error = {};
+				
+				if ($scope.user.pwd != $scope.user.pwd2){
+					$scope.userForm.pwd2.$error = { msg : "passwords are different"};
+				}else $scope.userForm.pwd2.$error = {};				
+			}else{
+				$log.info("login local");				
+			};
+			
+			if(!$scope.userForm.$invalid){
+				
+			};
+
+		}
+		
+		
+		
+		$scope.checkForError = function(field, checkPristine){
+			var hasError = false;
+			if(checkPristine) hasError =  ((((field.$error != undefined) && (Object.keys(field.$error).length != 0) ) || field.$invalid )&& !field.$pristine);
+				else hasError =  (((field.$error != undefined) && (Object.keys(field.$error).length != 0) ) || field.$invalid );
+			console.log("Has error -> "+hasError);
+			console.log("1 -> "+(field.$error != undefined));
+			console.log("2 -> "+(Object.keys(field.$error).length != 0));
+			console.log("3 -> "+field.$invalid);
+			console.log("4 -> "+!field.$pristine);
+			return hasError;
+		}
 		
 }]);
 
