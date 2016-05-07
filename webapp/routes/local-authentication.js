@@ -57,11 +57,22 @@ router.post('/token', function(req, res, next) {
 		if (err) res.status(400).send(new Response().error(400,err.errors));
 			
 		if (user) {
-			logger.info("User Found token ->"+user.google.token);
-			// if a user is found, log them in
+			logger.info("User Found token");
+			// if a user is found, verify password
+			verifyHashPassword(pwd,user.auth.local.pwd,user.auth.local.salt, function(err, result){
+				
+				console.log(result)
+				if (err) res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
+				
+				if(result.verified){
+					
+					var jwtToken = jwt.getJWT(email,true,"web");
+
+					
+				}else res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
+			});
 			
-			
-			var update = { 'local.token': tokens.access_token, 'google.expiry_date' : tokens.expiry_date };
+			/*var update = { 'local.token': tokens.access_token, 'google.expiry_date' : tokens.expiry_date };
 			var opts = { strict: true };
 			User.update(query, update, opts, function(error,raw) {
 				if (error){
@@ -71,7 +82,8 @@ router.post('/token', function(req, res, next) {
 					if(user.google.refresh_token) res.cookie('refresh_token',user.google.refresh_token);
 					res.json(new Response(tokens));
 				} 		  
-			});			
+			});
+*/			
 			
 		} else {
 			// if the user isnt in our database, create a new user
@@ -107,21 +119,6 @@ router.post('/token', function(req, res, next) {
 				
 				
 			});
-			
-			
-				/*								
-			userLogic.createUser(newUser, ip, function(err) {
-				if (err) res.status(400).send(new Response().error(400,err.errors));
-				else {
-					logger.info("New User Created : "+newUser.auth.local);
-					var sec_expire_time = jwtToken.duration_time/4;
-					res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
-					res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-					if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
-					res.json(new Response(jwtToken));
-				}
-			});
-			*/
 		}
 						
 	});
@@ -302,22 +299,24 @@ var generateHashPassword = function(pwd, callback){
 
 var verifyHashPassword = function(pwdIn, hashIn, salt, callback){
 	
+	console.log("pwdIn ->"+pwdIn);
+	console.log("hashIn ->"+hashIn);
+	console.log("salt ->"+salt);
+	
+	
 	crypto.pbkdf2(pwdIn, salt, 7000, 256, function (err, hash) {
 		
-		if(err) callback(err,result);
+		var hashHex = (new Buffer(hash).toString('hex'));
+		console.log("hash ->"+hashHex);
+		
+		if(err) callback(err);
 		else{
-			var hash = (new Buffer(hash).toString('hex'));
 			var result = {};
-			if(hashIn === hash) result = { verified : true };
+			if(hashIn === hashHex) result = { verified : true };
 			else result = { verified : false };
 			callback(err,result);
 		}
-		var result = {salt : salt, hash : (new Buffer(hash).toString('hex')) };		
-		
-		
-		callback(err,result);	
 	});
-	
 }
 
 module.exports = router;
