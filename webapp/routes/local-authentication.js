@@ -67,8 +67,23 @@ router.post('/token', function(req, res, next) {
 				if(result.verified){
 					
 					var jwtToken = jwt.getJWT(email,true,"web");
-
 					
+					var update = { 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token};
+					
+					var opts = { strict: true };
+					User.update(query, update, opts, function(error,raw) {
+						if (error){
+							res.status(400).send(new Response().error(400,error));
+						}else{
+							var sec_expire_time = jwtToken.duration_time/4;
+							res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+							res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+							res.cookie('refresh_token',jwtToken.refresh_token);
+							if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
+							res.json(new Response(jwtToken));
+						} 		  
+					});			
+
 				}else res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
 			});
 			
