@@ -9,7 +9,7 @@ var duration_time = 60000;
 
 
 var jwt = {
-	getJWT : function(user, refresh, audience){
+	getJWT : function(user, refresh, audience, role){
 		
 		var expire_at = new Date().getTime()+duration_time;
 		var access_token = jwtSimple.encode({
@@ -17,7 +17,8 @@ var jwt = {
 			sub : user,
 			aud : audience,
 			iss: "account.domusguard.com",
-			exp: expire_at
+			exp: expire_at,
+			role: role
 		}, secret);
 
 		if(refresh){
@@ -26,7 +27,8 @@ var jwt = {
 				sub : user,
 				aud : audience,
 				iss: "account.domusguard.com",
-				exp: 0
+				exp: 0,
+				role: role
 			}, secret);
 			
 			return { access_token: access_token, expire_at: expire_at, duration_time: duration_time, refresh_token: refresh_token};

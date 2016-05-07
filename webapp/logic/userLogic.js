@@ -47,6 +47,7 @@ var logic = {
 						if (err) callback(err);
 						else {
 							logger.info("Created a new location with router ip : "+router_ip);
+							newUser.auth.role = "admin";
 							newUser.locations = [];
 							newUser.locations.push(location._id);
 							

@@ -63,7 +63,7 @@ router.post('/token', function(req, res, next) {
 				
 				if(result.verified){
 					
-					var jwtToken = jwt.getJWT(email,true,"web");
+					var jwtToken = jwt.getJWT(email,true,"web",user.auth.role);
 					
 					var update = { 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token};
 					
@@ -83,25 +83,12 @@ router.post('/token', function(req, res, next) {
 
 				}else res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
 			});
-			
-			/*var update = { 'local.token': tokens.access_token, 'google.expiry_date' : tokens.expiry_date };
-			var opts = { strict: true };
-			User.update(query, update, opts, function(error,raw) {
-				if (error){
-					res.status(400).send(new Response().error(400,err.errors));
-				}else{
-					res.cookie('token',tokens.access_token, { maxAge: 3600000 });
-					if(user.google.refresh_token) res.cookie('refresh_token',user.google.refresh_token);
-					res.json(new Response(tokens));
-				} 		  
-			});
-*/			
-			
+						
 		} else {
 			// if the user isnt in our database, create a new user
 			var newUser          = new User();
 		
-			var jwtToken = jwt.getJWT(email,true,"web");
+			var jwtToken = jwt.getJWT(email,true,"web","admin");
 			logger.info("JWT ->");
 			logger.info(jwtToken);
 		
@@ -160,7 +147,7 @@ router.post('/refresh', function(req, res, next) {
 
 				if(jwt.verifyJWT(refresh_token,location.controller.controllerId)){
 													
-					var jwtToken = jwt.getJWT(location.controller.controllerId,true,"controller");
+					var jwtToken = jwt.getJWT(location.controller.controllerId,true,"controller","controller");
 				
 					var update = { "controller.token" : jwtToken.access_token };
 					var opts = { strict: true };
@@ -197,7 +184,7 @@ router.post('/refresh', function(req, res, next) {
 				// if a user is found, log them in
 				if(jwt.verifyJWT(refresh_token,user.auth.local.email)){
 					
-					var jwtToken = jwt.getJWT(user.auth.local.email,false,"web");
+					var jwtToken = jwt.getJWT(user.auth.local.email,false,"web",user.auth.role);
 					logger.info("JWT ->");
 					logger.info(jwtToken);
 				
@@ -246,7 +233,7 @@ router.post('/controller', function(req, res, next) {
 		if (location) {
 			logger.info("Location Found token ->"+location.name);
 				
-			var jwtToken = jwt.getJWT(controllerId,true,"controller");
+			var jwtToken = jwt.getJWT(controllerId,true,"controller","controller");
 		
 			var update = { controller : { "controllerId": controllerId, 
 										  "token" : jwtToken.access_token,
