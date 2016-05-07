@@ -139,7 +139,18 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 			};
 			
 			if(!$scope.userForm.$invalid){
-				
+				$log.info("Form is valid");	
+				register = LocalLoginService.save($scope.user).$promise;
+
+				register.then(function(response) {
+					if (response.result) {
+						console.log(response.result);
+						$rootScope.isLoggedIn = true;
+					}
+					$location.url('/');											
+				}, function(reason) {
+					  console.log('Failed Login insert Code: ' + reason);
+				});
 			};
 
 		}
@@ -150,11 +161,11 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 			var hasError = false;
 			if(checkPristine) hasError =  ((((field.$error != undefined) && (Object.keys(field.$error).length != 0) ) || field.$invalid )&& !field.$pristine);
 				else hasError =  (((field.$error != undefined) && (Object.keys(field.$error).length != 0) ) || field.$invalid );
-			console.log("Has error -> "+hasError);
-			console.log("1 -> "+(field.$error != undefined));
-			console.log("2 -> "+(Object.keys(field.$error).length != 0));
-			console.log("3 -> "+field.$invalid);
-			console.log("4 -> "+!field.$pristine);
+			//console.log("Has error -> "+hasError);
+			//console.log("1 -> "+(field.$error != undefined));
+			//console.log("2 -> "+(Object.keys(field.$error).length != 0));
+			//console.log("3 -> "+field.$invalid);
+			//console.log("4 -> "+!field.$pristine);
 			return hasError;
 		}
 		

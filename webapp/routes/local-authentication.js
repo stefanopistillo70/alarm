@@ -1,13 +1,18 @@
 
+var crypto = require('crypto');
+const saltRounds = 10;
+
 var logger = require('../config/logger.js')('Web');
 var Response = require('./response');
 var User       = require('../models/user');
 var Location       = require('../models/location');
+var userLogic = require('../logic/userLogic');
 
 var express = require('express');
 var router = express.Router();
 
 var jwt = require('../logic/jwt');
+
 
 
 router.get('/token/:userId', function(req, res, next) {
@@ -35,8 +40,14 @@ router.get('/token/:userId', function(req, res, next) {
 //create a jwt Token 
 router.post('/token', function(req, res, next) {
 	
+	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
+	logger.info("IP ->"+ip);
+
 	var email = req.body.email;
 	var pwd = req.body.pwd;
+	var name = req.body.name;
+	var location = req.body.location;
+	
 	logger.info("email ->"+email);
 	
 	var query = { 'auth.local.email' : email }
@@ -65,22 +76,52 @@ router.post('/token', function(req, res, next) {
 		} else {
 			// if the user isnt in our database, create a new user
 			var newUser          = new User();
-			newUser.google.email = data.payload.email;
-			newUser.google.token = tokens.access_token;
-			newUser.google.refresh_token  = tokens.refresh_token;
-			newUser.google.expiry_date = tokens.expiry_date;
-
-			logger.info("NEW User");
-			logger.info(newUser);
-			// save the user
-			newUser.save(function(err) {
+		
+			var jwtToken = jwt.getJWT(email,true,"web");
+			logger.info("JWT ->");
+			logger.info(jwtToken);
+		
+			newUser.auth.local.name = name;
+			newUser.auth.local.email = email;
+			newUser.auth.local.token = jwtToken.access_token;
+			newUser.auth.local.refresh_token = jwtToken.refresh_token;
+			
+			
+			generateHashPassword(pwd, function(err, result){
+				if (err) res.status(400).send(new Response().error(400,err));
+				console.log(result);
+				newUser.auth.local.salt = result.salt;
+				newUser.auth.local.pwd = result.hash;
+				
+				userLogic.createUser(newUser, ip, function(err) {
+					if (err) res.status(400).send(new Response().error(400,err));
+					else {
+						logger.info("New User Created : "+newUser.auth.local);
+						var sec_expire_time = jwtToken.duration_time/4;
+						res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+						res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+						if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
+						res.json(new Response(jwtToken));
+					}
+				});
+				
+				
+			});
+			
+			
+				/*								
+			userLogic.createUser(newUser, ip, function(err) {
 				if (err) res.status(400).send(new Response().error(400,err.errors));
 				else {
-					res.cookie('token',tokens.access_token, { maxAge: 3600000 });
-					if(tokens.refresh_token) res.cookie('refresh_token',tokens.refresh_token);
-					res.json(new Response(tokens));
+					logger.info("New User Created : "+newUser.auth.local);
+					var sec_expire_time = jwtToken.duration_time/4;
+					res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+					res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+					if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
+					res.json(new Response(jwtToken));
 				}
 			});
+			*/
 		}
 						
 	});
@@ -245,7 +286,18 @@ router.post('/sendEmail', function(req, res, next) {
 
 });
 
-
+var generateHashPassword = function(pwd, callback){
+	
+	crypto.randomBytes(128, function (err, salt) {
+		if (err) { throw err; }
+		salt = new Buffer(salt).toString('hex');
+		crypto.pbkdf2(pwd, salt, 7000, 256, function (err, hash) {
+			var result = {salt : salt, hash : (new Buffer(hash).toString('hex')) };		  
+			callback(err,result);	
+		});
+	});
+	
+}
 
 module.exports = router;
 

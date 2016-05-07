@@ -8,8 +8,17 @@ var userSchema = new Schema({
 	location_view : Schema.Types.ObjectId,
 	locations : { type:[{_id : Schema.Types.ObjectId}] , required: true},
 	auth : {
-	  local	: { email: String, token: String, refresh_token: String , name: String, expiry_date : Date },
-	  google: { email: String, token: String, refresh_token: String , expiry_date : Date }
+	  local	: { email: { type: String, unique : true, required : true},
+				token: { type: String, required : true}, 
+				refresh_token: String , 
+				name: String, 
+				expiry_date : Date, 
+				pwd : String, 
+				salt : String },
+	  google: { email: String, 
+				token: String, 
+				refresh_token: String, 
+				expiry_date : Date }
 	},
 	google : {
 		gcm : { web : String, app : String}
