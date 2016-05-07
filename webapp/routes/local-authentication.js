@@ -18,8 +18,6 @@ var jwt = require('../logic/jwt');
 router.get('/token/:userId', function(req, res, next) {
 	var email = req.params.userId;
 	
-	console.log(email);
-	
 	var query = { 'auth.local.email' : email }
 	
 	User.findOne(query, function(err, user) {
@@ -61,7 +59,6 @@ router.post('/token', function(req, res, next) {
 			// if a user is found, verify password
 			verifyHashPassword(pwd,user.auth.local.pwd,user.auth.local.salt, function(err, result){
 				
-				console.log(result)
 				if (err) res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
 				
 				if(result.verified){
@@ -116,7 +113,6 @@ router.post('/token', function(req, res, next) {
 			
 			generateHashPassword(pwd, function(err, result){
 				if (err) res.status(400).send(new Response().error(400,err));
-				console.log(result);
 				newUser.auth.local.salt = result.salt;
 				newUser.auth.local.pwd = result.hash;
 				
@@ -313,17 +309,10 @@ var generateHashPassword = function(pwd, callback){
 
 
 var verifyHashPassword = function(pwdIn, hashIn, salt, callback){
-	
-	console.log("pwdIn ->"+pwdIn);
-	console.log("hashIn ->"+hashIn);
-	console.log("salt ->"+salt);
-	
-	
+		
 	crypto.pbkdf2(pwdIn, salt, 7000, 256, function (err, hash) {
 		
 		var hashHex = (new Buffer(hash).toString('hex'));
-		console.log("hash ->"+hashHex);
-		
 		if(err) callback(err);
 		else{
 			var result = {};
