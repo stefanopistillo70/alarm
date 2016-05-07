@@ -296,6 +296,27 @@ var generateHashPassword = function(pwd, callback){
 			callback(err,result);	
 		});
 	});
+}
+
+
+
+var verifyHashPassword = function(pwdIn, hashIn, salt, callback){
+	
+	crypto.pbkdf2(pwdIn, salt, 7000, 256, function (err, hash) {
+		
+		if(err) callback(err,result);
+		else{
+			var hash = (new Buffer(hash).toString('hex'));
+			var result = {};
+			if(hashIn === hash) result = { verified : true };
+			else result = { verified : false };
+			callback(err,result);
+		}
+		var result = {salt : salt, hash : (new Buffer(hash).toString('hex')) };		
+		
+		
+		callback(err,result);	
+	});
 	
 }
 
