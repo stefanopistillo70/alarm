@@ -12,7 +12,11 @@
 			
 		<div class="container">
 		
+			
 			<form name="userForm" class="form-horizontal col-xs-3 col-xs-offset-4">
+			
+				<div class="alert alert-danger" ng-show="error" role="alert"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Email or password wrong</div>
+
 				<div class="form-group" ng-class="{'has-error' : checkForError(userForm.email, true)}">
 						<input name="email" type="email" class="form-control" ng-model="user.email"  
 						ng-blur="checkEmail()" placeholder="Email"  required/>

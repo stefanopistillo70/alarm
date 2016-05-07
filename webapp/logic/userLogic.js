@@ -7,6 +7,8 @@ var Location       = require('../models/location');
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
+var sysConfig = require('config');
+
 
 //TODO put on config file	
 var configAuth = {
@@ -26,28 +28,36 @@ var logic = {
 	
 	createUser : function(newUser, router_ip, callback){
 		
-			//create location
+			var onlyOneLocation = sysConfig.get('onlyOneLocation');
 			
-			var newLocation = new Location();
-			newLocation.name = "Default Location";
-			newLocation.router_ip = router_ip;
-			newLocation.config = { };
-			newLocation.config.enableNewDevice = false;
-			
-			newLocation.save(function(err, location) {
-				if (err) res.status(400).send(new Response().error(400,err.errors));
-				else {
-					logger.info("Created a new location with router ip : "+router_ip);
-					newUser.locations = [];
-					newUser.locations.push(location._id);
+			var countLocation = 0;
+			Location.count({}, function(err, countLocation) {
+				logger.info('Locations : ' + countLocation);
+				
+				if((onlyOneLocation && countLocation===1) || (!onlyOneLocation)){
+					//create location
 					
-					// save the user
-					newUser.save(function(err) {
-						callback(err);
+					var newLocation = new Location();
+					newLocation.name = "Default Location";
+					newLocation.router_ip = router_ip;
+					newLocation.config = { };
+					newLocation.config.enableNewDevice = false;
+					
+					newLocation.save(function(err, location) {
+						if (err) callback(err);
+						else {
+							logger.info("Created a new location with router ip : "+router_ip);
+							newUser.locations = [];
+							newUser.locations.push(location._id);
+							
+							// save the user
+							newUser.save(function(err) {
+								callback(err);
+							});
+						}
 					});
-					
-				}
-			});
+				}else callback("Error : Only One Location is possible");
+			});				
 	},
 	
 	
@@ -92,7 +102,6 @@ var logic = {
 			
 			if (err){
 				logger.error(err);
-				return res.status(400).send(new Response().error(400,err));
 			}	
 
 			if (users) {

@@ -7,9 +7,6 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 		$scope.local = false;
 		$scope.signup = false;
 		
-		
-		
-		
 		var getGoogleAccoutClientId = GoogleLoginService.getGoogleAccoutClientId().$promise;
 
 		var googleClientID = "";
@@ -52,42 +49,40 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 					});
 			
 			
-			//var auth2 = $rootScope.auth.google.gapi.auth2;
-			
-			console.log("SIGNED ->"+auth2.isSignedIn.get());
-			
-			var googleUser = auth2.currentUser.get();
-			
-			console.log(googleUser);
-								
-			auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(
-				function(authResult) {
-													
-				  if (authResult['code']) {
-					console.log("CODE ->"+authResult['code']);
-					
-					var data = {};
-					data.code = authResult['code'];
-					loginGetToken = GoogleLoginService.getToken(data).$promise;
+				//var auth2 = $rootScope.auth.google.gapi.auth2;
+				
+				console.log("SIGNED ->"+auth2.isSignedIn.get());
+				
+				var googleUser = auth2.currentUser.get();
+				
+				console.log(googleUser);
+									
+				auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(
+					function(authResult) {
+														
+					  if (authResult['code']) {
+						console.log("CODE ->"+authResult['code']);
+						
+						var data = {};
+						data.code = authResult['code'];
+						loginGetToken = GoogleLoginService.getToken(data).$promise;
 
-					loginGetToken.then(function(response) {
-						if (response.result) {
-							console.log(response.result);
-							$rootScope.isLoggedIn = true;
-						}
-						$location.url('/');
-						//window.location = "http://localhost:3000/#/";
-												
-					}, function(reason) {
-						  console.log('Failed Login insert Code: ' + reason);
-					});
-					
-					
-				  } else {
-					console.log("ERROR");
-				  }
-				  
-			});
+						loginGetToken.then(function(response) {
+							if (response.result) {
+								console.log(response.result);
+								$rootScope.isLoggedIn = true;
+							}
+							$location.url('/');
+							//window.location = "http://localhost:3000/#/";
+													
+						}, function(reason) {
+							  console.log('Failed Login insert Code: ' + reason);
+						});
+									
+					  } else {
+						console.log("ERROR");
+					  }
+				});
 			
 			});
 		};
@@ -116,9 +111,6 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 		}
 
 		
-		$scope.register = function() {
-			$log.info("register");
-		}	
 		
 		
 		$scope.loginLocal = function() {
@@ -143,16 +135,17 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 				register = LocalLoginService.save($scope.user).$promise;
 
 				register.then(function(response) {
+					console.log(response);
 					if (response.result) {
 						console.log(response.result);
 						$rootScope.isLoggedIn = true;
 					}
 					$location.url('/');											
 				}, function(reason) {
-					  console.log('Failed Login insert Code: ' + reason);
+					  console.log('Failed Login');
+					  $scope.error = true;
 				});
 			};
-
 		}
 		
 		
