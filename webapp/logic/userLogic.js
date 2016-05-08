@@ -34,8 +34,9 @@ var logic = {
 			Location.count({}, function(err, countLocation) {
 				logger.info('Locations : ' + countLocation);
 				
-				if((onlyOneLocation && countLocation===1) || (!onlyOneLocation)){
+				if((onlyOneLocation && countLocation===0) || (!onlyOneLocation)){
 					//create location
+					logger.info('Creating a location..');
 					
 					var newLocation = new Location();
 					newLocation.name = "Default Location";

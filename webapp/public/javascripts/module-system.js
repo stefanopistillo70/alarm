@@ -4,26 +4,41 @@ dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'Goo
 			
 			$log.info("Init Controller");
 			
-			usersQuery = UserService.query().$promise;
+			$scope.users = [{email : "pippo@pippo.i"},{email : "violamandal@gmail.com"}];
+			
+			$scope.accordionIsOpen = { users :  false };
+			
+			$scope.$watch('accordionIsOpen.users', function(isOpen){
+				if (isOpen) {
+					console.log('First group was opened'); 
+					
+					usersQuery = UserService.query().$promise;
 
-			usersQuery.then(function(response) {
-				if (response.result) {
-					console.log(response.result);
-					$scope.users = response.result;
-				}
-										
-			}, function(reason) {
-				  console.log('Failed get users: ' + reason);
+					usersQuery.then(function(response) {
+						if (response.result) {
+							$scope.data = {
+								repeatSelect: null,
+								availableOptions: response.result
+							};
+						}
+												
+					}, function(reason) {
+						  console.log('Failed get users: ' + reason);
+					});
+					
+				}    
 			});
+			
+			
 
 			
 			//$scope.users = [{email : "pippo@pippo.i"},{email : "violamandal@gmail.com"}];
 			
-			$scope.data = {
+			/*$scope.data = {
 				repeatSelect: null,
 				availableOptions: $scope.users
 			};
-			
+			*/
 			
 			$scope.saveNotification = function () {
 				

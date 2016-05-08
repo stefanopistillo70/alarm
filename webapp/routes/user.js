@@ -10,12 +10,21 @@ var Response = require('./response');
 router.get('/', function(req, res, next) {
 	
 	var locations = req.locations.split("#");
-	query = { locationId : { $in: locations }};
+	
+	logger.info("User get list for location : "+locations);
+	query = { locations : {$elemMatch: { _id : locations}}};
 	
 	User.find(query, function(err, users) {
 				if (err){
 					res.status(400).send(err);
-				}else res.json(new Response(users));
+				}else{
+					var resultUser = [];
+					for (i = 0; i < users.length; i++) { 
+								resultUser[i] = {};
+								resultUser[i].email = users[i].auth.local.email;
+					}
+					res.json(new Response(resultUser));
+				} 
 	});	
 });
 
