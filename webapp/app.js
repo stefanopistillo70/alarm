@@ -20,6 +20,7 @@ var local_auth = require('./routes/local-authentication');
 var controller = require('./routes/controller');
 var google = require('./routes/google');
 var main = require('./routes/main');
+var user = require('./routes/user');
 
 
 var Response = require('./routes/response');
@@ -223,6 +224,7 @@ app.use(apiVer+'/message', message);
 app.use(apiVer+'/controller', controller);
 app.use(apiVer+'/google', google);
 app.use(apiVer+'/main', main);
+app.use(apiVer+'/user', user);
 
 
 

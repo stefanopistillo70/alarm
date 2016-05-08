@@ -1,8 +1,29 @@
 var dgModuleSystem = angular.module('dgModuleSystem', ['ngResource','ui.bootstrap']);
 
-dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'GoogleLoginService', 'GoogleService', function($log, $scope, SystemService, GoogleLoginService, GoogleService) {
+dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'GoogleLoginService', 'GoogleService', 'UserService', function($log, $scope, SystemService, GoogleLoginService, GoogleService, UserService) {
 			
 			$log.info("Init Controller");
+			
+			usersQuery = UserService.query().$promise;
+
+			usersQuery.then(function(response) {
+				if (response.result) {
+					console.log(response.result);
+					$scope.users = response.result;
+				}
+										
+			}, function(reason) {
+				  console.log('Failed get users: ' + reason);
+			});
+
+			
+			//$scope.users = [{email : "pippo@pippo.i"},{email : "violamandal@gmail.com"}];
+			
+			$scope.data = {
+				repeatSelect: null,
+				availableOptions: $scope.users
+			};
+			
 			
 			$scope.saveNotification = function () {
 				
@@ -81,6 +102,18 @@ var getGoogleEmailConsensus = function(googleClientID, GoogleService){
 dgModuleSystem.factory('SystemService', ['$resource',
   function($resource){
 	var response = $resource(apiVer+'zone/:entryId', {}, {
+			query: { method: 'GET', params: {} },
+			post: {method:'POST'},
+			update: {method:'PUT', params: {entryId: '@entryId'}},
+			remove: {method:'DELETE'}
+    });
+    return response;
+
+}]);
+
+dgModuleSystem.factory('UserService', ['$resource',
+  function($resource){
+	var response = $resource(apiVer+'user/:entryId', {}, {
 			query: { method: 'GET', params: {} },
 			post: {method:'POST'},
 			update: {method:'PUT', params: {entryId: '@entryId'}},

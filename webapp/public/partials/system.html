@@ -5,7 +5,23 @@
 
 <uib-accordion close-others="true">
     <uib-accordion-group heading="Users" is-open="false" is-disabled="false">
-      This content is straight in the template.
+	
+		<div class="container-fluid">
+			<div class="col-sm-3">
+				<input type="text" class="form-control" ng-model="user.email" placeholder="Enter user" />
+			</div>
+			<div class="col-sm-3">
+				<button class="btn btn-warning" type="button" ng-click="addUser()">Add user</button>
+				<button class="btn btn-warning" type="button" ng-click="deleteUser()">Delete user</button>
+			</div>	
+			{{data.repeatSelect}}
+			<div class="col-sm-2">
+				<select name="users" id="users" ng-model="data.repeatSelect" multiple>				
+					<option ng-repeat="option in data.availableOptions" value="{{option.email}}">{{option.email}}</option>
+				</select>
+			</div>	
+			
+		</div>
     </uib-accordion-group>
 	
 	<uib-accordion-group heading="Notifications" is-open="false" is-disabled="false"  >  
