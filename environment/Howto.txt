@@ -1,9 +1,11 @@
 
+sudo apt-get install git
+
 sudo apt-get install chef
 
 
 
 
-
+sudo apt-get update
 sudo apt-get install rubygems
 gem install --http-proxy http://www-proxy.ericsson.se chef --no-ri --no-rdoc

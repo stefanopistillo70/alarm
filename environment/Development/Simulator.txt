@@ -1,3 +1,10 @@
+qemu
+
+-redir tcp:2222::22
+
+
+
+
 ----- Install -----
 
 wget http://www.dest-unreach.org/socat/download/socat-2.0.0-b9.tar.gz
