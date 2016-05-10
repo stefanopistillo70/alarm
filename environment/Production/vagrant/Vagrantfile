@@ -19,6 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	
 	config.vm.provider "virtualbox" do |v|
 		v.memory = 1024
+		v.name = "domusguard"
 	end
 	
 	config.vm.provision :shell do |shell|
@@ -29,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 		chef.cookbooks_path = ["../../chef/cookbooks"]
 		chef.roles_path = ["../chef/roles"]
-		chef.add_role "vagrant-test-box"
+		chef.add_role "vagrant-production-box"
 		install = false
 	end
 
