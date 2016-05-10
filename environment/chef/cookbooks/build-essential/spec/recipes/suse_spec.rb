@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe 'build-essential::_suse' do
   let(:chef_run) do
-    ChefSpec::ServerRunner.new(platform: 'suse', version: '11.3')
-      .converge(described_recipe)
+    ChefSpec::ServerRunner.new(platform: 'opensuse', version: '13.2')
+                          .converge(described_recipe)
   end
 
   it 'installs the correct packages' do

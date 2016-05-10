@@ -3,7 +3,8 @@ maintainer        'Chef Software, Inc.'
 maintainer_email  'cookbooks@chef.io'
 license           'Apache 2.0'
 description       'Installs C compiler / build tools'
-version           '2.2.2'
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version           '3.2.0'
 recipe            'build-essential', 'Installs packages required for compiling C software from source.'
 
 supports 'amazon'
@@ -19,11 +20,11 @@ supports 'scientific'
 supports 'smartos'
 supports 'suse'
 supports 'ubuntu'
+supports 'windows'
+supports 'zlinux'
 
-suggests 'pkgutil' # Solaris 2
+depends 'seven_zip'
+depends 'mingw'
 
-attribute 'build-essential/compile_time',
-  display_name: 'Build Essential Compile Time Execution',
-  description: 'Execute resources at compile time.',
-  default: 'false',
-  recipes: ['build-essential::default']
+source_url 'https://github.com/chef-cookbooks/build-essential' if respond_to?(:source_url)
+issues_url 'https://github.com/chef-cookbooks/build-essential/issues' if respond_to?(:issues_url)

@@ -1,28 +1,35 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   Exclude:
-    - bin/**/*
-    - script/**/*
     - vendor/**/*
+    - Guardfile
 
 AlignParameters:
   Enabled: false
-ClassAndModuleChildren:
+ClassLength:
+  Enabled: false
+CyclomaticComplexity:
   Enabled: false
 Documentation:
   Enabled: false
-DoubleNegation:
-  Enabled: false
 Encoding:
   Enabled: false
-GuardClause:
+Style/FileName:
+  Enabled: false
+Style/Alias:
+  Enabled: false
+Style/SpaceBeforeFirstArg:
   Enabled: false
 LineLength:
-  Max: 120
+  Enabled: false
 MethodLength:
-  Max: 20
-PercentLiteralDelimiters:
   Enabled: false
-SignalException:
+Metrics/AbcSize:
   Enabled: false
-SingleSpaceBeforeFirstArg:
+Metrics/ModuleLength:
+  Enabled: false
+PerceivedComplexity:
+  Enabled: false
+Style/ClassAndModuleChildren:
   Enabled: false

@@ -1,28 +1,51 @@
-language: ruby
+sudo: required
+dist: trusty
 
-rvm:
-  - 2.1.0
+# install the pre-release chef-dk.  Use chef-stable-precise to install the stable release
+addons:
+  apt:
+    sources:
+      - chef-current-precise
+    packages:
+      - chefdk
 
-bundler_args: --jobs 7 --without kitchen_vagrant --without development
+install: echo "skip bundle install"
 
-branches:
-  only:
-    - master
+services: docker
 
-before_install:
-  - export USE_SYSTEM_GECODE=1
-  - sudo apt-get -y install libgecode-dev
+env:
+  matrix:
+  - INSTANCE=default-ubuntu-1204
+  - INSTANCE=default-ubuntu-1404
+  - INSTANCE=default-ubuntu-1604
+  - INSTANCE=default-centos-5
+  - INSTANCE=default-centos-6
+  - INSTANCE=default-centos-7
+  - INSTANCE=default-fedora-23  
+  - INSTANCE=default-debian-7
+  - INSTANCE=default-debian-8
+  - INSTANCE=default-ubuntu-1404-chef11
 
-script: bundle exec rake travis:ci
+before_script:
+  - docker --version
+  - docker info
+  - mount
+  - sudo iptables -L DOCKER || ( echo "DOCKER iptables chain missing" ; sudo iptables -N DOCKER )
+  - eval "$(/opt/chefdk/bin/chef shell-init bash)"
+  - /opt/chefdk/embedded/bin/chef gem install kitchen-dokken
 
-notifications:
-  hipchat:
-    on_change: true
-    on_failure: true
-    on_success: false
-    on_pull_requests: false
-    rooms:
-      # Build Statuses
-      - secure: fk4NTplcjE097Oan2HgZc+Lxx8X9k2QDolwBKZMDNrreFImBgw6HJBwHUv6Hfay2xh7Y720iNFeTTN3Ep0/M4YgmBrwhry3jSMN8TX7SAOGPCC8zIB0ELGGAyQKxDjwwsA18KTbuDkV5yboiUzvY86G5bWT8vfWEd1ljTEnIazQ=
-      # Release Engineering
-      - secure: X35KY6kImjVyYiT9gOlRJd26MKh5KQFwxcQm3fF9Y+pnB1v7uB3w6+jzoxhvPN5O2US3xGQsaJOSAB1uhZh+FZOKfZ/ewyXVUcTXrUTC9Mjofd3n33xD68qoI22mntEQilugvC+OPhq9uWyX0OlRhnnT+J56Vq7feSI4ez9e9Og=
+script:
+  - /opt/chefdk/embedded/bin/chef --version
+  - /opt/chefdk/embedded/bin/rubocop --version
+  - /opt/chefdk/embedded/bin/rubocop
+
+  - /opt/chefdk/embedded/bin/foodcritic --version
+  - /opt/chefdk/embedded/bin/foodcritic . --exclude spec -f any
+  - /opt/chefdk/embedded/bin/rspec
+  - echo KITCHEN_YAML=.kitchen.yml kitchen verify ${INSTANCE}
+  - KITCHEN_YAML=.kitchen.docker.yml kitchen verify ${INSTANCE}
+
+after_script:
+  - docker images
+  - docker ps -a
+  - cat .kitchen/logs/*kitchen*.log
