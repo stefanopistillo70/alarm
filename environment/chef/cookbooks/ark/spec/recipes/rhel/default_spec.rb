@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe_recipe "ark::default" do
   def node_attributes
-    { platform: "centos", version: "6.7" }
+    { platform: "redhat", platform_family: 'rhel', version: "6.5" }
   end
 
   let(:expected_packages) do

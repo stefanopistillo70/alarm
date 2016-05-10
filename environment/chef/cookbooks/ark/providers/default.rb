@@ -22,7 +22,7 @@
 # limitations under the License.
 #
 
-use_inline_resources if defined?(use_inline_resources)
+use_inline_resources
 include ::Ark::ProviderHelpers
 
 #################
@@ -44,6 +44,7 @@ action :install do
     checksum new_resource.checksum if new_resource.checksum
     action :create
     notifies :run, "execute[unpack #{new_resource.release_file}]"
+    backup new_resource.backup
   end
 
   # unpack based on file extension
@@ -119,6 +120,7 @@ action :put do
     checksum new_resource.checksum if new_resource.checksum
     action :create
     notifies :run, "execute[unpack #{new_resource.release_file}]"
+    backup new_resource.backup
   end
 
   # unpack based on file extension
@@ -319,7 +321,6 @@ action :install_with_make do
     environment new_resource.environment
     action :nothing
   end
-
 end
 
 action :setup_py_build do

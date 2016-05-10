@@ -1,7 +1,6 @@
 require "spec_helper"
 
 describe_recipe "ark::default" do
-
   let(:expected_core_packages) do
     %w( libtool autoconf unzip rsync make gcc autogen )
   end
@@ -16,12 +15,11 @@ describe_recipe "ark::default" do
     expect(chef_run).not_to install_package("gcc-c++")
   end
 
-  it "does not include the 7-zip recipe" do
-    expect(chef_run).not_to include_recipe("7-zip")
+  it "does not include the seven_zip recipe" do
+    expect(chef_run).not_to include_recipe("seven_zip")
   end
 
   context "sets default attributes" do
-
     it "apache mirror" do
       expect(default_cookbook_attribute("apache_mirror")).to eq "http://apache.mirrors.tds.net"
     end
@@ -41,7 +39,5 @@ describe_recipe "ark::default" do
     it "tar binary" do
       expect(default_cookbook_attribute("tar")).to eq "/bin/tar"
     end
-
   end
-
 end
