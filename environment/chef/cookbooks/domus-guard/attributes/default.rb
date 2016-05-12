@@ -1,7 +1,8 @@
 
-default['domus-guard']['user'] =  'domus'
-default['domus-guard']['group'] =  'domus'
-default['domus-guard']['install_directory']  = '/opt/domus/'
-default['domus-guard']['dbuser'] =  'domus'
-default['domus-guard']['dbpwd'] =  'domus1'
+default['domusguard']['user'] =  'domus'
+default['domusguard']['pwd'] =  'domus1'
+default['domusguard']['group'] =  'domus'
+default['domusguard']['install_directory']  = '/opt/domus/'
+default['domusguard']['dbuser'] =  'domus'
+default['domusguard']['dbpwd'] =  'domus1'
 

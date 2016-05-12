@@ -6,4 +6,4 @@ description       "Installs domus-guard."
 version           "1.0.0"
 
 
-depends 'mongodb'
+depends 'mongodb3'

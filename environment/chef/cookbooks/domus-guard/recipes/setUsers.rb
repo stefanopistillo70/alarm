@@ -1,39 +1,39 @@
 
-user 'elios' do
+user node['domusguard']['user'] do
   supports :manage_home => true
-  comment 'Elios User'
-  home '/home/'+node['elios']['user']
+  comment 'User'
+  home '/home/'+node['domusguard']['user']
   shell '/bin/bash'
-  password 'elios'
+  password node['domusguard']['pwd']
 end
 
-group node['elios']['group'] do
+group node['domusguard']['group'] do
   action :modify
-  members node['elios']['user']
+  members node['domusguard']['user']
   append true
 end
 
 
 
-directory node['elios']['install_directory'] do
-  owner node['elios']['user']
-  group node['elios']['group']
+directory node['domusguard']['install_directory'] do
+  owner node['domusguard']['user']
+  group node['domusguard']['group']
   mode '0777'
   action :create
 end
 
 
 bash "alias" do
-  user node['elios']['user']
-  group node['elios']['group']
+  user node['domusguard']['user']
+  group node['domusguard']['group']
   code <<-EOH
-  cd /home/#{node['elios']['user']}
+  cd /home/#{node['domusguard']['user']}
 
-  export ELIOS_HOME=#{node['elios']['install_directory']}
-  echo "export ELIOS_HOME=#{node['elios']['install_directory']}" >> .bashrc
-  echo "alias elios='cd ${ELIOS_HOME}/Elios'" >> .bashrc 
-  echo "alias log='cd ${ELIOS_HOME}/Elios/logs'" >> .bashrc
-  echo "alias tomcat='cd ${ELIOS_HOME}/tomcat'" >> .bashrc
+  export DOMUS_HOME=#{node['domusguard']['install_directory']}
+  echo "export DOMUS_HOME=#{node['domusguard']['install_directory']}" >> .bashrc
+  echo "alias domusguard='cd ${DOMUS_HOME}/Domus'" >> .bashrc 
+  echo "alias log='cd ${DOMUS_HOME}/Domus/logs'" >> .bashrc
+  echo "alias tomcat='cd ${DOMUS_HOME}/tomcat'" >> .bashrc
   EOH
   action :run
 end

@@ -14,6 +14,9 @@ default_attributes(
 			"mongod" => {
 					"net" => {
 						"bindIp" => "127.0.0.1"
+					}, 
+					"security" => {
+						"authorization" => "enabled"
 					}
 			}
 		}
@@ -23,5 +26,6 @@ default_attributes(
 
 run_list(
 	"recipe[mongodb3]",
-	"recipe[nodejs::install_from_binary]"
+	"recipe[nodejs::install_from_binary]",
+	"recipe[domus-guard]"
 )
