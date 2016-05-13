@@ -1,4 +1,4 @@
-
+default['domusguard']['src_filepath'] =  '/git'
 default['domusguard']['user'] =  'domus'
 default['domusguard']['pwd'] =  'domus1'
 default['domusguard']['group'] =  'domus'
