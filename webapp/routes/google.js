@@ -60,80 +60,81 @@ router.get('/sendMail', function(req, res, next) {
 	User.findOne(query, function(err, user) {
 	
 		if (err) res.status(400).send(new Response().error(400,err.errors));
-			
-		if (user) {
-			
-			oauth2Client.setCredentials({
-				access_token: user.auth.google.token,
-				refresh_token: user.auth.google.refresh_token
-			}); 
-			
-			console.log(oauth2Client);
-			
-			
-			var to = 'someone@someone.nl',
-			subject = 'Hello World',
-			content = 'send a Gmail.'
+		else{	
+			if (user) {
+				
+				oauth2Client.setCredentials({
+					access_token: user.auth.google.token,
+					refresh_token: user.auth.google.refresh_token
+				}); 
+				
+				console.log(oauth2Client);
+				
+				
+				var to = 'someone@someone.nl',
+				subject = 'Hello World',
+				content = 'send a Gmail.'
 
-			var base64EncodedEmail = new Buffer(
-			  "Content-Type:  text/plain; charset=\"UTF-8\"\n" +
-			  "Content-length: 5000\n" +
-			  "Content-Transfer-Encoding: message/rfc2822\n" +
-			  "to: stefano.pistillo@gmail.com\n" +
-			  "from: \"Stefano Pistillo\" <stefano.pistillo@gmail.com>\n" +
-			  "subject: Hello world\n\n" +
+				var base64EncodedEmail = new Buffer(
+				  "Content-Type:  text/plain; charset=\"UTF-8\"\n" +
+				  "Content-length: 5000\n" +
+				  "Content-Transfer-Encoding: message/rfc2822\n" +
+				  "to: stefano.pistillo@gmail.com\n" +
+				  "from: \"Stefano Pistillo\" <stefano.pistillo@gmail.com>\n" +
+				  "subject: Hello world\n\n" +
 
-			  "The actual message text goes here"
-				).toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+				  "The actual message text goes here"
+					).toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
 
-			var mail= base64EncodedEmail;
-			
-			
-			 gmail.users.messages.send({
-				'auth': oauth2Client,
-				'userId' : 'me',
-				//uploadType : 'media',
-				'resource': {
-					  'raw': mail
-					}
-				}, function(err, response) {
-					if (err) {
-					  console.log('The API returned an error: ' + err);
-					  res.json(new Response("Mail Sent"));
-					}
-					if(response){
-						console.log(response);
-						res.json(new Response("Mail Sent"));
-					}
-					
-			 })
-			
-			/*gmail.users.labels.list({
-				auth: oauth2Client,
-				userId: 'me',
-				}, function(err, response) {
-					if (err) {
-					  console.log('The API returned an error: ' + err);
-					  res.json(new Response("Mail Sent"));
-					}
-					if(response){
-						var labels = response.labels;
-						if (labels.length == 0) {
-						  console.log('No labels found.');
-						} else {
-						  console.log('Labels:');
-						  for (var i = 0; i < labels.length; i++) {
-							var label = labels[i];
-							console.log('- %s', label.name);
-						  }
+				var mail= base64EncodedEmail;
+				
+				
+				 gmail.users.messages.send({
+					'auth': oauth2Client,
+					'userId' : 'me',
+					//uploadType : 'media',
+					'resource': {
+						  'raw': mail
+						}
+					}, function(err, response) {
+						if (err) {
+						  console.log('The API returned an error: ' + err);
+						  res.json(new Response("Mail Sent"));
+						}
+						if(response){
+							console.log(response);
+							res.json(new Response("Mail Sent"));
 						}
 						
-						res.json(new Response("Mail Sent"));
-					}
-					
-			});*/
+				 })
 				
-		};
+				/*gmail.users.labels.list({
+					auth: oauth2Client,
+					userId: 'me',
+					}, function(err, response) {
+						if (err) {
+						  console.log('The API returned an error: ' + err);
+						  res.json(new Response("Mail Sent"));
+						}
+						if(response){
+							var labels = response.labels;
+							if (labels.length == 0) {
+							  console.log('No labels found.');
+							} else {
+							  console.log('Labels:');
+							  for (var i = 0; i < labels.length; i++) {
+								var label = labels[i];
+								console.log('- %s', label.name);
+							  }
+							}
+							
+							res.json(new Response("Mail Sent"));
+						}
+						
+				});*/
+					
+			};
+		}
 		
 	});
 

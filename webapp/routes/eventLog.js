@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 	
 	EventLog.find(query, function(err, eventLogs) {
 			if (err) res.status(400).send(new Response().error(400,err.errors));
-			res.json(new Response(eventLogs));
+			else res.json(new Response(eventLogs));
 	});	
 });
 

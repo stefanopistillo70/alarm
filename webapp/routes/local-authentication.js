@@ -22,15 +22,16 @@ router.get('/token/:userId', function(req, res, next) {
 	
 	User.findOne(query, function(err, user) {
 
-		if (err) res.status(400).send(new Response().error(400,err.errors));
-			
-		if (user) {
-			logger.info("User Found");
-			if (user.auth.local.passwd) res.json(new Response("local"));
-			else res.json(new Response(""));
-		} else {
-			res.status(404).send(new Response().error(404,""));
-		}				
+		if (err) res.status(400).send(new Response().error(400,err));
+		else{
+			if (user) {
+				logger.info("User Found");
+				if (user.auth.local.passwd) res.json(new Response("local"));
+				else res.json(new Response(""));
+			} else {
+				res.status(404).send(new Response().error(404,""));
+			}
+		}		
 	});
 	
 });
@@ -52,73 +53,75 @@ router.post('/token', function(req, res, next) {
 	
 	User.findOne(query, function(err, user) {
 
-		if (err) res.status(400).send(new Response().error(400,err.errors));
-			
-		if (user) {
-			logger.info("User Found token");
-			// if a user is found, verify password
-			verifyHashPassword(pwd,user.auth.local.pwd,user.auth.local.salt, function(err, result){
-				
-				if (err) res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
-				
-				if(result.verified){
+		if (err) res.status(400).send(new Response().error(400,err));
+		else{	
+			if (user) {
+				logger.info("User Found token");
+				// if a user is found, verify password
+				verifyHashPassword(pwd,user.auth.local.pwd,user.auth.local.salt, function(err, result){
 					
-					var jwtToken = jwt.getJWT(email,true,"web",user.auth.role);
-					
-					var update = { 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token};
-					
-					var opts = { strict: true };
-					User.update(query, update, opts, function(error,raw) {
-						if (error){
-							res.status(400).send(new Response().error(400,error));
-						}else{
-							var sec_expire_time = jwtToken.duration_time/4;
-							res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
-							res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-							res.cookie('refresh_token',jwtToken.refresh_token);
-							if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
-							res.json(new Response(jwtToken));
-						} 		  
-					});			
+					if (err) res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
+					else{
+						if(result.verified){
+							
+							var jwtToken = jwt.getJWT(email,true,"web",user.auth.role);
+							
+							var update = { 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token};
+							
+							var opts = { strict: true };
+							User.update(query, update, opts, function(error,raw) {
+								if (error){
+									res.status(400).send(new Response().error(400,error));
+								}else{
+									var sec_expire_time = jwtToken.duration_time/4;
+									res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+									res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+									res.cookie('refresh_token',jwtToken.refresh_token);
+									if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
+									res.json(new Response(jwtToken));
+								} 		  
+							});			
 
-				}else res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
-			});
-						
-		} else {
-			// if the user isnt in our database, create a new user
-			var newUser          = new User();
-		
-			var jwtToken = jwt.getJWT(email,true,"web","admin");
-			logger.info("JWT ->");
-			logger.info(jwtToken);
-		
-			newUser.auth.local.name = name;
-			newUser.auth.local.email = email;
-			newUser.auth.local.token = jwtToken.access_token;
-			newUser.auth.local.refresh_token = jwtToken.refresh_token;
-			
-			
-			generateHashPassword(pwd, function(err, result){
-				if (err) res.status(400).send(new Response().error(400,err));
-				newUser.auth.local.salt = result.salt;
-				newUser.auth.local.pwd = result.hash;
-				
-				userLogic.createUser(newUser, ip, function(err) {
-					if (err) res.status(400).send(new Response().error(400,err));
-					else {
-						logger.info("New User Created : "+newUser.auth.local);
-						var sec_expire_time = jwtToken.duration_time/4;
-						res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
-						res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-						if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
-						res.json(new Response(jwtToken));
+						}else res.status(403).send(new Response().error(403,"Authorization problem: user or pwd are wrong"));
 					}
 				});
+							
+			} else {
+				// if the user isnt in our database, create a new user
+				var newUser          = new User();
+			
+				var jwtToken = jwt.getJWT(email,true,"web","admin");
+				logger.info("JWT ->");
+				logger.info(jwtToken);
+			
+				newUser.auth.local.name = name;
+				newUser.auth.local.email = email;
+				newUser.auth.local.token = jwtToken.access_token;
+				newUser.auth.local.refresh_token = jwtToken.refresh_token;
 				
 				
-			});
-		}
+				generateHashPassword(pwd, function(err, result){
+					if (err) res.status(400).send(new Response().error(400,err));
+					else{
+						newUser.auth.local.salt = result.salt;
+						newUser.auth.local.pwd = result.hash;
 						
+						userLogic.createUser(newUser, ip, function(err) {
+							if (err) res.status(400).send(new Response().error(400,err));
+							else {
+								logger.info("New User Created : "+newUser.auth.local);
+								var sec_expire_time = jwtToken.duration_time/4;
+								res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+								res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+								if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
+								res.json(new Response(jwtToken));
+							}
+						});
+					}
+					
+				});
+			}
+		}					
 	});
 
 });
@@ -138,34 +141,35 @@ router.post('/refresh', function(req, res, next) {
 		Location.findOne(query, function(err, location) {
 			if (err){
 				logger.error(err);
-				return res.status(403).send(new Response().error(403,"Authentication Problem: err location"));
-			}	
+				res.status(403).send(new Response().error(403,"Authentication Problem: err location"));
+			}else{	
 
-			if (location) {
-				
-				logger.info("Location Found controllerId ->"+location.controller.controllerId);
+				if (location) {
+					
+					logger.info("Location Found controllerId ->"+location.controller.controllerId);
 
-				if(jwt.verifyJWT(refresh_token,location.controller.controllerId)){
-													
-					var jwtToken = jwt.getJWT(location.controller.controllerId,true,"controller","controller");
-				
-					var update = { "controller.token" : jwtToken.access_token };
-					var opts = { strict: true };
-					Location.update({'_id' : location._id}, update, opts, function(error,raw) {
-						if (error){
-							res.status(400).send(new Response().error(400,err.errors));
-						}else{
-							res.json(new Response(jwtToken));
-						} 		  
-					});		
+					if(jwt.verifyJWT(refresh_token,location.controller.controllerId)){
+														
+						var jwtToken = jwt.getJWT(location.controller.controllerId,true,"controller","controller");
+					
+						var update = { "controller.token" : jwtToken.access_token };
+						var opts = { strict: true };
+						Location.update({'_id' : location._id}, update, opts, function(error,raw) {
+							if (error){
+								res.status(400).send(new Response().error(400,err));
+							}else{
+								res.json(new Response(jwtToken));
+							} 		  
+						});		
 
+					}else{
+						logger.error("Authentication Problem: token expired");
+						return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
+					}
 				}else{
-					logger.error("Authentication Problem: token expired");
-					return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
+					logger.error("Authentication Problem: no location found");
+					return res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
 				}
-			}else{
-				logger.error("Authentication Problem: no location found");
-				return res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
 			}
 
 		});
@@ -177,32 +181,32 @@ router.post('/refresh', function(req, res, next) {
 		
 		User.findOne(query, function(err, user) {
 
-			if (err) res.status(400).send(new Response().error(400,err.errors));
-				
-			if (user) {
-				logger.info("User Found token ->"+user.auth.local.email);
-				// if a user is found, log them in
-				if(jwt.verifyJWT(refresh_token,user.auth.local.email)){
+			if (err) res.status(400).send(new Response().error(400,err));
+			else{	
+				if (user) {
+					logger.info("User Found token ->"+user.auth.local.email);
+					// if a user is found, log them in
+					if(jwt.verifyJWT(refresh_token,user.auth.local.email)){
+						
+						var jwtToken = jwt.getJWT(user.auth.local.email,false,"web",user.auth.role);
+						logger.info("JWT ->");
+						logger.info(jwtToken);
 					
-					var jwtToken = jwt.getJWT(user.auth.local.email,false,"web",user.auth.role);
-					logger.info("JWT ->");
-					logger.info(jwtToken);
-				
-					var update = { 'auth.local.token': jwtToken.access_token};
-					var opts = { strict: true };
-					User.update(query, update, opts, function(error,raw) {
-						if (error){
-							res.status(400).send(new Response().error(400,err.errors));
-						}else{
-							res.cookie('token',jwtToken.access_token, { maxAge: jwtToken.duration_time });
-							res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: jwtToken.duration_time });
-							res.json(new Response(jwtToken));
-						} 		  
-					});		
-				} else res.status(403).send(new Response().error(403,"Authentication Problem: jwt varification failed"));			
-				
-			} else res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
-							
+						var update = { 'auth.local.token': jwtToken.access_token};
+						var opts = { strict: true };
+						User.update(query, update, opts, function(error,raw) {
+							if (error){
+								res.status(400).send(new Response().error(400,err));
+							}else{
+								res.cookie('token',jwtToken.access_token, { maxAge: jwtToken.duration_time });
+								res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: jwtToken.duration_time });
+								res.json(new Response(jwtToken));
+							} 		  
+						});		
+					} else res.status(403).send(new Response().error(403,"Authentication Problem: jwt varification failed"));			
+					
+				} else res.status(403).send(new Response().error(403,"Authentication Problem: no user found"));
+			}						
 		});
 	
 	}
@@ -228,26 +232,27 @@ router.post('/controller', function(req, res, next) {
 	
 	Location.findOne(query, function(err, location) {
 
-		if (err) res.status(400).send(new Response().error(400,err.errors));
+		if (err) res.status(400).send(new Response().error(400,err));
+		else{	
+			if (location) {
+				logger.info("Location Found token ->"+location.name);
+					
+				var jwtToken = jwt.getJWT(controllerId,true,"controller","controller");
 			
-		if (location) {
-			logger.info("Location Found token ->"+location.name);
+				var update = { controller : { "controllerId": controllerId, 
+											  "token" : jwtToken.access_token,
+											  "refresh_token" : jwtToken.refresh_token } };
+				var opts = { strict: true };
+				Location.update({'_id' : location._id}, update, opts, function(error,raw) {
+					if (error){
+						res.status(400).send(new Response().error(400,err));
+					}else{
+						res.json(new Response(jwtToken));
+					} 		  
+				});		
 				
-			var jwtToken = jwt.getJWT(controllerId,true,"controller","controller");
-		
-			var update = { controller : { "controllerId": controllerId, 
-										  "token" : jwtToken.access_token,
-										  "refresh_token" : jwtToken.refresh_token } };
-			var opts = { strict: true };
-			Location.update({'_id' : location._id}, update, opts, function(error,raw) {
-				if (error){
-					res.status(400).send(new Response().error(400,err.errors));
-				}else{
-					res.json(new Response(jwtToken));
-				} 		  
-			});		
-			
-		} else res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));				
+			} else res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));				
+		}
 	});
 });
 
