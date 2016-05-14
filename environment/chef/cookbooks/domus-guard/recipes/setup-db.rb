@@ -3,8 +3,7 @@
 Chef::Log.info("Setup DB")
 
 execute "setup-db-users" do
-  cwd "../../../../utility/mongo"
-  command "./setupDB.sh << EOF
+  command "cd #{node['domusguard']['src_filepath']}/environment/utility/mongo; ./setupDB.sh << EOF
 EOF"
   user node['domusguard']['user']
   group node['domusguard']['user']

@@ -1,6 +1,6 @@
 {
     "dbConfig": {
-      "url"  : "mongodb://domus4:domus1@127.0.0.1:27017/DomusGuard"
+      "url"  : "mongodb://domus:domus1@127.0.0.1:27017/DomusGuard"
     },
 	"onlyOneLocation" : true
 }
