@@ -36,7 +36,11 @@ var dbConfig = sysConfig.get('dbConfig');
 
 var apiVer = "/api/1.0";
 
-mongoose.connect(dbConfig.url, function(err) {
+var options = {
+  server: { ssl: true, sslValidate: false }
+}
+
+mongoose.connect(dbConfig.url, options, function(err) {
     if(err) {
         logger.error('connection error', err);
     } else {

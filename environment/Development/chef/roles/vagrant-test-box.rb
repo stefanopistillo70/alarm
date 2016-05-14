@@ -13,7 +13,14 @@ default_attributes(
 			"mongod" => {
 					"security" => {
 						"authorization" => "enabled"
+					},
+					"net" => {
+						"ssl" => {
+							"mode" => "requireSSL",
+							"PEMKeyFile" => "/etc/ssl/mongodb.pem"
+						}
 					}
+					
 			}
 		}
 	}
@@ -21,6 +28,7 @@ default_attributes(
 
 
 run_list(
+	"recipe[ssl_certificate]",
 	"recipe[mongodb3]",
 	"recipe[nodejs::install_from_binary]",
 	"recipe[domus-guard]"
