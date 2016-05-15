@@ -7,10 +7,18 @@ var logger = require('./logger.js')('WebRepository');
 var Repository = require('./Repository.js');
 
 var Client = require('node-rest-client').Client;
-var client = new Client();
+var client_options = { connection: {
+		rejectUnauthorized : false
+	}
+};
+
+var client = new Client(client_options);
+
+var sysConfig = require('config');
+var webConfig = sysConfig.get('webConfig');
 
 var apiVersion = "api/1.0";
-var url = 'http://127.0.0.1:3000/'+apiVersion;
+var url = webConfig.url+apiVersion;
 
 /************************
 
