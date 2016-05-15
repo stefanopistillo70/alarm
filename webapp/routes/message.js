@@ -6,7 +6,7 @@ var Response = require('./response');
 var Message = require('../models/message');
 
 var userLogic = require('../logic/userLogic');
-var logger = require('../config/logger.js')('Web');
+var logger = require('../config/logger.js')('Message');
 
 /* Insert new message */
 router.post('/', function(req, res, next) {

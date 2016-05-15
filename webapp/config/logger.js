@@ -41,6 +41,7 @@ winston.loggers.add('Web', {
 		transports: [new winston.transports.Console(optWeb)]
 });
 
+
 //Google Auth Config
 var optGoogleAuth = buildOptions();
 optGoogleAuth.formatter = function(options) {
@@ -49,6 +50,17 @@ optGoogleAuth.formatter = function(options) {
 winston.loggers.add('GoogleAuth', {
 		transports: [new winston.transports.Console(optGoogleAuth)]
 });
+
+
+//Google  Config
+var optGoogle = buildOptions();
+optGoogle.formatter = function(options) {
+        return myFormatter('Google',options);
+}
+winston.loggers.add('Google', {
+		transports: [new winston.transports.Console(optGoogle)]
+});
+
 
 //Local Auth Config
 var optLocalAuth = buildOptions();
@@ -67,6 +79,44 @@ optUserLogic.formatter = function(options) {
 }
 winston.loggers.add('UserLogic', {
 		transports: [new winston.transports.Console(optUserLogic)]
+});
+
+
+//User Config
+var optUser = buildOptions();
+optUser.formatter = function(options) {
+        return myFormatter('User',options);
+}
+winston.loggers.add('User', {
+		transports: [new winston.transports.Console(optUser)]
+});
+
+//Controller Config
+var optController = buildOptions();
+optController.formatter = function(options) {
+        return myFormatter('Controller',options);
+}
+winston.loggers.add('Controller', {
+		transports: [new winston.transports.Console(optController)]
+});
+
+
+//Message Config
+var optMessage = buildOptions();
+optMessage.formatter = function(options) {
+        return myFormatter('Message',options);
+}
+winston.loggers.add('Message', {
+		transports: [new winston.transports.Console(optMessage)]
+});
+
+//Device Config
+var optDevice = buildOptions();
+optDevice.formatter = function(options) {
+        return myFormatter('Device',options);
+}
+winston.loggers.add('Device', {
+		transports: [new winston.transports.Console(optDevice)]
 });
 
 

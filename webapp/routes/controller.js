@@ -1,5 +1,5 @@
 
-var logger = require('../config/logger.js')('Web');
+var logger = require('../config/logger.js')('Controller');
 var Response = require('./response');
 var Location       = require('../models/location');
 

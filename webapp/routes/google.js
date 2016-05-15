@@ -2,7 +2,7 @@
 var express = require('express');
 var router = express.Router();
 
-var logger = require('../config/logger.js')('Web');
+var logger = require('../config/logger.js')('Google');
 
 var Response = require('./response');
 var User       = require('../models/user');
