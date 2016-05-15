@@ -1,5 +1,5 @@
 
-var logger = require('../config/logger.js')('Web');
+var logger = require('../config/logger.js')('UserLogic');
 
 var User       = require('../models/user');
 var Location       = require('../models/location');
@@ -109,8 +109,9 @@ var logic = {
 			if (users) {
 				logger.info("Users ->"+users.length);
 				for(i = 0 ; i < users.length; i++ ){
-					//sendPushNotification(users[i]);
-					sendGoogleMailToUsers(users[i],message);
+					sendPushNotification(users[i],function(success){
+						if(!success) sendGoogleMailToUsers(users[i],message);
+					});
 				}
 			}
 		});
@@ -118,9 +119,9 @@ var logic = {
 }
 
 //TODO key in config
-var sendPushNotification = function(user){
+var sendPushNotification = function(user, callback){
 		
-	logger.info("Send Notification to ->"+user.name);
+	logger.info("Send Notification to ->"+user.auth.local.name);
 	
 	//TODO key in properties
 	var args = {
@@ -132,18 +133,23 @@ var sendPushNotification = function(user){
 	};
 	
 	var onResponseEvent = function(data, response) {
-		console.log("GCM Response ->");
-		console.log(data);
+//		console.log("GCM Response ->");
+//		console.log(data);
 		if(response.statusCode == 200){
 				logger.log('info',"Response arrived");
+				if(data.success === 1 ){
+					logger.log('info',"Push sent.");
+					callback(true);
+				}else callback(false);
 		}else{
 			logger.error(data.errors);
+			callback(false);
 		} 
 	};
 
 	client.post("https://gcm-http.googleapis.com/gcm/send", args, onResponseEvent).on('error', function (err) {
 		logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-		setTimeout(registerController.bind(this,controllerId,callback),10000);
+		callback(false);
 	});
 		
 };

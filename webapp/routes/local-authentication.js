@@ -2,7 +2,7 @@
 var crypto = require('crypto');
 const saltRounds = 10;
 
-var logger = require('../config/logger.js')('Web');
+var logger = require('../config/logger.js')('LocalAuth');
 var Response = require('./response');
 var User       = require('../models/user');
 var Location       = require('../models/location');

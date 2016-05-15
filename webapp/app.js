@@ -58,10 +58,10 @@ mongoose.connect(dbConfig.url, options, function(err) {
 ***************************************/
 app.use(function(req, res, next) {
 	var url = req.url;
-	logger.info("****** CHECK ALL URL -> "+url);
+	logger.debug("****** CHECK ALL URL -> "+url);
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
 	//var ip = req.headers['x-forwarded-for'];
-	logger.info("****** CHECK ALL IP ->"+ip);
+	logger.debug("****** CHECK ALL IP ->"+ip);
 	
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
@@ -82,7 +82,7 @@ app.use(function(req, res, next) {
 		if (token) {
 			if(urlLastMsg === url){
 				var gcm = token.replace("https://android.googleapis.com/gcm/send/", "");
-				logger.info("Last msg GCM : "+gcm);
+				logger.debug("Last msg GCM : "+gcm);
 				
 				var query = { 'google.gcm.web' : gcm };
 
@@ -114,10 +114,10 @@ app.use(function(req, res, next) {
 
 				
 			}else{
-				logger.info("Verify token on DB ->"+token);
-				logger.info("Token present");
+				logger.debug("Verify token on DB ->"+token);
+				logger.debug("Token present");
 				var aud = jwt.getAudience(token);
-				logger.info("Audience ->"+aud);
+				logger.debug("Audience ->"+aud);
 				if(aud === "controller"){
 						
 					var query = { 'controller.token' : token }
@@ -129,7 +129,7 @@ app.use(function(req, res, next) {
 
 						if (location) {
 							
-							logger.info("Location Found token ->"+location.controller.controllerId);
+							logger.debug("Location Found token ->"+location.controller.controllerId);
 
 							if(jwt.verifyJWT(token,location.controller.controllerId)){
 								req.locations = location._id;								
@@ -157,7 +157,7 @@ app.use(function(req, res, next) {
 
 						if (user) {
 							
-							logger.info("User Found token ->"+user.auth.local.email);
+							logger.debug("User Found token ->"+user.auth.local.email);
 
 							if(jwt.verifyJWT(token,user.auth.local.email)){
 								
@@ -190,7 +190,7 @@ app.use(function(req, res, next) {
 			return res.status(403).send(new Response().error(403,"Authentication Problem : no token provided"));
 		}
 	}else{
-		logger.info("****** skip auth check...continue...");
+		logger.debug("****** skip auth check...continue...");
 		next();
 	} 
 });

@@ -31,16 +31,45 @@ var transport = new winston.transports.Console(buildOptions());
 winston.loggers.options.transports = [transport];
 
 
-//Control Config
 
+//Web Config
 var optWeb = buildOptions();
 optWeb.formatter = function(options) {
         return myFormatter('Web',options);
 }
-
 winston.loggers.add('Web', {
 		transports: [new winston.transports.Console(optWeb)]
 });
+
+//Google Auth Config
+var optGoogleAuth = buildOptions();
+optGoogleAuth.formatter = function(options) {
+        return myFormatter('GoogleAuth',options);
+}
+winston.loggers.add('GoogleAuth', {
+		transports: [new winston.transports.Console(optGoogleAuth)]
+});
+
+//Local Auth Config
+var optLocalAuth = buildOptions();
+optLocalAuth.formatter = function(options) {
+        return myFormatter('LocalAuth',options);
+}
+winston.loggers.add('LocalAuth', {
+		transports: [new winston.transports.Console(optLocalAuth)]
+});
+
+
+//UserLogic Config
+var optUserLogic = buildOptions();
+optUserLogic.formatter = function(options) {
+        return myFormatter('UserLogic',options);
+}
+winston.loggers.add('UserLogic', {
+		transports: [new winston.transports.Console(optUserLogic)]
+});
+
+
 
 module.exports = function(arg) {
 	return winston.loggers.get(arg);

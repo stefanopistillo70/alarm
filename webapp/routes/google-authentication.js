@@ -3,7 +3,7 @@
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
-var logger = require('../config/logger.js')('Web');
+var logger = require('../config/logger.js')('GoogleAuth');
 var Response = require('./response');
 var User     = require('../models/user');
 
