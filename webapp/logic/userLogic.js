@@ -8,21 +8,11 @@ var Client = require('node-rest-client').Client;
 var client = new Client();
 
 var sysConfig = require('config');
-var googleConf = sysConfig.get("google")
-
-
-//TODO put on config file	
-var configAuth = {
-	   'googleAuth' : {
-        'clientID'      : '347967676922-9lsavri7424fsn1bmjcoepm3tme8bbfd.apps.googleusercontent.com',
-        'clientSecret'  : 'crk3KvehjxYlukK1z4U9TZPP',
-        'callbackURL'   : 'http://localhost:3000'
-    }
-};
+var googleConf = sysConfig.get("google");
 
 var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
-var oauth2Client = new OAuth2(configAuth.googleAuth.clientID, configAuth.googleAuth.clientSecret, configAuth.googleAuth.callbackURL);
+var oauth2Client = new OAuth2(googleConf.auth.clientID, googleConf.auth.clientSecret, googleConf.auth.callbackURL);
 var gmail = google.gmail('v1');
 
 var logic = {

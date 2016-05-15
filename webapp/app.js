@@ -139,7 +139,7 @@ app.use(function(req, res, next) {
 								return res.status(403).send(new Response().error(403,"Authentication Problem: token expired"));
 							}
 						}else{
-							logger.error("Authentication Problem: no location found");
+							logger.error("Authentication Problem: invalid token");
 							return res.status(403).send(new Response().error(403,"Authentication Problem: no location found"));
 						}
 
