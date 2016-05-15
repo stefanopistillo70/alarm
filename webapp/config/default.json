@@ -2,5 +2,9 @@
     "dbConfig": {
       "url"  : "mongodb://domus:domus1@127.0.0.1:27017/DomusGuard"
     },
-	"onlyOneLocation" : true
+	"onlyOneLocation" : true,
+	"ssl": {
+		"keyFile" : "../environment/Development/resource/certs/server.key",
+		"pemFile" : "../environment/Development/resource/certs/server.crt"
+	}
 }

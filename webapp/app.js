@@ -1,7 +1,4 @@
 
-var fs = require('fs');
-var https = require('https');
-	
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -36,6 +33,9 @@ var dbConfig = sysConfig.get('dbConfig');
 
 var apiVer = "/api/1.0";
 
+var app = express();
+
+
 var options = {
   server: { ssl: true, sslValidate: false }
 }
@@ -44,12 +44,12 @@ mongoose.connect(dbConfig.url, options, function(err) {
     if(err) {
         logger.error('connection error', err);
     } else {
-        logger.info('connection successful');
+        logger.info('Mongo DB connection successful.');
     }
 });
 
 
-var app = express();
+
 
 /**************************************
 /
@@ -196,10 +196,6 @@ app.use(function(req, res, next) {
 });
 
 
-https.createServer({
-  key: fs.readFileSync('../environment/Development/resource/certs/server.key'),
-  cert: fs.readFileSync('../environment/Development/resource/certs/server.crt')
-}, app).listen(443);
 
 
 
