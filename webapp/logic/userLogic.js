@@ -8,6 +8,7 @@ var Client = require('node-rest-client').Client;
 var client = new Client();
 
 var sysConfig = require('config');
+var googleConf = sysConfig.get("google")
 
 
 //TODO put on config file	
@@ -118,18 +119,16 @@ var logic = {
 	}
 }
 
-//TODO key in config
 var sendPushNotification = function(user, callback){
 		
 	logger.info("Send Notification to ->"+user.auth.local.name);
 	
-	//TODO key in properties
 	var args = {
 		data: { 
 				"data": { },
 				"to" : user.google.gcm.web
 			  },
-		headers: { "Content-Type": "application/json", "Authorization" : "key=AIzaSyDSg-NrkWSxeMtxK7wAY7urk8_r2U9aW0s" }
+		headers: { "Content-Type": "application/json", "Authorization" : "key="+googleConf.gcm }
 	};
 	
 	var onResponseEvent = function(data, response) {
