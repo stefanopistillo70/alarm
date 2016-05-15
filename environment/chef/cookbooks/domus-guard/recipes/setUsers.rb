@@ -22,6 +22,13 @@ directory node['domusguard']['install_directory'] do
   action :create
 end
 
+directory node['domusguard']['install_directory']+'/certs' do
+  owner node['domusguard']['user']
+  group node['domusguard']['group']
+  mode '0777'
+  action :create
+end
+
 
 bash "alias" do
   user node['domusguard']['user']

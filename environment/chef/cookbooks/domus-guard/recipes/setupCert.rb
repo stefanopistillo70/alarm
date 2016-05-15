@@ -1,10 +1,43 @@
 
-Chef::Log.info("Setup cert")
+Chef::Log.info("Setup certs")
 
-cert = ssl_certificate 'webapp1' do
-  namespace node['webapp1'] # optional but recommended
+node.default["domusguard"]["ssl_cert"]["source"] = "self-signed"
+node.default["domusguard"]["ssl_key"]["source"] = "self-signed"
+
+certMongo = ssl_certificate 'mongodb' do
+  namespace node['mongodb'] # optional but recommended
+  common_name 'mongodb'
 end
 # you can now use the #cert_path and #key_path methods to use in your
 # web/mail/ftp service configurations
-log "WebApp1 certificate is here: #{cert.cert_path}"
-log "WebApp1 private key is here: #{cert.key_path}"
+log "Mongodb certificate is here: #{certMongo.cert_path}"
+log "Mongodb private key is here: #{certMongo.key_path}"
+
+
+certDomus = ssl_certificate 'domusguard' do
+  namespace node['domusguard'] # optional but recommended
+  common_name 'domusguard.com'
+  key_path node['domusguard']['install_directory']+'/certs/domus.key'
+  cert_path node['domusguard']['install_directory']+'/certs/domus.pem'
+end
+# you can now use the #cert_path and #key_path methods to use in your
+# web/mail/ftp service configurations
+log "DomusGuard certificate is here: #{certDomus.cert_path}"
+log "DomusGuard private key is here: #{certDomus.key_path}"
+
+
+
+bash 'setup-certs' do
+	code <<-EOH
+	cd /etc/ssl
+	cat private/mongodb.key certs/mongodb.pem > mongodb.pem
+	
+	cd #{node['domusguard']['install_directory']}/certs
+	chown #{node['domusguard']['user']}:#{node['domusguard']['group']} *
+	
+	EOH
+	action :run
+
+end
+
+
