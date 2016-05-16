@@ -3,7 +3,10 @@ var logger = require('../config/logger.js')('Authorization');
 
 var authValues = [
 	{key : {method : "*", url : "/"}, roles : ["admin"]},
-	{key : {method : "*", url : "/eventLog"}, roles : ["admin"]}
+	{key : {method : "*", url : "/eventLog"}, roles : ["admin"]},
+	{key : {method : "*", url : "/main/userInfo"}, roles : ["admin"]},
+	{key : {method : "*", url : "/zone"}, roles : ["admin"]},
+	{key : {method : "*", url : "/device"}, roles : ["admin"]}
 ];
 
 
@@ -22,14 +25,12 @@ var authorization = function(apiVer, role, method,  url){
 		if((method === authValues[i].key.method) || (authValues[i].key.method == '*')){
 			if(_url === '*'){
 				if (role in authValues[i].roles) return true;
-				else return false;
 			}else{
 				logger.info(url);
 				logger.info(_url);
 				if(_url === url ){
 					if (authValues[i].roles.indexOf(role) != -1) return true;
-					else return false;
-				} else return false;
+				};
 			}
 		}
 	};
