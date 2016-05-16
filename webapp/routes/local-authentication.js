@@ -133,7 +133,8 @@ router.post('/refresh', function(req, res, next) {
 	var refresh_token = req.body.refresh_token;
 	logger.info("Refresh Token ->"+refresh_token);
 	
-	var aud = jwt.getAudience(refresh_token);
+	var tokenInfo = jwt.getInfo(refresh_token);
+	var aud = tokenInfo.aud;
 	logger.info("Audience ->"+aud);
 	if(aud === "controller"){
 		

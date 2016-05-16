@@ -45,10 +45,9 @@ var jwt = {
 		else return false
 	},
 	
-	getAudience : function(token){
+	getInfo : function(token){
 		var decoded = jwtSimple.decode(token, secret);
-//console.log(decoded);
-		return decoded.aud;
+		return { aud : decoded.aud, role : decoded.role};
 	}
 }
 

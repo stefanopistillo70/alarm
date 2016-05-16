@@ -12,7 +12,6 @@ self.addEventListener('activate', function(event) {
 });
 
 
-//TODO change self.token with true token
 self.addEventListener('push', function(event) {  
   // Since there is no payload data with the first version  
   // of push messages, we'll grab some data from  

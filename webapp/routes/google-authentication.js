@@ -190,14 +190,14 @@ router.post('/updateConsensus', function(req, res, next) {
 *
 *********************************/
 router.get('/', function(req, res, next) {
-	res.json(new Response(configAuth.googleAuth.clientID));
+	res.json(new Response(googleConf.auth.clientID));
 });
 
 
 
 var verifyIdToken = function(token,callback){
 	logger.info("VERIFY token ID");
-	oauth2Client.verifyIdToken(token, configAuth.googleAuth.clientID , callback);
+	oauth2Client.verifyIdToken(token, googleConf.auth.clientID , callback);
 };
 
 var getUserInfo = function(token,callback){

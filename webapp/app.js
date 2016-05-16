@@ -116,7 +116,11 @@ app.use(function(req, res, next) {
 			}else{
 				logger.debug("Verify token on DB ->"+token);
 				logger.debug("Token present");
-				var aud = jwt.getAudience(token);
+				var tokenInfo = jwt.getInfo(token);
+				var aud = tokenInfo.aud;
+				var role = tokenInfo.role;
+				req.role = role;
+				
 				logger.debug("Audience ->"+aud);
 				if(aud === "controller"){
 						
@@ -132,7 +136,7 @@ app.use(function(req, res, next) {
 							logger.debug("Location Found token ->"+location.controller.controllerId);
 
 							if(jwt.verifyJWT(token,location.controller.controllerId)){
-								req.locations = location._id;								
+								req.locations = location._id;	
 								next();
 							}else{
 								logger.error("Authentication Problem: token expired");
@@ -193,6 +197,27 @@ app.use(function(req, res, next) {
 		logger.debug("****** skip auth check...continue...");
 		next();
 	} 
+});
+
+
+
+
+/**************************************
+/
+/	Intercept all request and check authorization
+/
+***************************************/
+app.use(function(req, res, next) {
+	
+	var role = req.role;
+	var url = req.url;
+	var method = req.method;
+	logger.info("*****  Authorization role : "+role);
+	logger.info("*****  Authorization url : "+url);
+	logger.info("*****  Authorization method : "+method);
+	
+	next();
+	
 });
 
 
