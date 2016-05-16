@@ -25,7 +25,7 @@ dgModuleZone.controller('ZoneCtrl', ['$scope', '$uibModal', 'ZoneService', funct
 			console.log("DELETE");
 			if(selected && selected.length > 0){
 				var zone = selected[0];
-				console.log(zone.id);
+				console.log(zone._id);
 				
 				var zoneCancel = ZoneService.remove({entryId:zone._id}).$promise;
 		

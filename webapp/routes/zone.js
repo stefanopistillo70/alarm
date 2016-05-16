@@ -70,7 +70,7 @@ router.put('/:id', function(req, res, next) {
 				if (error){
 					res.status(400).send(new Response().error(400,err.errors));
 				}else{
-					userLogic.userUpdateHasNewUpdates(zone.locationId, true);
+					userLogic.userUpdateHasNewUpdates(locations[0], true);
 					res.json(new Response("Zone Updated"));
 				} 		  
 			});			
@@ -89,7 +89,7 @@ router.delete('/:id', function(req, res, next) {
 				if (error) {
 					res.status(400).send(new Response().error(400,err.errors));
 				} else {
-					userLogic.userUpdateHasNewUpdates(zone.locationId, true);
+					userLogic.userUpdateHasNewUpdates(locations[0], true);
 					res.json(new Response("Zone Removed"));	
 				}
 			});

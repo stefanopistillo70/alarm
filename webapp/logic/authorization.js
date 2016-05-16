@@ -7,7 +7,10 @@ var authValues = [
 	{key : {method : "*", url : "/main/userInfo"}, roles : ["admin"]},
 	{key : {method : "*", url : "/zone"}, roles : ["admin"]},
 	{key : {method : "*", url : "/zone/id"}, roles : ["admin"]},
-	{key : {method : "*", url : "/device"}, roles : ["admin"]}
+	{key : {method : "*", url : "/device"}, roles : ["admin"]},
+	{key : {method : "*", url : "/device/id"}, roles : ["admin"]},
+	{key : {method : "*", url : "/user"}, roles : ["admin"]},
+	{key : {method : "*", url : "/controller"}, roles : ["controller"]}
 ];
 
 
@@ -33,10 +36,10 @@ var authorization = function(apiVer, role, method,  url){
 				}else if(_url.endsWith("/id")){
 					var re = /\/id/g;
 					_urlTmp = _url.replace(re, '');
-					logger.info("REPLACE1 ->"+_urlTmp);
+					//logger.info("REPLACE1 ->"+_urlTmp);
 					var n = url.lastIndexOf("/");
 					urlTmp = url.substring(0, n);
-					logger.info("REPLACE2 ->"+urlTmp);
+					//logger.info("REPLACE2 ->"+urlTmp);
 					if(urlTmp === _urlTmp) return true;
 				}
 			}
