@@ -34,8 +34,11 @@ var dbConfig = sysConfig.get('dbConfig');
 
 var apiVer = "/api/1.0";
 
-var app = express();
+var urlLogin = apiVer + "/auth";
+var urlGoogleUpdateConsensus = apiVer + "/auth/google/updateConsensus";
+var urlLastMsg = apiVer + "/message/last";
 
+var app = express();
 
 var options = {
   server: { ssl: true, sslValidate: false }
@@ -71,10 +74,6 @@ app.use(function(req, res, next) {
 	var token = req.headers['x-access-token'];
 	
 	
-	var urlLogin = apiVer + "/auth";
-	var urlGoogleUpdateConsensus = apiVer + "/auth/google/updateConsensus";
-	
-	var urlLastMsg = apiVer + "/message/last";
 	
 	if(url.substring(0, apiVer.length) == apiVer 
 		&&  ( !(url.substring(0, urlLogin.length) == urlLogin) || (url === urlGoogleUpdateConsensus) )
@@ -216,11 +215,19 @@ app.use(function(req, res, next) {
 	logger.info("*****  Authorization role : "+role);
 	logger.info("*****  Authorization url : "+url);
 	logger.info("*****  Authorization method : "+method);
-	
-	var auth  = authorization(apiVer, role, method, url);
-	logger.info("*****  Authorized : "+auth);
-	
-	next();
+
+	if(url.substring(0, apiVer.length) == apiVer 
+		&&  ( !(url.substring(0, urlLogin.length) == urlLogin) || (url === urlGoogleUpdateConsensus) )
+	){
+		
+		var auth  = authorization(apiVer, role, method, url);
+		logger.info("*****  Authorized : "+auth);
+		
+		if(auth) next();
+		else res.status(403).send(new Response().error(403,"Authorization Problem"));
+	}else{
+		next();
+	} 
 	
 });
 
