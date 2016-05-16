@@ -6,6 +6,7 @@ var authValues = [
 	{key : {method : "*", url : "/eventLog"}, roles : ["admin"]},
 	{key : {method : "*", url : "/main/userInfo"}, roles : ["admin"]},
 	{key : {method : "*", url : "/zone"}, roles : ["admin"]},
+	{key : {method : "*", url : "/zone/id"}, roles : ["admin"]},
 	{key : {method : "*", url : "/device"}, roles : ["admin"]}
 ];
 
@@ -26,11 +27,18 @@ var authorization = function(apiVer, role, method,  url){
 			if(_url === '*'){
 				if (role in authValues[i].roles) return true;
 			}else{
-				logger.info(url);
 				logger.info(_url);
 				if(_url === url ){
 					if (authValues[i].roles.indexOf(role) != -1) return true;
-				};
+				}else if(_url.endsWith("/id")){
+					var re = /\/id/g;
+					_urlTmp = _url.replace(re, '');
+					logger.info("REPLACE1 ->"+_urlTmp);
+					var n = url.lastIndexOf("/");
+					urlTmp = url.substring(0, n);
+					logger.info("REPLACE2 ->"+urlTmp);
+					if(urlTmp === _urlTmp) return true;
+				}
 			}
 		}
 	};
