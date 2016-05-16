@@ -18,6 +18,7 @@ var controller = require('./routes/controller');
 var google = require('./routes/google');
 var main = require('./routes/main');
 var user = require('./routes/user');
+var authorization = require('./logic/authorization');
 
 
 var Response = require('./routes/response');
@@ -215,6 +216,9 @@ app.use(function(req, res, next) {
 	logger.info("*****  Authorization role : "+role);
 	logger.info("*****  Authorization url : "+url);
 	logger.info("*****  Authorization method : "+method);
+	
+	var auth  = authorization(apiVer, role, method, url);
+	logger.info("*****  Authorized : "+auth);
 	
 	next();
 	
