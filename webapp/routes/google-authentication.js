@@ -42,8 +42,11 @@ router.post('/', function(req, res, next) {
 		logger.info("GOOGLE token ->");
 		logger.info(googleTokens);
 		
-		if(err) res.status(400).send(new Response().error(400,err));			
-		else{
+		if(err){
+			logger.error("Google Authentication problem: ");
+			logger.error(err);
+			res.status(400).send(new Response().error(400,err));			
+		}else{
 
 			verifyIdToken(googleTokens.id_token,function(err,ticket){
 				
