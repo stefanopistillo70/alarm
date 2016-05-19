@@ -31,59 +31,63 @@ var oauth2Client = new OAuth2(googleConf.auth.clientID, googleConf.auth.clientSe
 router.post('/', function(req, res, next) {
 	
 	var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress || req.socket.remoteAddress || req.connection.socket.remoteAddress;
-	logger.info("IP ->"+ip);
+	logger.debug("IP ->"+ip);
 
 	
 	var code = req.body.code;
-	logger.info("GOOGLE CODE ->"+code);
+	logger.debug("GOOGLE CODE ->"+code);
 	
 	oauth2Client.getToken(code, function(err, googleTokens) {
 		
-		logger.info("GOOGLE token ->");
-		logger.info(googleTokens);
+		logger.debug("GOOGLE token ->");
+		logger.debug(googleTokens);
 		
 		if(err){
-			logger.error("Google Authentication problem: ");
+			logger.error("Google get token problem: ");
 			logger.error(err);
-			res.status(400).send(new Response().error(400,err));			
+			res.status(400).send(new Response().error(400,"Internal Server Error"));			
 		}else{
 
 			verifyIdToken(googleTokens.id_token,function(err,ticket){
 				
 				if(err){
-					res.status(403).send(new Response().error(403,"Invalid ID Token ->"+err));
+					logger.error("Google verify token problem: ");
+					logger.error(err);
+					res.status(403).send(new Response().error(403,"Authorization problem: Google problem"));
 				} else {
 				
 					var ticketAttr = ticket.getAttributes();
-					logger.info("GOOGLE verified ticket ->");
-					logger.info(ticketAttr);
+					logger.debug("GOOGLE verified ticket ->");
+					logger.debug(ticketAttr);
 					
 					getUserInfo(googleTokens.access_token, function(userInfo){
 					
-						logger.info("Got User Info ->");
-						logger.info(userInfo);
+						logger.debug("Got User Info ->");
+						logger.debug(userInfo);
 						var query = { 'auth.local.email' : ticketAttr.payload.email }
 						
 						User.findOne(query, function(err, user) {
 						
 							if (err){
-								logger.info(err);
-								res.status(400).send(new Response().error(400,err));
+								logger.error("User find Error :");
+								logger.error(err);
+								res.status(400).send(new Response().error(400,"Internal Server Error"));
 							}else{							
 								if (user) {
-									logger.info("User Found token ->"+user.auth.google.token);
-									// if a user is found, log them in
+									logger.debug("User Found token ->"+user.auth.google.token);
 									
 									var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web",user.auth.role);
-									logger.info("JWT ->");
-									logger.info(jwtToken);
+									logger.debug("JWT ->");
+									logger.debug(jwtToken);
 																
 									var update = { 'auth.local.name': userInfo.given_name, 'auth.local.token': jwtToken.access_token, 'auth.local.refresh_token': jwtToken.refresh_token};
 									
 									var opts = { strict: true };
-									User.update(query, update, opts, function(error,raw) {
-										if (error){
-											res.status(400).send(new Response().error(400,error));
+									User.update(query, update, opts, function(err,raw) {
+										if (err){
+											logger.error("User find Error :");
+											logger.error(err);
+											res.status(400).send(new Response().error(400,"Internal Server Error"));
 										}else{
 											var sec_expire_time = jwtToken.duration_time/4;
 											res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
@@ -99,12 +103,12 @@ router.post('/', function(req, res, next) {
 									getUserInfo(googleTokens.access_token, function(userInfo){
 
 										// if the user isnt in our database, create a new user
-										logger.info("NO User Found.");
+										logger.debug("NO User Found.");
 										var newUser          = new User();
 									
 										var jwtToken = jwt.getJWT(ticketAttr.payload.email,true,"web","admin");
-										logger.info("JWT ->");
-										logger.info(jwtToken);
+										logger.debug("JWT ->");
+										logger.debug(jwtToken);
 									
 										newUser.auth.local.name = userInfo.given_name;
 										newUser.auth.local.email = ticketAttr.payload.email;
@@ -112,9 +116,12 @@ router.post('/', function(req, res, next) {
 										newUser.auth.local.refresh_token = jwtToken.refresh_token;
 																			
 										userLogic.createUser(newUser, ip, function(err) {
-											if (err) res.status(400).send(new Response().error(400,err.errors));
-											else {
-												logger.info("New User Created : "+newUser.auth.local);
+											if(err) {
+												logger.error("User create Error :");
+												logger.error(err);
+												res.status(400).send(new Response().error(400,"Internal Server Error"));
+											}else {
+												logger.debug("New User Created : "+newUser.auth.local);
 												var sec_expire_time = jwtToken.duration_time/4;
 												res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
 												res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
@@ -140,37 +147,42 @@ router.post('/', function(req, res, next) {
 router.post('/updateConsensus', function(req, res, next) {
 	
 	var code = req.body.code;
-	logger.info("code ->"+code);
+	logger.debug("code ->"+code);
 	
 	var userId = req.userId;
 	query = { _id : userId};
 	
 	oauth2Client.getToken(code, function(err, googleTokens) {
 		
-		logger.info("TOKEN ->");
-		logger.info(googleTokens);
+		logger.debug("TOKEN ->");
+		logger.debug(googleTokens);
 		
-		if(err) res.status(400).send(new Response().error(400,err));			
-		else{
+		if(err){ 
+			logger.error("Google token error :");
+			logger.error(err);
+			res.status(400).send(new Response().error(400,"Internal Server Error"));			
+		}else{
 
 			verifyIdToken(googleTokens.id_token,function(err,ticket){
 				
 				if(err){
-					res.status(403).send(new Response().error(403,"Invalid ID Token ->"+err));
+					logger.error("Google verify error :");
+					logger.error(err);
+					res.status(403).send(new Response().error(403,"Google verify error"));
 				} else {
 				
 					var ticketAttr = ticket.getAttributes();
-					logger.info(ticketAttr);
+					logger.debug(ticketAttr);
 					
 					if(googleTokens.refresh_token){
-						logger.info("Got refresh token , Update user. ");
+						logger.debug("Got refresh token , Update user. ");
 						var update = { 'auth.google.token': googleTokens.access_token, 'auth.google.expiry_date' : googleTokens.expiry_date, 'auth.google.refresh_token' : googleTokens.refresh_token };	
 						User.findOneAndUpdate(query, update, function(err, user) {
 			
-							if (err) res.status(400).send(new Response().error(400,err));
+							if (err) res.status(400).send(new Response().error(400,"Internal Server Error"));
 														
 							if (user) {
-								logger.info("User Update -> "+user.auth.name);
+								logger.debug("User Update -> "+user.auth.name);
 								res.json(new Response());
 							} 									
 						});
@@ -199,12 +211,12 @@ router.get('/', function(req, res, next) {
 
 
 var verifyIdToken = function(token,callback){
-	logger.info("VERIFY token ID");
+	logger.debug("VERIFY token ID");
 	oauth2Client.verifyIdToken(token, googleConf.auth.clientID , callback);
 };
 
 var getUserInfo = function(token,callback){
-	logger.info("Getting  GOOGLE User Info ...");
+	logger.debug("Getting  GOOGLE User Info ...");
 	
 	var args = {
 		headers: { "Content-Type": "application/json" }
