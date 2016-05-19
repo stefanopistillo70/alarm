@@ -88,8 +88,7 @@ router.post('/token', function(req, res, next) {
 										var sec_expire_time = jwtToken.duration_time/4;
 										res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
 										res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-										res.cookie('refresh_token',jwtToken.refresh_token);
-										if(user.auth.local.refresh_token) res.cookie('refresh_token',user.auth.local.refresh_token);
+										if(jwtToken.refresh_token) res.cookie('refresh_token',jwtToken.refresh_token);
 										res.json(new Response(jwtToken));
 									} 		  
 								});			

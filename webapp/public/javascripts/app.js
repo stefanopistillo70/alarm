@@ -23,7 +23,7 @@ app.config(['$routeProvider', function($routeProvider) {
 *	Intercept authenticator error 403 
 *
 ********************************/
-app.factory('myInterceptor', ['$log', '$q','$location', function ($log, $q, $location){
+app.factory('myInterceptor', ['$log', '$q','$location','$rootScope', function ($log, $q, $location, $rootScope){
 
     var myInterceptor = {
 		'request': function(config) {
@@ -56,6 +56,7 @@ app.factory('myInterceptor', ['$log', '$q','$location', function ($log, $q, $loc
 		   $log.debug('RESPONSE ERROR');
 			if (rejection.status === 403) {
 				$log.debug('REDIRECT');
+				$rootScope.isLoggedIn = false;
 				$location.url('/login');
 			}
 			return $q.reject(rejection);
@@ -174,7 +175,7 @@ app.controller('MenuHeaderCtrl', ['$log' ,'$scope', '$rootScope', '$location',  
 					$cookies.remove('token_expire_at');
 					$cookies.remove('refresh_token');
 					$rootScope.isLoggedIn = false;
-					$location.url('/login');
+					$location.url('/');
 				}
 			}, function(reason) {
 				  console.log('Failed MenuHeaderCtrl: ' + reason);
