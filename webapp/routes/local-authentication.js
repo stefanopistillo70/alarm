@@ -182,8 +182,11 @@ router.post('/refresh', function(req, res, next) {
 		
 		User.findOne(query, function(err, user) {
 
-			if (err) res.status(400).send(new Response().error(400,err));
-			else{	
+			if (err){
+				logger.info("Error on get users");
+				logger.info(err);
+				res.status(400).send(new Response().error(400,err));
+			}else{	
 				if (user) {
 					logger.info("User Found token ->"+user.auth.local.email);
 					// if a user is found, log them in

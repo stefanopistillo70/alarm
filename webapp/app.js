@@ -226,6 +226,7 @@ app.use(function(req, res, next) {
 		if(auth) next();
 		else res.status(403).send(new Response().error(403,"Authorization Problem"));
 	}else{
+		logger.info("*****  Authorization  : skip ");
 		next();
 	} 
 	
