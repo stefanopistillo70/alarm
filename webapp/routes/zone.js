@@ -7,7 +7,6 @@ var userLogic = require('../logic/userLogic');
 
 /* GET Zone listing. */
 router.get('/', function(req, res, next) {
-	
 	var locations = req.locations.split("#");
 	query = { locationId : { $in: locations }};
 	

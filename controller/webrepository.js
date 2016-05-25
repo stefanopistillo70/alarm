@@ -192,8 +192,6 @@ class WebRepository extends Repository{
 	
 	constructor(){	
 		super();		
-		//this.checkForRemoteUpdate(this.devices, url);
-		//this.client = new Client();
 		this.waitForInit();	
 	}
 	
@@ -213,9 +211,10 @@ class WebRepository extends Repository{
 			msg.message = "Controller startup";
 			this.savePersistantMessage(msg, function(){
 				logger.info('Message Sent');			
+				WebRepository.prototype.getRemoteUpdate(function(){
+					WebRepository.prototype.checkForRemoteUpdate(url);
+				});
 			});
-			WebRepository.prototype.checkForRemoteUpdate(url);
-
 		}else{
 			setTimeout(WebRepository.prototype.waitForInit.bind(this),10000);
 		}
@@ -307,6 +306,33 @@ class WebRepository extends Repository{
 			client.get(url+"/controller", args, onResponseEvent).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
 				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
+			});
+		});	
+	}
+	
+	
+	getRemoteUpdate(callback){
+
+		logger.info('Get Web remote update');
+		
+		WebRepository.prototype.checkCommonHeaders(function(){
+			var args = {
+				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
+			};
+
+			var onResponseEvent = function(data, response) {
+				var err = undefined;
+				if(response.statusCode == 200){		
+						console.log(data.result);
+				}else{
+					logger.error(data.errors);
+				}
+				callback();
+			};
+
+			client.get(url+"/zone", args, onResponseEvent).on('error', function (err) {
+				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+				callback();
 			});
 		});	
 	}

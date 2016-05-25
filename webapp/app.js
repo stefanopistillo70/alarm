@@ -136,7 +136,7 @@ app.use(function(req, res, next) {
 							logger.debug("Location Found token ->"+location.controller.controllerId);
 
 							if(jwt.verifyJWT(token,location.controller.controllerId)){
-								req.locations = location._id;	
+								req.locations = location._id+"";	
 								next();
 							}else{
 								logger.error("Authentication Problem: token expired");
