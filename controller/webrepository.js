@@ -1,4 +1,11 @@
 
+/*****************************************
+*
+*	Handle security comunication with webapp 
+*
+*****************************************/
+
+
 "use strict";
 
 var fs = require('fs');
@@ -20,14 +27,22 @@ var webConfig = sysConfig.get('webConfig');
 var apiVersion = "api/1.0";
 var url = webConfig.url+apiVersion;
 
-/************************
 
-Handle security comunication with webapp 
-*************************/
-
+/*****************************************
+*
+*	Common structure 
+*
+*****************************************/
 var controllerInfo = {};
 var systemIsRegistered = false;
 
+
+
+/***************************************
+*
+*	Read the config file controller.json
+* 
+****************************************/
 var readControllerInfo = function(callback){
 	logger.log('info',"Read controller.json from disk");
 	fs.readFile('config/controller.json', 'utf8', function (err,data) {
@@ -35,13 +50,24 @@ var readControllerInfo = function(callback){
 	});
 }
 
+/***************************************
+*
+*	Save the config file controller.json
+* 
+****************************************/
 var saveControllerInfo = function(data,callback){
 	logger.log('info',"Save controller.json on disk");
 	fs.writeFile('config/controller.json', JSON.stringify(data), function (err) {
 	  callback(err);
 	});	
 }
-	
+
+
+/***************************************
+*
+*	Register the controllerID on web
+* 
+****************************************/	
 var registerController = function(controllerId, callback){
 	logger.log('info',"Register Controller ->"+controllerId);
 		
@@ -111,16 +137,18 @@ var refreshToken = function(callback){
 
 } 
 
-//var commonHeaders = { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token };
-
-
 
 var ready = function(){
 	logger.log("info","System is registered with webapp");
 	systemIsRegistered = true;
 };
 
-//Initialize common structure
+
+/***************************************
+*
+*	THE first method, Initialize common structure
+* 
+****************************************/
 readControllerInfo(function(err, data){
 	
 		if (err) {
@@ -153,6 +181,13 @@ readControllerInfo(function(err, data){
 
 
 
+
+
+/********************************************
+*
+*	Extension Class of Repository
+*
+*********************************************/
 class WebRepository extends Repository{
 	
 	constructor(){	
@@ -162,6 +197,11 @@ class WebRepository extends Repository{
 		this.waitForInit();	
 	}
 	
+	/***************************************
+	*
+	*	Wait for initialization of common structure
+	* 
+	****************************************/
 	waitForInit(){
 		logger.info('Wait For Init');
 		
@@ -182,6 +222,11 @@ class WebRepository extends Repository{
 	}
 	
 
+	/*****************************************
+	*
+	*	Save Event on remote Web
+	*
+	*****************************************/
 	savePersistantEvent(event, callback){
 	
 		logger.info('Save Event');
@@ -203,6 +248,11 @@ class WebRepository extends Repository{
 	}
 	
 	
+	/*****************************************
+	*
+	*	Save Message on Remote Web
+	*
+	*****************************************/
 	savePersistantMessage(message, callback){
 	
 		logger.info('Save Message');
@@ -223,11 +273,14 @@ class WebRepository extends Repository{
 			}).on('error', function (err) {
 				callback(err);
 			});
-
 		});
 	}
 
-	
+	/*****************************************
+	*
+	*	Check for any changes on Web
+	*
+	*****************************************/	
 	checkForRemoteUpdate(url){
 		
 		logger.info('CHECK Web remote update');
@@ -245,7 +298,6 @@ class WebRepository extends Repository{
 							logger.info('New updates');
 						}
 						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
-
 				}else{
 					logger.error(data.errors);
 					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
@@ -256,49 +308,9 @@ class WebRepository extends Repository{
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
 				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
 			});
-			
-		});
-					
+		});	
 	}
 
-	
-	
-	
-	
-	
-	
-	checkForRemoteUpdate2(devices,url){
-		
-		logger.info('CHECK Web remote update :'+devices.length);
-		
-		var args = {
-			headers: { "Content-Type": "application/json" }
-		};
-
-		
-		var onResponseEvent = function(data, response) {
-			var err = undefined;
-			if(response.statusCode == 200){
-					
-					var devicesTmp = data;
-					if(devicesTmp != undefined){
-						devices = devicesTmp;
-					}
-					
-					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,devices,url),10000);
-
-			}else{
-				logger.error(data.errors);
-				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,devices,url),10000);
-			} 
-		};
-
-		client.get(url+"/device", args, onResponseEvent).on('error', function (err) {
-			logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-			setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,devices,url),10000);
-		});
-					
-	}
 
 	
 	savePersistantDevice(device, result , error){
@@ -323,7 +335,6 @@ class WebRepository extends Repository{
 		client.post(url+"/device", args, onResponseEvent).on('error', function (err) {
 			error(err);
 		});
-
 	};
 	
 	
@@ -331,14 +342,12 @@ class WebRepository extends Repository{
 	saveConfig(id,config,result,error){
 
 		logger.info("WebRepository -> save Config");
-		
-				
+			
 		var args = {
 			data: config,
 			headers: { "Content-Type": "application/json" }
 		};
 
-		
 		var onResponseEvent = function(data, response) {
 			if(response.statusCode == 200){
 				result(data);
@@ -360,7 +369,6 @@ class WebRepository extends Repository{
 			headers: { "Content-Type": "application/json" }
 		};
 
-		
 		var onResponseEvent = function(data, response) {
 			if(response.statusCode == 200){
 				result(data);
@@ -374,7 +382,11 @@ class WebRepository extends Repository{
 		});
 	}
 	
-	
+	/*****************************************
+	*
+	*	Check token expiration 
+	*
+	*****************************************/
 	checkCommonHeaders(callback){
 	
 		var now = (new Date()).getTime();
@@ -388,10 +400,8 @@ class WebRepository extends Repository{
 				callback();
 			});
 		}
-
 	}
 	
-
 };
 
 

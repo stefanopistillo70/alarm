@@ -32,7 +32,6 @@ controller.start = function(){
 	
 	logger.log('info','Start');
 	
- 
 	var gateway = require('./gateway.js');
 
 	var g = gateway.getInstance();
@@ -45,7 +44,7 @@ controller.start = function(){
 	var Webrepository = require('./webrepository');
 	controller.repository = new Webrepository();
 	
-	//controller.checkForZoneAlarm();
+	controller.checkForZoneAlarm();
 
 	//controller.repository.addNewNode(Repository.createNode(1,"node1"));
 	//controller.repository.addNewNode(Repository.createNode(2,"node2"));
@@ -59,17 +58,14 @@ controller.checkForZoneAlarm = function() {
 	console.log(zones);
 		
 	zones.forEach(function(zone) {
+		logger.log('info',"Check zone : "+zone.name);
 		zone.nodes.forEach(function(node) {
+				logger.log('info',"Check node : "+node.name);
 		});
-		
 	});
 	
 	setTimeout(controller.checkForZoneAlarm,10000);
-
 }
-
-
-
 
 
 controller.start();
