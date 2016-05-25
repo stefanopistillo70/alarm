@@ -1,6 +1,8 @@
 
 "use strict";
 
+var logger = require('./logger.js')('Repository');
+
 var Device = function(id_in, name_in, deviceType_in, technology_in, sensors_in){
 		
 	this.id = "";
@@ -31,8 +33,7 @@ class Repository {
 	constructor(){
 		this.devices = new Array();
 		this.zones = [];
-		
-		console.log('Repository init');		
+		logger.info('Repository init');		
 	};
 	
 	
@@ -124,13 +125,11 @@ class Repository {
 			} 
 		}
 		
-		
 		var event = {'device': deviceName, 'sensor' : sensorName, 'event' : event_in.event};
 		
-		console.log('Event -> device : '+deviceName+'   sensor : '+sensorName+'      '+event_in.event);
+		logger.info('Event -> device : '+deviceName+'   sensor : '+sensorName+'      '+event_in.event);
 		
 		this.savePersistantEvent(event,callback);
-		
 	};
 
 

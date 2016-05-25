@@ -51,6 +51,12 @@ optWebRepository.formatter = function(options) {
         return myFormatter('WebRepository',options);
 }
 
+var optRepository = buildOptions();
+optRepository.formatter = function(options) {
+        return myFormatter('Repository',options);
+}
+
+
 winston.loggers.add('Controller', {
 		transports: [new winston.transports.Console(optController)]
 });
@@ -63,6 +69,9 @@ winston.loggers.add('WebRepository', {
 		transports: [new winston.transports.Console(optWebRepository)]
 });
 
+winston.loggers.add('Repository', {
+		transports: [new winston.transports.Console(optRepository)]
+});
 
 
 module.exports = function(arg) {

@@ -24,22 +24,23 @@ var logger = require('./logger.js')('Controller');
 process.on('SIGINT', exitHandler.bind());
 */
 
-var controller = {}
+var gateway = require('./gateway.js');
 
-controller.repository ;
+
+var controller = {}
+controller.repository;
+
+
 
 controller.start = function(){
 	
 	logger.log('info','Start');
 	
-	var gateway = require('./gateway.js');
-
-	var g = gateway.getInstance();
-	console.log(g);
+	//var g = gateway.getInstance();
+//	console.log(g);
 
 	//var msg = gateway.parseMsg("12;6;0;0;3;My Light\n");
 	//console.log("MSG -> " + msg.toString());
-
 
 	var Webrepository = require('./webrepository');
 	controller.repository = new Webrepository();
@@ -55,7 +56,7 @@ controller.checkForZoneAlarm = function() {
 	
 	logger.log('info','Check for Zone alarm');
 	var zones = controller.repository.zones;
-	console.log(zones);
+	logger.info("Zones found : "+zones.length);
 		
 	zones.forEach(function(zone) {
 		logger.log('info',"Check zone : "+zone.name);
