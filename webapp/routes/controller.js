@@ -17,17 +17,18 @@ router.get('/', function(req, res, next) {
 	Location.findOneAndUpdate(query, updates, function(err, location) {
 		if (err){
 			return res.status(403).send(new Response().error(400,err.errors));
-		}	
-
-		if (location) {
-			
-			logger.info("Location Found controllerId ->"+location.controller.controllerId);
-
-			res.json(new Response(location.config.hasNewUpdates));
-			
 		}else{
-			logger.error("Authentication Problem: no location found");
-			return res.status(403).send(new Response().error(400,"Error: no location found"));
+			if (location) {
+				
+				logger.info("Location Found controllerId ->"+location.controller.controllerId);
+				logger.info("hasNewUpdates "+location.config.hasNewUpdates);
+				var resp = { hasNewUpdates : location.config.hasNewUpdates};
+				res.json(new Response(resp));
+				
+			}else{
+				logger.error("Authentication Problem: no location found");
+				return res.status(403).send(new Response().error(400,"Error: no location found"));
+			}
 		}
 	});
 

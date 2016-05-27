@@ -192,7 +192,6 @@ class WebRepository extends Repository{
 	
 	constructor(){	
 		super();		
-		//this.waitForInit();	
 	}
 	
 	/***************************************
@@ -203,18 +202,20 @@ class WebRepository extends Repository{
 	waitForInit(callback){
 		logger.info('Wait For Init');
 		
+		var webRep = this;
+		
 		if(systemIsRegistered){
 			logger.info('WebRepository init');
 			
 			var msg = {};
 			msg.level = "info";
 			msg.message = "Controller startup";
-			this.savePersistantMessage(msg, function(){
+			webRep.savePersistantMessage(msg, function(){
 				logger.info('Message Sent');	
 				callback();
 			});
 		}else{
-			setTimeout(WebRepository.prototype.waitForInit.bind(this,callback),5000);
+			setTimeout(WebRepository.prototype.waitForInit.bind(webRep,callback),5000);
 		}
 	}
 	
@@ -282,6 +283,8 @@ class WebRepository extends Repository{
 		
 		logger.info('CHECK Web remote update');
 		
+		var webRep = this;
+		
 		WebRepository.prototype.checkCommonHeaders(function(){
 			var args = {
 				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
@@ -290,20 +293,22 @@ class WebRepository extends Repository{
 			var onResponseEvent = function(data, response) {
 				var err = undefined;
 				if(response.statusCode == 200){		
-						var hasUpdate = data.result;
-						if(hasUpdate) {
+						if(data.result.hasNewUpdates) {
 							logger.info('New updates');
-						}
-						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),3000);
+							webRep.getRemoteUpdate(function(){
+								logger.log('info','Remote Update DONE.');
+							});
+						};
+						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep),3000);
 				}else{
 					logger.error(data.errors);
-					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),3000);
-				} 
+					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep),3000);
+				};
 			};
 
 			client.get(url+"/controller", args, onResponseEvent).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
+				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,url),3000);
 			});
 		});	
 	}
@@ -318,7 +323,7 @@ class WebRepository extends Repository{
 		logger.info('Get Web remote update');
 		var webRep = this;
 		
-		this.checkCommonHeaders(function(){
+		webRep.checkCommonHeaders(function(){
 			
 			var args = {
 				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
@@ -328,7 +333,6 @@ class WebRepository extends Repository{
 				logger.info('Zone response arrived.');
 			
 				if(response.statusCode == 200){		
-						console.log(data.result);
 						webRep.zones = data.result;
 				}else{
 					logger.error(data.errors);
