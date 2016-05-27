@@ -44,23 +44,14 @@ controller.start = function(){
 
 	var Webrepository = require('./webrepository');
 	controller.repository = new Webrepository();
-	console.log(controller.repository);
-	console.log(Webrepository.prototype);
 	
-/*	var f = function(){
-		logger.log('info','OK .....');
-	}
-	controller.repository.waitForInit(f);
-*/
-	
+
 	controller.repository.waitForInit(function(err){
 		controller.repository.getRemoteUpdate(function(){
 			logger.log('info','Remote Update DONE.');
+			controller.repository.checkForRemoteUpdate();
 		});
 	});
-	
-	
-	
 	
 	
 	controller.checkForZoneAlarm();
@@ -78,7 +69,7 @@ controller.checkForZoneAlarm = function() {
 		
 	zones.forEach(function(zone) {
 		logger.log('info',"Check zone : "+zone.name);
-		zone.nodes.forEach(function(node) {
+		zone.devices.forEach(function(node) {
 				logger.log('info',"Check node : "+node.name);
 		});
 	});

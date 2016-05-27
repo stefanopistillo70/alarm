@@ -212,10 +212,6 @@ class WebRepository extends Repository{
 			this.savePersistantMessage(msg, function(){
 				logger.info('Message Sent');	
 				callback();
-				//WebRepository.prototype.checkForRemoteUpdate(url);
-				//WebRepository.prototype.getRemoteUpdate(function(){
-				//	WebRepository.prototype.checkForRemoteUpdate(url);
-				//});
 			});
 		}else{
 			setTimeout(WebRepository.prototype.waitForInit.bind(this,callback),5000);
@@ -257,7 +253,6 @@ class WebRepository extends Repository{
 	savePersistantMessage(message, callback){
 	
 		logger.info('Save Message');
-console.log(callback);
 		
 		this.checkCommonHeaders(function(){
 			var args = {
@@ -283,7 +278,7 @@ console.log(callback);
 	*	Check for any changes on Web
 	*
 	*****************************************/	
-	checkForRemoteUpdate(url){
+	checkForRemoteUpdate(){
 		
 		logger.info('CHECK Web remote update');
 		
@@ -299,10 +294,10 @@ console.log(callback);
 						if(hasUpdate) {
 							logger.info('New updates');
 						}
-						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
+						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),3000);
 				}else{
 					logger.error(data.errors);
-					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this,url),3000);
+					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(this),3000);
 				} 
 			};
 
@@ -321,11 +316,9 @@ console.log(callback);
 	getRemoteUpdate(callback){
 
 		logger.info('Get Web remote update');
-console.log(this);
+		var webRep = this;
 		
-		this.checkCommonHeaders(function(v){
-logger.info('Remote ');			
-console.log(this);	
+		this.checkCommonHeaders(function(){
 			
 			var args = {
 				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
@@ -336,7 +329,7 @@ console.log(this);
 			
 				if(response.statusCode == 200){		
 						console.log(data.result);
-						this.zones = data.result;
+						webRep.zones = data.result;
 				}else{
 					logger.error(data.errors);
 				}
@@ -351,7 +344,6 @@ console.log(this);
 	}
 
 
-	
 	savePersistantDevice(device, result , error){
 		
 		logger.info("WebRepository -> savePersistantDevice");
@@ -375,7 +367,6 @@ console.log(this);
 			error(err);
 		});
 	};
-	
 	
 	
 	saveConfig(id,config,result,error){
@@ -428,17 +419,16 @@ console.log(this);
 	*****************************************/
 	checkCommonHeaders(callback){
 		logger.debug("Check for expiration");
-console.log(this);
 		var now = (new Date()).getTime();
 		if((controllerInfo.expire_at - now) > 0){ 
 			logger.debug("Token is valid");
-			callback(this);
+			callback();
 		}else{
 			refreshToken(function(err){
 				if(err){
 					logger.error("Token refresh err.");
 				} else logger.info("Token refreshed.");
-				callback(this);
+				callback();
 			});
 		}
 	}
