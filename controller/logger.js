@@ -21,7 +21,7 @@ var buildOptions = function(){
 			// Return string will be passed to logger. 
 			return myFormatter('',options);
 	  },
-	  level: 'verbose'
+	  level: 'debug'
 	}
 };
 

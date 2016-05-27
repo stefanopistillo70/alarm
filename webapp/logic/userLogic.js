@@ -100,8 +100,9 @@ var logic = {
 			if (users) {
 				logger.info("Users ->"+users.length);
 				for(i = 0 ; i < users.length; i++ ){
-					sendPushNotification(users[i],function(success){
-						if(!success) sendGoogleMailToUsers(users[i],message);
+					sendPushNotification(users[i],function(success,user){
+						console.log("SUCCESS->"+success);
+						if(!success) sendGoogleMailToUsers(user,message);
 					});
 				}
 			}
@@ -128,17 +129,17 @@ var sendPushNotification = function(user, callback){
 				logger.log('info',"Response arrived");
 				if(data.success === 1 ){
 					logger.log('info',"Push sent.");
-					callback(true);
-				}else callback(false);
+					callback(true,user);
+				}else callback(false,user);
 		}else{
-			logger.error(data.errors);
-			callback(false);
+			logger.error(data);
+			callback(false,user);
 		} 
 	};
 
 	client.post("https://gcm-http.googleapis.com/gcm/send", args, onResponseEvent).on('error', function (err) {
 		logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-		callback(false);
+		callback(false,user);
 	});
 		
 };
@@ -147,92 +148,98 @@ var sendPushNotification = function(user, callback){
 
 	
 var	sendGoogleMailToUsers = function(user, msg){
-	logger.info("Send Mail to ->"+user.auth.local.email);
+console.log(user);
+	logger.info("Send Google Mail to ->"+user.auth.local.email);
 	
 	//TODO find admin user in location
 	var adminUser = user;
 	
-	//Prepare email
-	var to = user.auth.local.email,
-	subject = 'DomusGuard '+msg.level+' Message',
-	content = msg.message;
+	if(adminUser.auth.google.refresh_token){
+	
+		//Prepare email
+		var to = user.auth.local.email,
+		subject = 'DomusGuard '+msg.level+' Message',
+		content = msg.message;
 
-	var buff = new Buffer(
-		"Content-Type:  text/plain; charset=\"UTF-8\"\n" +
-		"Content-length: 5000\n" +
-		"Content-Transfer-Encoding: message/rfc2822\n" +
-		"to: "+to+"\n" +
-		"from: <"+adminUser.auth.local.email+">\n" +
-		"subject: "+subject+"\n\n" +
-		content
-	);
+		var buff = new Buffer(
+			"Content-Type:  text/plain; charset=\"UTF-8\"\n" +
+			"Content-length: 5000\n" +
+			"Content-Transfer-Encoding: message/rfc2822\n" +
+			"to: "+to+"\n" +
+			"from: <"+adminUser.auth.local.email+">\n" +
+			"subject: "+subject+"\n\n" +
+			content
+		);
+					
+		var base64EncodedEmail = buff.toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+
+		var mail = base64EncodedEmail;
+		
+		
+		oauth2Client.setCredentials({
+			access_token: adminUser.auth.google.token,
+			refresh_token: adminUser.auth.google.refresh_token
+		}); 
+
+		var now = (new Date()).getTime();
+			
+		if(!((adminUser.auth.google.expiry_date) && ((adminUser.auth.google.expiry_date - now) > 0))){
+			logger.info("Token is expired. refresh");
+			oauth2Client.refreshAccessToken(function(err, tokens) {
 				
-	var base64EncodedEmail = buff.toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+				if (err){
+						logger.error(err);
+				}else{
+				
+					var query = { '_id' : adminUser._id };
+					var updates = { 'auth.google.expiry_date' : tokens.expiry_date, 'auth.google.token' : tokens.access_token};
+					User.findOneAndUpdate(query, updates, function(err, user) {
+						if (err){
+							logger.error(err.errors);
+						}else{
+							
+							gmail.users.messages.send({
+								'auth': oauth2Client,
+								'userId' : 'me',
+								//uploadType : 'media',
+								'resource': {
+									  'raw': mail
+									}
+								}, function(err, response) {
+									if (err) {
+									  logger.error(err);
+									}
+									if(response){
+										logger.info("Email sent.");
+									}
+							});	
 
-	var mail = base64EncodedEmail;
-	
-	
-	oauth2Client.setCredentials({
-		access_token: adminUser.auth.google.token,
-		refresh_token: adminUser.auth.google.refresh_token
-	}); 
+						}	
+					});
+				}
 
-	var now = (new Date()).getTime();
-		
-	if(!((adminUser.auth.google.expiry_date) && ((adminUser.auth.google.expiry_date - now) > 0))){
-		logger.info("Token is expired. refresh");
-		oauth2Client.refreshAccessToken(function(err, tokens) {
+			});
+		}else{
 			
-			if (err){
-					logger.error(err);
-			}else{
+			gmail.users.messages.send({
+				'auth': oauth2Client,
+				'userId' : 'me',
+				'resource': {
+					  'raw': mail
+					}
+				}, function(err, response) {
+					if (err) {
+					  logger.error(err);
+					}
+					if(response){
+						logger.info("Email sent.");
+					}
+			});
 			
-				var query = { '_id' : adminUser._id };
-				var updates = { 'auth.google.expiry_date' : tokens.expiry_date, 'auth.google.token' : tokens.access_token};
-				User.findOneAndUpdate(query, updates, function(err, user) {
-					if (err){
-						logger.error(err.errors);
-					}else{
-						
-						gmail.users.messages.send({
-							'auth': oauth2Client,
-							'userId' : 'me',
-							//uploadType : 'media',
-							'resource': {
-								  'raw': mail
-								}
-							}, function(err, response) {
-								if (err) {
-								  logger.error(err);
-								}
-								if(response){
-									logger.info("Email sent.");
-								}
-						});	
-
-					}	
-				});
-			}
-
-		});
+		}	
 	}else{
-		
-		gmail.users.messages.send({
-			'auth': oauth2Client,
-			'userId' : 'me',
-			'resource': {
-				  'raw': mail
-				}
-			}, function(err, response) {
-				if (err) {
-				  logger.error(err);
-				}
-				if(response){
-					logger.info("Email sent.");
-				}
-		});
-		
-	}	
+		logger.error("Google email not configured");
+	}
 };
 
 

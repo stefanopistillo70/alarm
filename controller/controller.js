@@ -44,6 +44,24 @@ controller.start = function(){
 
 	var Webrepository = require('./webrepository');
 	controller.repository = new Webrepository();
+	console.log(controller.repository);
+	console.log(Webrepository.prototype);
+	
+/*	var f = function(){
+		logger.log('info','OK .....');
+	}
+	controller.repository.waitForInit(f);
+*/
+	
+	controller.repository.waitForInit(function(err){
+		controller.repository.getRemoteUpdate(function(){
+			logger.log('info','Remote Update DONE.');
+		});
+	});
+	
+	
+	
+	
 	
 	controller.checkForZoneAlarm();
 

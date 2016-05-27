@@ -192,7 +192,7 @@ class WebRepository extends Repository{
 	
 	constructor(){	
 		super();		
-		this.waitForInit();	
+		//this.waitForInit();	
 	}
 	
 	/***************************************
@@ -200,7 +200,7 @@ class WebRepository extends Repository{
 	*	Wait for initialization of common structure
 	* 
 	****************************************/
-	waitForInit(){
+	waitForInit(callback){
 		logger.info('Wait For Init');
 		
 		if(systemIsRegistered){
@@ -210,13 +210,15 @@ class WebRepository extends Repository{
 			msg.level = "info";
 			msg.message = "Controller startup";
 			this.savePersistantMessage(msg, function(){
-				logger.info('Message Sent');			
-				WebRepository.prototype.getRemoteUpdate(function(){
-					WebRepository.prototype.checkForRemoteUpdate(url);
-				});
+				logger.info('Message Sent');	
+				callback();
+				//WebRepository.prototype.checkForRemoteUpdate(url);
+				//WebRepository.prototype.getRemoteUpdate(function(){
+				//	WebRepository.prototype.checkForRemoteUpdate(url);
+				//});
 			});
 		}else{
-			setTimeout(WebRepository.prototype.waitForInit.bind(this),10000);
+			setTimeout(WebRepository.prototype.waitForInit.bind(this,callback),5000);
 		}
 	}
 	
@@ -255,6 +257,7 @@ class WebRepository extends Repository{
 	savePersistantMessage(message, callback){
 	
 		logger.info('Save Message');
+console.log(callback);
 		
 		this.checkCommonHeaders(function(){
 			var args = {
@@ -310,20 +313,30 @@ class WebRepository extends Repository{
 		});	
 	}
 	
-	
+	/*****************************************
+	*
+	*	Download update Zone 
+	*
+	*****************************************/	
 	getRemoteUpdate(callback){
 
 		logger.info('Get Web remote update');
+console.log(this);
 		
-		WebRepository.prototype.checkCommonHeaders(function(){
+		this.checkCommonHeaders(function(v){
+logger.info('Remote ');			
+console.log(this);	
+			
 			var args = {
 				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
 			};
 
 			var onResponseEvent = function(data, response) {
-				var err = undefined;
+				logger.info('Zone response arrived.');
+			
 				if(response.statusCode == 200){		
 						console.log(data.result);
+						this.zones = data.result;
 				}else{
 					logger.error(data.errors);
 				}
@@ -414,16 +427,18 @@ class WebRepository extends Repository{
 	*
 	*****************************************/
 	checkCommonHeaders(callback){
-	
+		logger.debug("Check for expiration");
+console.log(this);
 		var now = (new Date()).getTime();
 		if((controllerInfo.expire_at - now) > 0){ 
-			callback();
+			logger.debug("Token is valid");
+			callback(this);
 		}else{
 			refreshToken(function(err){
 				if(err){
 					logger.error("Token refresh err.");
 				} else logger.info("Token refreshed.");
-				callback();
+				callback(this);
 			});
 		}
 	}
