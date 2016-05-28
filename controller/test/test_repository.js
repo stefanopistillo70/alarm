@@ -16,7 +16,7 @@ describe('Repository', function() {
 
 		it('id empty',function(done){		
 			
-			repository.buildNewDevice("433","",function(){}, function(err){
+			repository.buildNewDevice("433","",function(device,err){
 					console.log('Error ->' + err);
 					assert.notEqual(err,undefined);
 					done();
@@ -25,7 +25,7 @@ describe('Repository', function() {
 		
 		it('id undef',function(done){		
 			
-			device = repository.buildNewDevice("433",undefined,function(){}, function(err){
+			device = repository.buildNewDevice("433",undefined,function(device,err){
 					console.log('Error ->' + err);
 					assert.notEqual(err,undefined);
 					done();
@@ -36,7 +36,7 @@ describe('Repository', function() {
 		it('not exists',function(done){		
 			var device = repository.getDevice("10100000111001111000");
 			
-			repository.buildNewDevice("433","10100000111001111000",function(device){
+			repository.buildNewDevice("433","10100000111001111000",function(device,err){
 					console.log('Build device ');
 					console.log(device);
 					console.log('Build device with id ->' + device.id);
@@ -55,7 +55,7 @@ describe('Repository', function() {
 		it('exists',function(done){		
 			var device = repository.getDevice("10100000111001111000");
 			
-			repository.buildNewDevice("433",device.id,function(){}, function(err){
+			repository.buildNewDevice("433",device.id,function(device,err){
 				console.log(err);
 				done();
 			});
@@ -64,7 +64,7 @@ describe('Repository', function() {
 
 		
 		it('add more',function(done){		
-			repository.buildNewDevice("433","101000001110011110001",function(device){
+			repository.buildNewDevice("433","101000001110011110001",function(device,err){
 					console.log('Build device with id ->' + device.id);
 					assert.notEqual(device,undefined);
 					assert.equal(device.id,"101000001110011110001");
@@ -74,7 +74,7 @@ describe('Repository', function() {
 		});
 		
 		it('add more 2',function(done){		
-			repository.buildNewDevice("433","101000001110011110011",function(device){
+			repository.buildNewDevice("433","101000001110011110011",function(device,err){
 					console.log('Build device with id ->' + device.id);
 					assert.notEqual(device,undefined);
 					assert.equal(device.id,"101000001110011110011");

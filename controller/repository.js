@@ -28,6 +28,8 @@ var Zone = function(){
 	
 }
 
+
+
 class Repository {
 	
 	constructor(){
@@ -38,7 +40,7 @@ class Repository {
 	
 	
 	getDevice(deviceId){
-		console.log("Get Device "+deviceId)
+		logger.info("Get Device "+deviceId)
 		function exists(element) {
 			var ret = false;
 			if(deviceId === element.id) ret = true;
@@ -73,17 +75,17 @@ class Repository {
 		return ++nextDeviceId;
 	}
 	
-	buildNewDevice(technology, deviceId, callback, error_cb){
+	buildNewDevice(technology, deviceId, callback){
 	
 		if(technology == "433"){
 			if((deviceId == undefined) || (deviceId === "")) {
-				error_cb("device id empy or undefined");
+				callback(undefined, "device id empy or undefined");
 				return;
 			}
 			
 			var device = this.getDevice(deviceId);
 			if(device){
-				error_cb("Device with id "+deviceId+" already exists");
+				callback(undefined, "Device with id "+deviceId+" already exists");
 				return;
 			} 
 			
@@ -93,9 +95,6 @@ class Repository {
 				function(devices){
 					devices.push(device);
 					callback(device);
-				}, 
-				function(error){
-					if(error_cb) error_cb(error);
 				});
 		}else{
 			if(deviceId == undefined) deviceId = this.getFreeDeviceID();
@@ -142,8 +141,8 @@ class Repository {
 	};
 
 	savePersistantDevice(device,callback){
-		console.log("Repository -> savePersistantDevice");
-		callback(this.devices);
+		logger.info("Repository -> savePersistantDevice");
+		callback(device);
 	};
 			
 };

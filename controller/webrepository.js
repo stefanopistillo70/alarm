@@ -348,28 +348,33 @@ class WebRepository extends Repository{
 	}
 
 
-	savePersistantDevice(device, result , error){
+	savePersistantDevice(device, callback){
 		
 		logger.info("WebRepository -> savePersistantDevice");
-				
-		var args = {
-			data: device,
-			headers: { "Content-Type": "application/json" }
-		};
 
-		var devices = this.devices;
-		
-		var onResponseEvent = function(data, response) {
-			if(response.statusCode == 200){
-					result(devices,data);
-			}else{
-				error(data.errors);
-			} 
-		};
-		
-		client.post(url+"/device", args, onResponseEvent).on('error', function (err) {
-			error(err);
-		});
+		webRep.checkCommonHeaders(function(){
+			
+			var args = {
+				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
+			};
+
+			var onResponseEvent = function(data, response) {
+				logger.info('Device response arrived.');
+			
+				if(response.statusCode == 200){		
+						callback(data.result);
+				}else{
+					callback(undefined,data.errors);
+				}
+				callback();
+			};
+
+			client.get(url+"/device", args, onResponseEvent).on('error', function (err) {
+				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+				callback();
+			});
+		});	
+
 	};
 	
 	
