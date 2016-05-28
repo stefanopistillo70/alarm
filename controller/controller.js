@@ -2,6 +2,8 @@
 //process.stdin.resume();
 
 var logger = require('./logger.js')('Controller');
+var serial_gateway = require('./serial_gateway.js');
+var MYSP_15 = require('./mysp_15.js');
 
 /**************************
 *
@@ -24,7 +26,6 @@ var logger = require('./logger.js')('Controller');
 process.on('SIGINT', exitHandler.bind());
 */
 
-var gateway = require('./gateway.js');
 
 
 var controller = {}
@@ -35,17 +36,14 @@ controller.repository;
 controller.start = function(){
 	
 	logger.log('info','Start');
-	
-	//var g = gateway.getInstance();
-//	console.log(g);
-
-	//var msg = gateway.parseMsg("12;6;0;0;3;My Light\n");
-	//console.log("MSG -> " + msg.toString());
 
 	var Webrepository = require('./webrepository');
 	controller.repository = new Webrepository();
 	
+	var mysp_15 = new MYSP_15(controller.repository);
+	var sg = serial_gateway(mysp_15);
 
+	
 	controller.repository.waitForInit(function(err){
 		controller.repository.getRemoteUpdate(function(){
 			logger.log('info','Remote Update DONE.');

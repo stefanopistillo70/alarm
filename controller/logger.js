@@ -5,7 +5,7 @@ var myFormatter = function(module,options){
 	return options.timestamp() +'\t'+ options.level.toUpperCase() +'\t['+module+']  '+ (undefined !== options.message ? options.message : '') +
           (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
 	
-}
+};
 
 
 //Default Config
@@ -39,22 +39,34 @@ winston.loggers.options.transports = [transport];
 var optController = buildOptions();
 optController.formatter = function(options) {
         return myFormatter('Controller',options);
-}
+};
 
 var optGateway = buildOptions();
 optGateway.formatter = function(options) {
         return myFormatter('Gateway',options);
-}
+};
 
 var optWebRepository = buildOptions();
 optWebRepository.formatter = function(options) {
         return myFormatter('WebRepository',options);
-}
+};
 
 var optRepository = buildOptions();
 optRepository.formatter = function(options) {
         return myFormatter('Repository',options);
-}
+};
+
+var optMYSP15 = buildOptions();
+optMYSP15.formatter = function(options) {
+        return myFormatter('MSP15',options);
+};
+
+var optSrlGateway = buildOptions();
+optSrlGateway.formatter = function(options) {
+        return myFormatter('SrlGateway',options);
+};
+
+
 
 
 winston.loggers.add('Controller', {
@@ -73,8 +85,16 @@ winston.loggers.add('Repository', {
 		transports: [new winston.transports.Console(optRepository)]
 });
 
+winston.loggers.add('MSP15', {
+		transports: [new winston.transports.Console(optMYSP15)]
+});
+
+winston.loggers.add('SrlGateway', {
+		transports: [new winston.transports.Console(optSrlGateway)]
+});
+
 
 module.exports = function(arg) {
 	return winston.loggers.get(arg);
-}
+};
 

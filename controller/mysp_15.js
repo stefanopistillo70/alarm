@@ -5,25 +5,23 @@ var Repository = require('./Repository.js');
 var MYSP_15 = function(repository) {
 			
 			
-		this.onMsg = function(response, rd){
+		this.onMsg = function(rd,callback){
 			
 			var msg = msgBuilder(rd.toString());
 			var replayMsg;
 			if(msg.command == Cmd.C_INTERNAL){
-				if(msg.type == InternalType.I_ID_REQUEST){
-					
+				if(msg.type == InternalType.I_ID_REQUEST){		
 					node = repository.buildNewDevice(Repository.Technology.NRF);
 					if(node){
 						replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,node.id);
 					}
-					
 				};
 			};
 			
 			if(replayMsg){
-				logger.log('info','SENDING -> '+replayMsg.stringify());
-				response(replayMsg.stringify());
-			}
+				logger.log('info','SENDING REPLAY -> '+replayMsg.stringify());
+				callback(replayMsg.stringify());
+			}else callback();
 			
 		};
 };
