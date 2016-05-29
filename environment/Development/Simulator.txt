@@ -22,7 +22,7 @@ socat -d -d pty,raw,echo=0 pty,raw,echo=0
 
 echo -ne 'ciao' > /dev/pts/3
 
-cat -v < /dev/pts/3
+cat -v < /dev/pts/2
 
 
 

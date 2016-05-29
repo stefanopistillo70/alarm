@@ -44,16 +44,16 @@ controller.start = function(){
 	var mysp_15 = new MYSP_15(controller.repository);
 	var sg = serial_gateway(mysp_15);
 
-	
+	/*
 	controller.repository.waitForInit(function(err){
 		controller.repository.getRemoteUpdate(function(){
 			logger.log('info','Remote Update DONE.');
 			controller.repository.checkForRemoteUpdate();
 		});
 	});
+	*/
 	
-	
-	controller.checkForZoneAlarm();
+	//controller.checkForZoneAlarm();
 
 	//controller.repository.addNewNode(Repository.createNode(1,"node1"));
 	//controller.repository.addNewNode(Repository.createNode(2,"node2"));
