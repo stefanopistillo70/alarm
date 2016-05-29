@@ -4,6 +4,8 @@
 var logger = require('./logger.js')('Controller');
 var serial_gateway = require('./serial_gateway.js');
 var MYSP_15 = require('./mysp_15.js');
+var Webrepository = require('./webrepository');
+
 
 /**************************
 *
@@ -37,7 +39,6 @@ controller.start = function(){
 	
 	logger.log('info','Start');
 
-	var Webrepository = require('./webrepository');
 	controller.repository = new Webrepository();
 	
 	var mysp_15 = new MYSP_15(controller.repository);

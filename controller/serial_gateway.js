@@ -2,7 +2,7 @@
 var serialport = require("serialport");
 var logger = require('./logger.js')('SrlGateway');
 
-var serial_gateway = function(protocol) {
+var serial_gateway = function(protocol, gwPort, gwBaud) {
 	
 		//var instance;
 		//var protocol;
@@ -14,9 +14,9 @@ var serial_gateway = function(protocol) {
 		*/
 		//function init() {
 			
-			const gwPort = '\\\\.\\COM10';
-			//var gwPort = '/dev/pts/2';
-			var gwBaud = 115200;
+			//const gwPort = '\\\\.\\COM10';
+			if(gwPort ===undefined) gwPort = '/dev/pts/2';
+			if(gwBaud ===undefined) gwBaud = 115200;
 		
 			var SerialPort = serialport.SerialPort;
 			var gw = new SerialPort(gwPort, { baudrate: gwBaud , parser: serialport.parsers.readline("\n")}, false);

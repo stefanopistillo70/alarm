@@ -1,6 +1,6 @@
 
 var logger = require('./logger.js')('MSP15');
-var Repository = require('./Repository.js');
+var Repository = require('./repository.js');
 
 var MYSP_15 = function(repository) {
 			
