@@ -77,13 +77,14 @@ class Repository {
 	
 	buildNewDevice(technology, deviceId, callback){
 	
+		var rep = this;
 		if(technology == "433"){
 			if((deviceId == undefined) || (deviceId === "")) {
 				callback(undefined, "device id empy or undefined");
 				return;
 			}
 			
-			var device = this.getDevice(deviceId);
+			var device = rep.getDevice(deviceId);
 			if(device){
 				callback(undefined, "Device with id "+deviceId+" already exists");
 				return;
@@ -91,17 +92,17 @@ class Repository {
 			
 			device = new Device(deviceId,"","",technology,[]);
 			
-			this.savePersistantDevice(device, 
+			rep.savePersistantDevice(device, 
 				function(devices){
-					devices.push(device);
+					rep.devices.push(device);
 					callback(device);
 				});
 		}else{
-			if(deviceId == undefined) deviceId = this.getFreeDeviceID();
+			if(deviceId == undefined) deviceId = rep.getFreeDeviceID();
 			else throw new Error();
 			if(deviceId > 0){
 				var device = new Device(deviceId,"","",technology,[]);
-				this.devices.push(device);
+				rep.devices.push(device);
 				return device;			
 			}else null;		
 		}
@@ -146,10 +147,6 @@ class Repository {
 	};
 			
 };
-
-
-//Repository.Technology = { NRF : 0, T433 : 1};
-//Repository.DeviceType = { RC : 0, SENSOR : 1};
 
 module.exports = Repository; 
 

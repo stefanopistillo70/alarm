@@ -11,17 +11,19 @@ var MYSP_15 = function(repository) {
 			var replayMsg;
 			if(msg.command == Cmd.C_INTERNAL){
 				if(msg.type == InternalType.I_ID_REQUEST){		
-					node = repository.buildNewDevice(Repository.Technology.NRF);
-					if(node){
-						replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,node.id);
-					}
+					repository.buildNewDevice("433", "ggggggg", function(device,err){
+						if(device){
+							replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,device.id);
+							if(replayMsg){
+								logger.log('info','SENDING REPLAY -> '+replayMsg.stringify());
+								callback(replayMsg.stringify());
+							}else callback();
+						}
+					});
 				};
 			};
 			
-			if(replayMsg){
-				logger.log('info','SENDING REPLAY -> '+replayMsg.stringify());
-				callback(replayMsg.stringify());
-			}else callback();
+			
 			
 		};
 };

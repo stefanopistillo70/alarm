@@ -352,6 +352,8 @@ class WebRepository extends Repository{
 		
 		logger.info("WebRepository -> savePersistantDevice");
 
+		var webRep = this;
+		
 		webRep.checkCommonHeaders(function(){
 			
 			var args = {

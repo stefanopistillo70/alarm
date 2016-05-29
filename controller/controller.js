@@ -42,16 +42,20 @@ controller.start = function(){
 	controller.repository = new Webrepository();
 	
 	var mysp_15 = new MYSP_15(controller.repository);
-	var sg = serial_gateway(mysp_15);
+	//var sg = serial_gateway(mysp_15);
 
-	/*
+	var sim_gateway = require('./test/sim_gateway.js');
+	var sg1 = sim_gateway(mysp_15);
+
+
+	
 	controller.repository.waitForInit(function(err){
 		controller.repository.getRemoteUpdate(function(){
 			logger.log('info','Remote Update DONE.');
-			controller.repository.checkForRemoteUpdate();
+			//controller.repository.checkForRemoteUpdate();
 		});
 	});
-	*/
+	
 	
 	//controller.checkForZoneAlarm();
 
