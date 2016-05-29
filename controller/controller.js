@@ -4,6 +4,7 @@
 var logger = require('./logger.js')('Controller');
 var serial_gateway = require('./serial_gateway.js');
 var MYSP_15 = require('./mysp_15.js');
+var Protocol_433 = require('./protocol_433.js');
 var Webrepository = require('./webrepository');
 
 
@@ -41,11 +42,12 @@ controller.start = function(){
 
 	controller.repository = new Webrepository();
 	
-	var mysp_15 = new MYSP_15(controller.repository);
+	//var mysp_15 = new MYSP_15(controller.repository);
 	//var sg = serial_gateway(mysp_15);
 
+	var protocol_433 = new Protocol_433(controller.repository);
 	var sim_gateway = require('./test/sim_gateway.js');
-	var sg1 = sim_gateway(mysp_15);
+	var sg1 = sim_gateway(protocol_433);
 
 
 	
