@@ -12,7 +12,9 @@ var authValues = [
 	{key : {method : "*", url : "/user"}, roles : ["admin"]},
 	{key : {method : "*", url : "/controller"}, roles : ["controller"]},
 	{key : {method : "*", url : "/message"}, roles : ["controller"]},
-	{key : {method : "*", url : "/config"}, roles : ["admin"]}
+	{key : {method : "*", url : "/config"}, roles : ["admin"]},
+	{key : {method : "*", url : "/location"}, roles : ["admin"]},
+	{key : {method : "*", url : "/location/id"}, roles : ["admin"]}
 ];
 
 

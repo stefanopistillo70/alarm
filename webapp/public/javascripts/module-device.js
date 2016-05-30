@@ -1,4 +1,4 @@
-var dgModuleDevice = angular.module('dgModuleDevice', ['ngResource','ui.bootstrap','ui.grid','ui.grid.selection','dgModuleConfig']);
+var dgModuleDevice = angular.module('dgModuleDevice', ['ngResource','ui.bootstrap','ui.grid','ui.grid.selection','dgModuleLocation']);
 
 dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService', function($scope, $uibModal, DeviceService) {
 		
@@ -95,7 +95,7 @@ Modal new Device
 
 ****************************************************/
 
-dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, ConfigService) {
+dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, LocationService) {
 
 	$scope.openNewDevModal = function (size) {
 
@@ -114,7 +114,7 @@ dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, Con
 		}, function () {
 		  console.log('Modal dismissed at: ' + new Date());
 		  console.log('Config -> enableNewDevice=false');
-		  ConfigService.update({entryId:0}, {enableNewDevice : false});
+		  LocationService.update({entryId:0}, {enableNewDevice : false});
 		});
 	};
 
@@ -123,57 +123,45 @@ dgModuleDevice.controller('ModalNewDeviceCtrl', function ($scope, $uibModal, Con
 // Please note that $uibModalInstance represents a modal window (instance) dependency.
 // It is not the same as the $uibModal service used above.
 
-dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, DeviceService, ConfigService) {
+dgModuleDevice.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, DeviceService, LocationService) {
 
 	$scope.showProgress = true;
 	
-	var queryConfig = ConfigService.query().$promise;
+	var updateConfigTrue = LocationService.update({entryId:0}, {enableNewDevice : true}).$promise;
 	
-	queryConfig.then(function(result) {
-		
-			var id = result[0]._id;
-			
-			console.log(id);
-			
-			var updateConfigTrue = ConfigService.update({entryId:id}, {enableNewDevice : true}).$promise;
-			
-			updateConfigTrue.then(function(result) {
+	updateConfigTrue.then(function(result) {
 		  
-			var checkForDB = { value : true}
+		var checkForDB = { value : true}
 
-			$scope.cancelNewDevModal = function () {
-				console.log("CANCELL - ModalInstanceCtrl");
-				$uibModalInstance.dismiss('cancel');
-				ConfigService.update({entryId:id}, {enableNewDevice : false});
-				checkForDB.value = false;
-			};
-			
-			$scope.newDevFound = function(device){
-				console.log("new device found");
-				console.log(device);
-				$scope.device = device;
-				$scope.showProgress = false;
-				$scope.title = "New Device Found";
-				ConfigService.update({entryId:id}, {enableNewDevice : false});
-				checkForDB.value = false;
-			}
-			  
-			checkDb(checkForDB, DeviceService, -1, Date.now(), $scope, ConfigService);
-		  
-		}, 
-		function(reason) {
-			  console.log('Failed: ' + reason);
-		});
+		$scope.cancelNewDevModal = function () {
+			console.log("CANCELL - ModalInstanceCtrl");
+			$uibModalInstance.dismiss('cancel');
+			LocationService.update({entryId:0}, {enableNewDevice : false});
+			checkForDB.value = false;
+		};
 		
+		$scope.newDevFound = function(device){
+			console.log("new device found");
+			console.log(device);
+			$scope.device = device;
+			$scope.showProgress = false;
+			$scope.title = "New Device Found";
+			LocationService.update({entryId:id}, {enableNewDevice : false});
+			checkForDB.value = false;
+		}
+		  
+		checkDb(checkForDB, DeviceService, -1, Date.now(), $scope);
+	  
 	}, 
 	function(reason) {
 		  console.log('Failed: ' + reason);
 	});
+		
   
 });
 
 
-var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $scope, ConfigService){
+var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $scope){
 	
 	if(checkForDB.value){
 		
@@ -189,8 +177,7 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $sc
 				
 				if(initialValue === -1) initialValue = devices.length;
 				else if(devices){
-					//TODO eliminae ||
-					if((devices.length > initialValue) || ((Date.now() - initialDate) > 2000)){
+					if(devices.length > initialValue) {
 						
 						devices = devices.sort(function(d1, d2){
 							var date1 = Date.parse(d1.insertDate);
@@ -203,7 +190,7 @@ var checkDb = function(checkForDB, DeviceService, initialValue, initialDate, $sc
 						return;
 					} 
 				}
-				setTimeout(checkDb.bind(null, checkForDB, DeviceService, initialValue, initialDate, $scope, ConfigService),3000);
+				setTimeout(checkDb.bind(null, checkForDB, DeviceService, initialValue, initialDate, $scope),3000);
 			  
 			}, function(reason) {
 			  console.log('Failed: ' + reason);
