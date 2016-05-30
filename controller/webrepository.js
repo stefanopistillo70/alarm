@@ -364,12 +364,13 @@ class WebRepository extends Repository{
 			var onResponseEvent = function(data, response) {
 				logger.info('Device response arrived.');
 			
-				if(response.statusCode == 200){		
+				if(response.statusCode == 200){	
+						console.log("OK");
+						console.log(data.result);
 						callback(data.result);
 				}else{
 					callback(undefined,data.errors);
 				}
-				callback();
 			};
 
 			client.post(url+"/device", args, onResponseEvent).on('error', function (err) {

@@ -81,27 +81,25 @@ class Repository {
 		if(technology == "433"){
 			if((deviceId == undefined) || (deviceId === "")) {
 				callback(undefined, "device id empy or undefined");
-				return;
+			} else {
+				var device = rep.getDevice(deviceId);
+				if(device){
+					callback(undefined, "Device with id "+deviceId+" already exists");
+				}else{ 
+				
+					device = new Device(deviceId,"","",technology,[]);
+					
+					rep.savePersistantDevice(device, function(devices, error){
+							if(error){
+								logger.error(error);
+								callback(undefined,error);
+							}else{
+								rep.devices.push(device);
+								callback(device);
+							}
+					});
+				}
 			}
-			
-			var device = rep.getDevice(deviceId);
-			if(device){
-				callback(undefined, "Device with id "+deviceId+" already exists");
-				return;
-			} 
-			
-			device = new Device(deviceId,"","",technology,[]);
-			
-			rep.savePersistantDevice(device, 
-				function(devices, error){
-					if(error){
-						logger.error(error);
-						callback(undefined,error);
-					}else{
-						rep.devices.push(device);
-						callback(device);
-					}
-				});
 		}else{
 			if(deviceId == undefined) deviceId = rep.getFreeDeviceID();
 			else throw new Error();
