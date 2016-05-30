@@ -7,7 +7,7 @@ var authValues = [
 	{key : {method : "*", url : "/main/userInfo"}, roles : ["admin"]},
 	{key : {method : "*", url : "/zone"}, roles : ["admin","controller"]},
 	{key : {method : "*", url : "/zone/id"}, roles : ["admin"]},
-	{key : {method : "*", url : "/device"}, roles : ["admin"]},
+	{key : {method : "*", url : "/device"}, roles : ["admin","controller"]},
 	{key : {method : "*", url : "/device/id"}, roles : ["admin"]},
 	{key : {method : "*", url : "/user"}, roles : ["admin"]},
 	{key : {method : "*", url : "/controller"}, roles : ["controller"]},

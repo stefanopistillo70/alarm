@@ -93,9 +93,14 @@ class Repository {
 			device = new Device(deviceId,"","",technology,[]);
 			
 			rep.savePersistantDevice(device, 
-				function(devices){
-					rep.devices.push(device);
-					callback(device);
+				function(devices, error){
+					if(error){
+						logger.error(error);
+						callback(undefined,error);
+					}else{
+						rep.devices.push(device);
+						callback(device);
+					}
 				});
 		}else{
 			if(deviceId == undefined) deviceId = rep.getFreeDeviceID();

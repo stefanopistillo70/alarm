@@ -22,11 +22,16 @@ router.get('/', function(req, res, next) {
 /* create Device. */
 router.post('/', function(req, res, next) {
 	
+	console.log(req.locations);
+	var device  = req.body.device;
+	console.log(device);
+	
+	
 	var locations = req.locations.split("#");
 	if(locations.length > 1) res.status(400).send(new Response().error(400,"More than one location specified"));
 	else{
 
-		query = { locationId :  locations[0]}
+		query = { _id :  locations[0]}
 		Location.find(query, function(err, locations) {
 					if (err){
 						res.status(400).send(new Response().error(400,err.errors));
@@ -34,15 +39,15 @@ router.post('/', function(req, res, next) {
 						if((locations != undefined) && (locations.length > 0)){
 							if(locations[0].config.enableNewDevice){
 								
-									var device = new Device();
+									var dbDevice = new Device();
 		
-									device.id = req.body.id;
-									device.name = req.body.name;
-									device.deviceType = req.body.deviceType;
-									device.technology = req.body.technology;
-									device.locationId = locations[0]._id;
+									dbDevice.id = device.id;
+									dbDevice.name = device.name;
+									dbDevice.deviceType = device.deviceType;
+									dbDevice.technology = device.technology;
+									dbDevice.locationId = locations[0]._id;
 										
-									device.save(function(err) {
+									dbDevice.save(function(err) {
 										if (err){
 											res.status(400).send(new Response().error(400,err.errors));;
 										}else res.json(new Response("Device Created"));
@@ -50,7 +55,7 @@ router.post('/', function(req, res, next) {
 								
 							}
 							else res.status(400).send(new Response().error(400,"enableNewDevice is false"));
-						}else{ res.status(400).send(new Response().error(400,"No Config found...")); }
+						}else{ res.status(400).send(new Response().error(400,"No Location found...")); }
 					} 
 				});
 			

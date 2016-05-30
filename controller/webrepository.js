@@ -357,6 +357,7 @@ class WebRepository extends Repository{
 		webRep.checkCommonHeaders(function(){
 			
 			var args = {
+				data: { device: device },
 				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
 			};
 
@@ -371,7 +372,7 @@ class WebRepository extends Repository{
 				callback();
 			};
 
-			client.get(url+"/device", args, onResponseEvent).on('error', function (err) {
+			client.post(url+"/device", args, onResponseEvent).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
 				callback();
 			});
