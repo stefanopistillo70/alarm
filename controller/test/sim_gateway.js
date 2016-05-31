@@ -13,17 +13,20 @@ app.use(bodyParser.urlencoded());
 // respond to all requests
 app.use(function(req, res){
 	var url = req.url.substring(1, req.url.length);
-	console.log(url);
+	console.log("URL ->"+url);
+	
+	if(url != "favicon.ico"){
   
-	protocol.onMsg(url,function(msg){
-		if(msg){
-			console.log("Sending response ->"+msg.toString());
-			res.end(msg.toString());
-		}else{
-			console.log("No response to send back");
-			res.end("No response to send back");
-		}
-	});
+		protocol.onMsg(url,function(msg){
+			if(msg){
+				console.log("Sending response ->"+msg.toString());
+				res.end(msg.toString());
+			}else{
+				console.log("No response to send back");
+				res.end("No response to send back");
+			}
+		});
+	}else res.end("");
 });
 
 //create node.js http server and listen on port
