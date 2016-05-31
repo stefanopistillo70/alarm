@@ -32,7 +32,7 @@
 					<div class="row">	
 					
 						<div class="col-md-4" >
-							<a ng-repeat="device in devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{device.name}}</a>
+							<a ng-repeat="device in devices track by device._id" ng-click="$parent.selected = device" class="list-group-item" ng-class="{active:selected==device}">{{(device.name != "" ? device.name: device.id)}}</a>
 						</div>
 
 						<div class="col-md-4">
@@ -49,7 +49,7 @@
 						</div>
 
 						<div class="col-md-4">
-							<a ng-repeat="deviceZ in zone.devices track by deviceZ._id" ng-click="$parent.selected = deviceZ" class="list-group-item" ng-class="{active:selected==deviceZ}">{{deviceZ.name}}</a>
+							<a ng-repeat="deviceZ in zone.devices track by deviceZ._id" ng-click="$parent.selected = deviceZ" class="list-group-item" ng-class="{active:selected==deviceZ}">{{(deviceZ.name!= "" ? deviceZ.name: deviceZ.id)}}</a>
 						</div>
 				
 					</div>
