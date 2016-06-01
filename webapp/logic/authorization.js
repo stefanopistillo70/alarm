@@ -3,7 +3,7 @@ var logger = require('../config/logger.js')('Authorization');
 
 var authValues = [
 	{key : {method : "*", url : "/"}, roles : ["admin"]},
-	{key : {method : "*", url : "/eventLog"}, roles : ["admin"]},
+	{key : {method : "*", url : "/eventLog"}, roles : ["admin","controller"]},
 	{key : {method : "*", url : "/main/userInfo"}, roles : ["admin"]},
 	{key : {method : "*", url : "/zone"}, roles : ["admin","controller"]},
 	{key : {method : "*", url : "/zone/id"}, roles : ["admin"]},

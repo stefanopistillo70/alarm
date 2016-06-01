@@ -239,6 +239,8 @@ class WebRepository extends Repository{
 				var err = undefined;
 				if(response.statusCode != 200){
 					err = data.errors;
+				}else{
+					logger.info('Event successful saved');
 				}
 				callback(err);
 			}).on('error', function (err) {

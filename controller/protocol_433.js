@@ -12,8 +12,11 @@ var Protocol_433 = function(repository) {
 			
 			if(device){
 				var event = {deviceId : deviceId, sensorId: 0, event : "Allarm"}
-				repository.addEventLog(event, function(){
-					callback(device);
+				repository.addEventLog(event, function(err){
+					if(err){
+						console.log(err);
+						callback(err);
+					}else callback(event);
 				});
 			}else{
 				repository.buildNewDevice("433", rd, function(device,err){
