@@ -26,16 +26,17 @@ var sim_gateway = function(protocol) {
 	// respond to all requests
 	app.use(function(req, res){
 		var url = req.url.substring(1, req.url.length);
-		console.log("URL ->"+url);
+		console.log("***** SIMULATOR  URL ->"+url);
 		
 		if(url != "favicon.ico"){
 	  
 			protocol.onMsg(url,function(msg){
 				if(msg){
-					console.log("Sending response ->"+msg.toString());
+					console.log("***** SIMULATOR  Sending response ->");
+					console.log(msg);
 					res.end(msg.toString());
 				}else{
-					console.log("No response to send back");
+					console.log("***** SIMULATOR  No response to send back");
 					res.end("No response to send back");
 				}
 			});

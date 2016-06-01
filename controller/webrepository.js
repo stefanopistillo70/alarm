@@ -229,19 +229,21 @@ class WebRepository extends Repository{
 	
 		logger.info('Save Event');
 		
-		var args = {
-			data: { event },
-			headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
-		};
+		this.checkCommonHeaders(function(){
+			var args = {
+				data: { event },
+				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
+			};
 
-		client.post(url+"/eventLog", args, function (data, response) {
-			var err = undefined;
-			if(response.statusCode != 200){
-				err = data.errors;
-			}
-			callback(err);
-		}).on('error', function (err) {
-			callback(err);
+			client.post(url+"/eventLog", args, function (data, response) {
+				var err = undefined;
+				if(response.statusCode != 200){
+					err = data.errors;
+				}
+				callback(err);
+			}).on('error', function (err) {
+				callback(err);
+			});
 		});
 	}
 	
@@ -329,21 +331,45 @@ class WebRepository extends Repository{
 				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
 			};
 
-			var onResponseEvent = function(data, response) {
-				logger.info('Zone response arrived.');
+			var onResponseEventDevice = function(data, response) {
+				logger.info('Device response arrived.');
 			
 				if(response.statusCode == 200){		
-						webRep.zones = data.result;
+						webRep.devices = data.result;
+						console.log(webRep.devices);
 				}else{
 					logger.error(data.errors);
 				}
 				callback();
 			};
 
-			client.get(url+"/zone", args, onResponseEvent).on('error', function (err) {
+			var onResponseEventZone = function(data, response) {
+				logger.info('Zone response arrived.');
+			
+				if(response.statusCode == 200){		
+						webRep.zones = data.result;
+						console.log(webRep.zones);
+						client.get(url+"/device", args, onResponseEventDevice).on('error', function (err) {
+							logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+							callback();
+						});
+				}else{
+					logger.error(data.errors);
+				}
+				callback();
+			};
+			
+			
+
+			
+
+			client.get(url+"/zone", args, onResponseEventZone).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
 				callback();
 			});
+			
+			
+
 		});	
 	}
 
