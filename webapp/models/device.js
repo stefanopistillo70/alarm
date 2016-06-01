@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 
 
 var deviceSchema = new Schema({
-  id: { type: String, required: true},
+  id: { type: String, required: true, unique: true, dropDups: true},
   name: { type: String},
   deviceType : { type: String, enum : ['RC','']},
   technology : { type: String, enum : ['433','NRF24'], required: true },

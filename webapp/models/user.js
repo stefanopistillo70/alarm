@@ -9,7 +9,7 @@ var userSchema = new Schema({
 	locations : { type:[{_id : Schema.Types.ObjectId}] , required: true},
 	auth : {
 		role: String,	
-		local: { email: { type: String, unique : true, required : true},
+		local: { email: { type: String, unique : true, required : true, unique: true, dropDups: true},
 				token: { type: String, required : true}, 
 				refresh_token: String , 
 				name: String, 
