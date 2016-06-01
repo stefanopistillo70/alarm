@@ -2,39 +2,51 @@
 var connect = require('connect');
 var http = require('http');
 
-var app = connect();
+var ports = [];
 
-var protocol;
+var getPort = function(){
+	if(ports.length == 0){
+		ports.push(2001);
+		return ports[0];
+	}else{
+		ports.push(2002);
+		return ports[1];
+	};
+} 
 
-// parse urlencoded request bodies into req.body
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded());
 
-// respond to all requests
-app.use(function(req, res){
-	var url = req.url.substring(1, req.url.length);
-	console.log("URL ->"+url);
+var sim_gateway = function(protocol) {
 	
-	if(url != "favicon.ico"){
-  
-		protocol.onMsg(url,function(msg){
-			if(msg){
-				console.log("Sending response ->"+msg.toString());
-				res.end(msg.toString());
-			}else{
-				console.log("No response to send back");
-				res.end("No response to send back");
-			}
-		});
-	}else res.end("");
-});
+	var app = connect();
 
-//create node.js http server and listen on port
-http.createServer(app).listen(2001);
+	// parse urlencoded request bodies into req.body
+	var bodyParser = require('body-parser');
+	app.use(bodyParser.urlencoded());
 
+	// respond to all requests
+	app.use(function(req, res){
+		var url = req.url.substring(1, req.url.length);
+		console.log("URL ->"+url);
+		
+		if(url != "favicon.ico"){
+	  
+			protocol.onMsg(url,function(msg){
+				if(msg){
+					console.log("Sending response ->"+msg.toString());
+					res.end(msg.toString());
+				}else{
+					console.log("No response to send back");
+					res.end("No response to send back");
+				}
+			});
+		}else res.end("");
+	});
 
-var sim_gateway = function(prot) {
-	protocol = prot;
+	//create node.js http server and listen on port
+	
+	var port = getPort();
+	
+	http.createServer(app).listen(port);
 };
 
 
