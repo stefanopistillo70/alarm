@@ -120,6 +120,9 @@ class Repository {
 		if(event_in.deviceId != '') {
 			var device = this.getDevice(event_in.deviceId);
 			if(device != undefined){
+				
+				device.events.push({date: new Date()});
+				
 				if(device.name != '') deviceName = device.name;
 				if(event_in.sensorId != '') {
 					var sensor = this.getSensor(device, event_in.sensorId);
