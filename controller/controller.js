@@ -1,33 +1,9 @@
 
-//process.stdin.resume();
 
 var logger = require('./logger.js')('Controller');
-//var serial_gateway = require('./serial_gateway.js');
 var MYSP_15 = require('./mysp_15.js');
 var Protocol_433 = require('./protocol_433.js');
 var Webrepository = require('./webrepository');
-
-
-/**************************
-*
-*	Handle exit with CTR+C
-*
-**************************/
-/*function exitHandler() {
-	console.log('Exit ....');
-	var msg = {};
-	msg.level = "info";
-	msg.message = "Controller shutdown.";
-	controller.repository.savePersistantMessage(msg, function(){
-		logger.info('Message shutdown Sent.');		
-		process.exit(2);		
-	});
-	
-	console.log('Done');
-	
-}
-process.on('SIGINT', exitHandler.bind());
-*/
 
 
 
@@ -60,11 +36,11 @@ controller.start = function(){
 	controller.repository.waitForInit(function(err){
 		controller.repository.getRemoteUpdate(function(){
 			logger.log('info','Remote Update DONE.');
-			//controller.repository.checkForRemoteUpdate();
+			controller.repository.checkForRemoteUpdate();
 		});
 	});	
 	
-	//controller.checkForZoneAlarm();
+	controller.checkForZoneAlarm();
 
 }
 

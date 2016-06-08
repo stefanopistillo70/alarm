@@ -35,6 +35,7 @@ var url = webConfig.url+apiVersion;
 *****************************************/
 var controllerInfo = {};
 var systemIsRegistered = false;
+const timeoutCheckForUpdate = 3000;
 
 
 
@@ -303,16 +304,16 @@ class WebRepository extends Repository{
 								logger.log('info','Remote Update DONE.');
 							});
 						};
-						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep),3000);
+						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep),timeoutCheckForUpdate);
 				}else{
 					logger.error(data.errors);
-					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep),3000);
+					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep),timeoutCheckForUpdate);
 				};
 			};
 
 			client.get(url+"/controller", args, onResponseEvent).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,url),3000);
+				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,url),timeoutCheckForUpdate);
 			});
 		});	
 	}
@@ -358,7 +359,6 @@ class WebRepository extends Repository{
 				}else{
 					logger.error(data.errors);
 				}
-				callback();
 			};
 			
 			
