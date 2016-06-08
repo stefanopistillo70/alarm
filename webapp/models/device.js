@@ -16,6 +16,7 @@ var deviceSchema = new Schema({
 		description: { type: String},
 		type:  { type: String}} 
   ],
+  events: [ {date: Date}],
   insertDate: Date
 });
 

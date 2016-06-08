@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var EventLog = require('../models/eventLog');
+var Device = require('../models/device');
 var Response = require('./response');
 
 /* GET EventLog listing. */
@@ -21,6 +22,8 @@ router.post('/', function(req, res, next) {
 	var locations = req.locations.split("#");
 	query = { locationId : { $in: locations }};
 	
+	var deviceId = req.body.event.deviceId;
+	
 	var eventLog = new EventLog();
 	eventLog.device = req.body.event.device;
 	eventLog.sensor = req.body.event.sensor;
@@ -29,7 +32,15 @@ router.post('/', function(req, res, next) {
 		
 	eventLog.save(function(err) {
 		if (err) res.status(400).send(new Response().error(400,err.errors));
-		else res.json(new Response(eventLog));
+		else{
+			
+			var query = { 'id' : deviceId };
+			var updates = { $push: {events: {date : new Date()}}};
+			Device.findOneAndUpdate(query, updates, function(err, device) {
+				if (err) res.status(400).send(new Response().error(400,err.errors));
+				else res.json(new Response(eventLog));
+			})
+		}
 	});
 		
 });

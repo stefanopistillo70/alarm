@@ -128,7 +128,7 @@ class Repository {
 			} 
 		}
 		
-		var event = {'device': deviceName, 'sensor' : sensorName, 'event' : event_in.event};
+		var event = {'deviceId' : event_in.deviceId, 'device': deviceName, 'sensor' : sensorName, 'event' : event_in.event};
 		
 		logger.info('Event -> device : '+deviceName+'   sensor : '+sensorName+'      '+event_in.event);
 		

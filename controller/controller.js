@@ -51,15 +51,31 @@ controller.checkForZoneAlarm = function() {
 	logger.info("Zones found : "+zones.length);
 		
 	zones.forEach(function(zone) {
-		logger.log('info',"Check zone : "+zone.name);
-		zone.devices.forEach(function(node) {
-				logger.log('info',"Check node : "+node.name);
-		});
+		logger.log('info',"Check zone : "+zone.name+"   armed : "+zone.armed);
+		if(zone.armed){
+			zone.devices.forEach(function(device) {
+					logger.info("Check device : "+device.id);
+					device = controller.repository.getDevice(device.id);
+					logger.info(device);
+					if(device.events){
+						var d = device.events[device.events.length-1].date;
+						console.log(d);
+						var dateEvent = Date.parse(d);
+						console.log(dateEvent);
+						var now = new Date();
+						if((now.getTime() - dateEvent) < 60 * 1000) controller.fireAlarm();
+					}
+			});
+		}
 	});
 	
 	setTimeout(controller.checkForZoneAlarm,10000);
 }
 
+controller.fireAlarm = function(){
+	
+	logger.info("*********** ALARM IS FIRING !!!!!! *********");
+} 
 
 controller.start();
 
