@@ -12,12 +12,16 @@ default_attributes(
 	"mongodb3" => {
 		"config" => {
 			"mongod" => {
-					"net" => {
-						"bindIp" => "127.0.0.1"
-					}, 
 					"security" => {
 						"authorization" => "enabled"
+					},
+					"net" => {
+						"ssl" => {
+							"mode" => "requireSSL",
+							"PEMKeyFile" => "/etc/ssl/mongodb.pem"
+						}
 					}
+					
 			}
 		}
 	}
@@ -25,6 +29,7 @@ default_attributes(
 
 
 run_list(
+	"recipe[ssl_certificate]",
 	"recipe[mongodb3]",
 	"recipe[nodejs::install_from_binary]",
 	"recipe[domus-guard]"

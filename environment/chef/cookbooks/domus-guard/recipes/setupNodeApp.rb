@@ -30,4 +30,12 @@ bash 'setup' do
 end
 
 
+template "/etc/init.d/domus-web" do
+  source   "production/domus-web.erb"
+  mode     '0644'
+  owner    'root'
+  group    'root'
+end
+
+
 

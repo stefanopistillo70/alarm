@@ -4,6 +4,7 @@ var router = express.Router();
 var EventLog = require('../models/eventLog');
 var Device = require('../models/device');
 var Response = require('./response');
+var userLogic = require('../logic/userLogic');
 
 /* GET EventLog listing. */
 router.get('/', function(req, res, next) {
@@ -38,7 +39,10 @@ router.post('/', function(req, res, next) {
 			var updates = { $push: {events: {date : new Date()}}};
 			Device.findOneAndUpdate(query, updates, function(err, device) {
 				if (err) res.status(400).send(new Response().error(400,err.errors));
-				else res.json(new Response(eventLog));
+				else{
+					userLogic.userUpdateHasNewUpdates(locations[0], true);					
+					res.json(new Response(eventLog));
+				}
 			})
 		}
 	});
