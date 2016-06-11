@@ -14,7 +14,7 @@ PATH=/sbin:/bin
 
 do_start () {
         log_action_msg "Start DomusGuard Web"
-        exec ls -l
+        su -c '/opt/domus/script/start.sh webapp' - domus
 }
 
 case "$1" in
@@ -26,7 +26,7 @@ case "$1" in
         exit 3
         ;;
   stop)
-        # No-op
+        su -c '/opt/domus/script/stop.sh control' - domus
         ;;
   *)
         echo "Usage: $0 start|stop" >&2

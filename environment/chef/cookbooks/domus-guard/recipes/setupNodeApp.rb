@@ -12,8 +12,11 @@ bash 'setup' do
 	pwd
 	rm -rf #{node['domusguard']['install_directory']}/webapp
 	rm -rf #{node['domusguard']['install_directory']}/controller
+	rm -rf #{node['domusguard']['install_directory']}/script
 	cp -r #{node['domusguard']['src_filepath']}/webapp #{node['domusguard']['install_directory']}/webapp
 	cp -r #{node['domusguard']['src_filepath']}/controller #{node['domusguard']['install_directory']}/controller
+	cp -r #{node['domusguard']['src_filepath']}/script #{node['domusguard']['install_directory']}/script
+	
 	
 	cd #{node['domusguard']['install_directory']}/webapp
 	rm -rf ./node_modules
@@ -29,13 +32,32 @@ bash 'setup' do
 
 end
 
-
 template "/etc/init.d/domus-web" do
   source   "production/domus-web.erb"
-  mode     '0644'
+  mode     '0755'
   owner    'root'
   group    'root'
 end
+
+template "/etc/init.d/domus-ctr" do
+  source   "production/domus-web.erb"
+  mode 	   '0755'
+  owner    'root'
+  group    'root'
+end
+
+service "domus-ctr" do
+      supports :start => true, :stop => true
+      action [ :enable, :start]
+end
+
+
+service "domus-web" do
+      supports :start => true, :stop => true
+      action [ :enable, :start]
+end
+
+
 
 
 
