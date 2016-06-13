@@ -21,7 +21,7 @@ var buildOptions = function(){
 			// Return string will be passed to logger. 
 			return myFormatter('',options);
 	  },
-	  level: 'debug'
+	  level: 'info'
 	}
 };
 
@@ -61,6 +61,12 @@ optMYSP15.formatter = function(options) {
         return myFormatter('MSP15',options);
 };
 
+var optP433 = buildOptions();
+optP433.formatter = function(options) {
+        return myFormatter('P433',options);
+};
+
+
 var optSrlGateway = buildOptions();
 optSrlGateway.formatter = function(options) {
         return myFormatter('SrlGateway',options);
@@ -88,6 +94,11 @@ winston.loggers.add('Repository', {
 winston.loggers.add('MSP15', {
 		transports: [new winston.transports.Console(optMYSP15)]
 });
+
+winston.loggers.add('P433', {
+		transports: [new winston.transports.Console(optP433)]
+});
+
 
 winston.loggers.add('SrlGateway', {
 		transports: [new winston.transports.Console(optSrlGateway)]

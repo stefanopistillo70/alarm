@@ -1,5 +1,5 @@
 
-var logger = require('./logger.js')('MSP15');
+var logger = require('./logger.js')('P433');
 var Repository = require('./repository.js');
 
 var Protocol_433 = function(repository) {
