@@ -10,6 +10,7 @@ var Device = function(id_in, name_in, deviceType_in, technology_in, sensors_in){
 	this.deviceType = "";
 	this.technology = "";
 	this.sensors = [];
+	this.events = [];
 	
 	if(id_in != undefined) this.id = id_in;
 	if(name_in != undefined) this.name = name_in;

@@ -23,14 +23,14 @@ controller.start = function(){
 	
 	//Select gateway comunication type
 	var GW;
-	//var gw_type = "serial";
-	var gw_type = "test";
+	var gw_type = "serial";
+	//var gw_type = "test";
 	if(gw_type === 'test') GW = require('./test/sim_gateway.js');
 	else if(gw_type === 'serial') GW = require('./serial_gateway.js');
 	else if(gw_type === 'i2c') GW = require('./i2c_gateway.js');
 	
-	//var gateway_433 = new GW(protocol_433,'\\\\.\\COM10');
-	var gateway_433 = new GW(protocol_433);
+	var gateway_433 = new GW(protocol_433,'\\\\.\\COM10',9600);
+	//var gateway_433 = new GW(protocol_433);
 	var gateway_NRF = new GW(mysp_15);
 
 
@@ -59,13 +59,15 @@ controller.checkForZoneAlarm = function() {
 					logger.info("Check device : "+device.id);
 					device = controller.repository.getDevice(device.id);
 					logger.info(device);
-					if(device.events){
-						var d = device.events[device.events.length-1].date;
-						console.log(d);
-						var dateEvent = Date.parse(d);
-						console.log(dateEvent);
-						var now = new Date();
-						if((now.getTime() - dateEvent) < 60 * 1000) controller.fireAlarm();
+					if(device.events > 0){
+						if(device.events.length-1){
+							var d = device.events[device.events.length-1].date;
+							console.log(d);
+							var dateEvent = Date.parse(d);
+							console.log(dateEvent);
+							var now = new Date();
+							if((now.getTime() - dateEvent) < 60 * 1000) controller.fireAlarm();
+						}
 					}
 			});
 		}
