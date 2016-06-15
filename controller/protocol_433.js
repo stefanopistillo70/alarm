@@ -21,20 +21,22 @@ var Protocol_433 = function(repository) {
 			var device = repository.getDevice(addresscode);
 			
 			if(device){
-				var event = {deviceId : addresscode, sensorId: 0, event : "Allarm"}
+				var event = {deviceId : addresscode, sensorId: 0, event : "Alarm"}
 				repository.addEventLog(event, function(err){
 					if(err){
-						console.log(err);
+						logger.error(err);
 						callback(err);
 					}else callback(event);
 				});
 			}else{
+				logger.info("Create new device ...");
 				repository.buildNewDevice("433", addresscode, function(device,err){
 					if(device){
-						console.log(device);
+						logger.info("New device created :");
+						logger.info(device);
 						callback(device);
 					}else{
-						console.log(err);
+						logger.error(err);
 						callback(err);
 					}
 				});

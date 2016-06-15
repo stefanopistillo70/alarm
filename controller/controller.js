@@ -50,10 +50,10 @@ controller.checkForZoneAlarm = function() {
 	
 	logger.info('Check for Zone alarm');
 	var zones = controller.repository.zones;
-	logger.debug("Zones found : "+zones.length);
+	logger.info("Zones found : "+zones.length);
 		
 	zones.forEach(function(zone) {
-		logger.debug("Check zone : "+zone.name+"   armed : "+zone.armed);
+		logger.info("Check zone : "+zone.name+"   armed : "+zone.armed);
 		if(zone.armed){
 			zone.devices.forEach(function(device) {
 					logger.info("Check device : "+device.id);
