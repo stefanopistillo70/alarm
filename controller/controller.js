@@ -60,13 +60,15 @@ controller.checkForZoneAlarm = function() {
 					device = controller.repository.getDevice(device.id);
 					logger.debug(device);
 					if(device.events.length > 0){
-						logger.info("Device events : "+(device.events.length-1));
-						if(device.events.length-1){
+						logger.info("Device events : "+(device.events.length));
+						if((device.events[device.events.length-1]) && (device.events[device.events.length-1].date)){
 							var d = device.events[device.events.length-1].date;
 							console.log(d);
 							var dateEvent = Date.parse(d);
 							console.log(dateEvent);
+							
 							var now = new Date();
+							console.log((now.getTime() - dateEvent));
 							if((now.getTime() - dateEvent) < 60 * 1000) controller.fireAlarm();
 						}
 					}

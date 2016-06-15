@@ -18,10 +18,10 @@ var Protocol_433 = function(repository) {
 			
 			logger.info("addresscode : "+addresscode+"\t commandcode : "+commandcode);
 			
-			var device = repository.getDevice(addresscode);
+			var device = repository.getDevice(addresscode.toString());
 			
 			if(device){
-				var event = {deviceId : addresscode, sensorId: 0, event : "Alarm"}
+				var event = {deviceId : addresscode, sensorId: commandcode, event : "Alarm"}
 				repository.addEventLog(event, function(err){
 					if(err){
 						logger.error(err);
@@ -34,7 +34,12 @@ var Protocol_433 = function(repository) {
 					if(device){
 						logger.info("New device created :");
 						logger.info(device);
-						callback(device);
+						
+						var sensor = { id : commandcode};
+						repository.addSensor(addresscode, sensor, function(){
+							callback(device);
+						});
+						
 					}else{
 						logger.error(err);
 						callback(err);

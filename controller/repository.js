@@ -68,6 +68,46 @@ class Repository {
 		return sensor;
 	};
 	
+	addSensor(deviceId, sensor, callback){
+		var rep = this;
+		if(deviceId == undefined){
+			callback(undefined,"deviceId undefined.");
+			return;
+		}
+		if(sensor == undefined){
+			callback(undefined,"sensor undefined.");
+			return;
+		}
+		if(sensor.id == undefined){
+			callback(undefined,"sensor id undefined.");
+			return;
+		}
+
+		var device = rep.getDevice(deviceId);
+		if(device == undefined){
+			callback(undefined,"deviceId not found.")
+			return;
+		}
+				
+		var sensor1 = this.getSensor(device,sensor.id);
+		if(sensor1 != undefined){
+			callback(undefined,"duplicate sensor.")
+			return;
+		}
+
+		
+		rep.savePersistantSensor(deviceId, sensor, function(sensor, error){
+			if(error){
+				logger.error(error);
+				callback(undefined,error);
+			}else{
+				device.sensors.push(sensor);
+				callback(device);
+			}
+		});
+		
+	}
+	
 	getFreeDeviceID(){
 		var nextDeviceId = 0;
 		for(var i=0, len = this.devices.length; i < len; i++){
@@ -152,6 +192,12 @@ class Repository {
 		logger.info("Repository -> savePersistantDevice");
 		callback(device);
 	};
+	
+	savePersistantSensor(deviceId, sensor, callback){
+		logger.info("Repository -> savePersistantSensor "+deviceId);
+		callback(sensor);
+	};
+
 			
 };
 

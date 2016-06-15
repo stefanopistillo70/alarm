@@ -84,7 +84,57 @@ describe('Repository', function() {
 		});
 	
 	});
+	
 
+	describe('add Sensor 433', function () {
+
+		it('ok',function(done){		
+			
+			repository.buildNewDevice("433","444444",function(device,err){
+					console.log('Build device with id ->' + device.id);
+					assert.notEqual(device,undefined);
+					var sensor = { id : "1"};
+					repository.addSensor(device.id, sensor, function(sensor,error){
+						assert.notEqual(sensor,undefined);
+						done();
+					});
+			});
+		});
+		
+		it('undef sensor',function(done){		
+			
+			repository.buildNewDevice("433","444445",function(device,err){
+					console.log('Build device with id ->' + device.id);
+					assert.notEqual(device,undefined);
+					var sensor = undefined;
+					repository.addSensor(device.id, sensor, function(sensor,error){
+						assert.equal(sensor,undefined);
+						done();
+					});
+			});
+		});
+		
+		it('wrong device.id',function(done){		
+			
+					var sensor = { id : "1"};
+					repository.addSensor("15423", sensor, function(sensor,error){
+						assert.equal(sensor,undefined);
+						done();
+					});
+		});
+		
+		it('duplicate sensor',function(done){		
+			
+					var sensor = { id : "1"};
+					repository.addSensor("444444", sensor, function(sensor,error){
+						assert.equal(sensor,undefined);
+						done();
+					});
+		});
+
+
+
+	});
 	
 /*			
 	describe('add Device', function () {
