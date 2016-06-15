@@ -9,22 +9,40 @@ var MYSP_15 = function(repository) {
 			
 			var msg = msgBuilder(rd.toString());
 			var replayMsg;
-			if(msg.command == Cmd.C_INTERNAL){
-				if(msg.type == InternalType.I_ID_REQUEST){		
-					repository.buildNewDevice("433", "ggggggg", function(device,err){
-						if(device){
-							replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,device.id);
-							if(replayMsg){
-								logger.log('info','SENDING REPLAY -> '+replayMsg.stringify());
-								callback(replayMsg.stringify());
-							}else callback();
-						}
-					});
-				};
-			};
 			
-			
-			
+			switch(msg.command) {
+				case Cmd.C_INTERNAL:
+					
+					switch(msg.type) {
+						
+						case InternalType.I_ID_REQUEST:
+							repository.buildNewDevice("NRF24", "", function(device,err){
+								if(err){
+									logger.error(err);
+									callback();
+								}
+								
+								if(device){
+									replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,device.id);
+									if(replayMsg){
+										logger.info('SENDING REPLAY -> '+replayMsg.stringify());
+										callback(replayMsg.stringify());
+									}else callback();
+								}
+							});
+						break;
+						
+						default:
+							logger.info("Unsupported type : " + msg.type);
+							callback();
+					}
+				
+					break;
+					
+				default:
+					logger.info("Unsupported command : " + msg.command);
+					callback();
+			}					
 		};
 };
 

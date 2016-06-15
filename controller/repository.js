@@ -113,7 +113,7 @@ class Repository {
 	getFreeDeviceID(){
 		var nextDeviceId = 0;
 		for(var i=0, len = this.devices.length; i < len; i++){
-			if(this.devices[i].id > nextDeviceId ) nextDeviceId = this.devices[i].id;
+			if((this.devices[i].technology === "NF24") && (this.devices[i].id > nextDeviceId )) nextDeviceId = this.devices[i].id;
 		};	
 		return ++nextDeviceId;
 	}
@@ -121,9 +121,9 @@ class Repository {
 	buildNewDevice(technology, deviceId, callback){
 	
 		var rep = this;
-		if(technology == "433"){
+		if(technology === "433"){
 			if((deviceId == undefined) || (deviceId === "")) {
-				callback(undefined, "device id empy or undefined");
+				callback(undefined, "device id empty or undefined");
 			} else {
 				var device = rep.getDevice(deviceId);
 				if(device){
@@ -143,15 +143,35 @@ class Repository {
 					});
 				}
 			}
-		}else{
-			if(deviceId == undefined) deviceId = rep.getFreeDeviceID();
-			else throw new Error();
-			if(deviceId > 0){
+		}else if(technology === "NRF24"){
+			if((deviceId != undefined) && (deviceId != "")){ 
 				var device = new Device(deviceId,"","",technology,[]);
-				rep.devices.push(device);
-				return device;			
-			}else null;		
-		}
+				rep.savePersistantDevice(device, function(devices, error){
+						if(error){
+							logger.error(error);
+							callback(undefined,error);
+						}else{
+							rep.devices.push(device);
+							callback(device);
+						}
+				});
+			}else{
+				deviceId = rep.getFreeDeviceID();
+				logger.info("Device ID :"+deviceId);
+				if(deviceId > 0){
+					var device = new Device(deviceId,"","",technology,[]);
+					rep.savePersistantDevice(device, function(devices, error){
+							if(error){
+								logger.error(error);
+								callback(undefined,error);
+							}else{
+								rep.devices.push(device);
+								callback(device);
+							}
+					});	
+				}else callback(undefined,"Cannot get free Device ID");				
+			}
+		}else callback(undefined,"Unsupported technology : "+technology);
 	};
 	
 	
