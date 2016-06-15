@@ -36,8 +36,11 @@ var Protocol_433 = function(repository) {
 						logger.info(device);
 						
 						var sensor = { id : commandcode};
-						repository.addSensor(addresscode, sensor, function(){
-							callback(device);
+						repository.addSensor(addresscode, sensor, function(device, error){
+							if(error){ 
+								logger.error(error);
+								callback(device);
+							} else callback(device);
 						});
 						
 					}else{

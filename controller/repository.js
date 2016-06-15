@@ -41,7 +41,7 @@ class Repository {
 	
 	
 	getDevice(deviceId){
-		logger.debug("Get Device "+deviceId)
+		logger.debug("Get Device "+deviceId);
 		function exists(element) {
 			var ret = false;
 			if(deviceId === element.id) ret = true;
@@ -54,7 +54,7 @@ class Repository {
 	};
 	
 	getSensor(device, sensorId){
-		
+		logger.info("Get Sensor deviceId : "+device.id+"   sensorId : "+sensorId);
 		function exists(element) {
 			var ret = false;
 			if(sensorId === element.id) ret = true;
@@ -82,6 +82,8 @@ class Repository {
 			callback(undefined,"sensor id undefined.");
 			return;
 		}
+		
+		logger.info("Add Sensor : "+deviceId+"   sensorId : "+sensor.id);
 
 		var device = rep.getDevice(deviceId);
 		if(device == undefined){

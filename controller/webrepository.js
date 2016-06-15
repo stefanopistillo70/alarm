@@ -409,6 +409,38 @@ class WebRepository extends Repository{
 
 	};
 	
+	savePersistantSensor(deviceId, sensor, callback){
+		logger.info("WebRepository -> savePersistantSensor");
+
+		var webRep = this;
+		
+		webRep.checkCommonHeaders(function(){
+			
+			var args = {
+				data: { deviceId: deviceId, sensor : sensor },
+				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
+			};
+
+			var onResponseEvent = function(data, response) {
+				logger.info('Device response arrived.');
+			
+				if(response.statusCode == 200){	
+						console.log("OK");
+						console.log(data.result);
+						callback(data.result);
+				}else{
+					callback(undefined,data.errors);
+				}
+			};
+
+			client.post(url+"/device/sensor", args, onResponseEvent).on('error', function (err) {
+				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+				callback();
+			});
+		});	
+	};
+
+	
 	
 	saveConfig(id,config,result,error){
 
