@@ -41,7 +41,7 @@ class Repository {
 	
 	
 	getDevice(deviceId){
-		logger.info("Get Device "+deviceId)
+		logger.debug("Get Device "+deviceId)
 		function exists(element) {
 			var ret = false;
 			if(deviceId === element.id) ret = true;

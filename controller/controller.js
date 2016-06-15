@@ -48,18 +48,19 @@ controller.start = function(){
 
 controller.checkForZoneAlarm = function() {
 	
-	logger.log('info','Check for Zone alarm');
+	logger.info('Check for Zone alarm');
 	var zones = controller.repository.zones;
-	logger.info("Zones found : "+zones.length);
+	logger.debug("Zones found : "+zones.length);
 		
 	zones.forEach(function(zone) {
-		logger.log('info',"Check zone : "+zone.name+"   armed : "+zone.armed);
+		logger.debug("Check zone : "+zone.name+"   armed : "+zone.armed);
 		if(zone.armed){
 			zone.devices.forEach(function(device) {
 					logger.info("Check device : "+device.id);
 					device = controller.repository.getDevice(device.id);
-					logger.info(device);
-					if(device.events > 0){
+					logger.debug(device);
+					if(device.events.length > 0){
+						logger.info("Device events : "+(device.events.length-1));
 						if(device.events.length-1){
 							var d = device.events[device.events.length-1].date;
 							console.log(d);
@@ -78,7 +79,7 @@ controller.checkForZoneAlarm = function() {
 
 controller.fireAlarm = function(){
 	
-	logger.info("*********** ALARM IS FIRING !!!!!! *********");
+	logger.error("*********** ALARM IS FIRING !!!!!! *********");
 } 
 
 controller.start();

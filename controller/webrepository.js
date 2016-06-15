@@ -106,7 +106,7 @@ var registerController = function(controllerId, callback){
 
 var refreshToken = function(callback){
 	
-	logger.log('info',"Refresh Token...");
+	logger.debug("Refresh Token...");
 		
 	var args = {
 		data: { refresh_token: controllerInfo.refresh_token },
@@ -115,7 +115,7 @@ var refreshToken = function(callback){
 		
 	var onResponseEvent = function(data, response) {
 		if(response.statusCode == 200){
-				logger.log('info',"Response arrived - save  on disk");
+				logger.debug("Response arrived - save  on disk");
 				controllerInfo.token = data.result.access_token;
 				controllerInfo.expire_at = data.result.expire_at;
 				saveControllerInfo(controllerInfo, function(err){
@@ -286,7 +286,7 @@ class WebRepository extends Repository{
 	*****************************************/	
 	checkForRemoteUpdate(){
 		
-		logger.info('CHECK Web remote update');
+		logger.debug('CHECK Web remote update');
 		
 		var webRep = this;
 		
