@@ -4,14 +4,24 @@ var Repository = require('./repository.js');
 
 var Protocol_433 = function(repository) {
 						
-		this.onMsg = function(rd,callback){
+		this.onMsg = function(msg,callback){
 			
-			var deviceId = rd;
+			if(!msg.startsWith('[')){
+				logger.info("msg -> "+msg);
+				return;
+			}
 			
-			var device = repository.getDevice(deviceId);
+			var decimal = msg.substring(1, (msg.length-1));
+			
+			var addresscode = (decimal >> 8) & 0xFFFF;
+			var commandcode = (decimal & 0xFF);
+			
+			logger.info("addresscode : "+addresscode+"\t commandcode : "+commandcode);
+			
+			var device = repository.getDevice(addresscode);
 			
 			if(device){
-				var event = {deviceId : deviceId, sensorId: 0, event : "Allarm"}
+				var event = {deviceId : addresscode, sensorId: 0, event : "Allarm"}
 				repository.addEventLog(event, function(err){
 					if(err){
 						console.log(err);
@@ -19,7 +29,7 @@ var Protocol_433 = function(repository) {
 					}else callback(event);
 				});
 			}else{
-				repository.buildNewDevice("433", rd, function(device,err){
+				repository.buildNewDevice("433", addresscode, function(device,err){
 					if(device){
 						console.log(device);
 						callback(device);
