@@ -1,0 +1,18 @@
+{
+    "dbConfig": {
+      "url"  : "<%= node['domusguard']['web']['url'] %>"
+    },
+	"onlyOneLocation" : true,
+	"ssl": {
+		"keyFile" : "/opt/domus/certs/domus.key",
+		"pemFile" : "/opt/domus/certs/domus.pem"
+	},
+	"google": {
+		"auth" : {
+			"clientID"      : "<%= node['domusguard']['web']['google']['clientID']  %>",
+			"clientSecret"  : "<%= node['domusguard']['web']['google']['clientSecret'] %>",
+			"callbackURL"   : "<%= node['domusguard']['web']['google']['callbackURL'] %>"
+		},
+		"gcm" : "<%= node['domusguard']['web']['google']['gcm'] %>"
+	}
+}

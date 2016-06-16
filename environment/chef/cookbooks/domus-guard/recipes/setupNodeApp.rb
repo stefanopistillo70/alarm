@@ -32,6 +32,14 @@ bash 'setup' do
 
 end
 
+template node['domusguard']['install_directory']+"/webapp/config/production.json" do
+  source   "production/production.json.erb"
+  mode     '0644'
+  user node['domusguard']['user']
+  group node['domusguard']['user']
+end
+
+
 template "/etc/init.d/domus-web" do
   source   "production/domus-web.erb"
   mode     '0755'

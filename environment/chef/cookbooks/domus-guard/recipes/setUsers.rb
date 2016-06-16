@@ -38,7 +38,7 @@ bash "alias" do
 
   export DOMUS_HOME=#{node['domusguard']['install_directory']}
   echo "export DOMUS_HOME=#{node['domusguard']['install_directory']}" >> .bashrc
-  echo "alias domusguard='cd ${DOMUS_HOME}/Domus'" >> .bashrc 
+  echo "alias domus='cd ${DOMUS_HOME}/Domus'" >> .bashrc 
   echo "alias log='cd ${DOMUS_HOME}/Domus/logs'" >> .bashrc
   echo "alias tomcat='cd ${DOMUS_HOME}/tomcat'" >> .bashrc
   EOH

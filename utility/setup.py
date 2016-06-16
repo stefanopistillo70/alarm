@@ -73,7 +73,7 @@ def replaceStringFile(sfileIn, sfileOut, sOld, sNew):
 def replaceSecret(sFileIn, sFileOut, secret):
 
 	sOldSecret = '#SECRET#'
-	sNewSecret = '"' + secret + '"'
+	sNewSecret = secret
 
 	replaceStringFile(sFileIn, sFileOut, sOldSecret, sNewSecret)
 	
@@ -109,6 +109,8 @@ def replaceFile(sFileIn, sFileOut, readParams):
 	
 	replaceSecret(sFileTemp1, sFileTemp2, secret)
 	copyFile(sFileTemp2,sFileTemp1);
+	
+	#copyFile(sFileTemp1,sFileIn);
 	
 		
 
