@@ -7,42 +7,74 @@ var MYSP_15 = function(repository) {
 			
 		this.onMsg = function(rd,callback){
 			
-			var msg = msgBuilder(rd.toString());
-			var replayMsg;
 			
-			switch(msg.command) {
-				case Cmd.C_INTERNAL:
-					
-					switch(msg.type) {
-						
-						case InternalType.I_ID_REQUEST:
-							repository.buildNewDevice("NRF24", "", function(device,err){
-								if(err){
-									logger.error(err);
-									callback();
+			var msg = msgBuilder(rd.toString());
+			if (msg.type != undefined){
+				
+				var replayMsg;
+				
+				switch(msg.command) {
+					case Cmd.C_PRESENTATION:
+						switch(msg.type) {
+							case SensorType.S_ARDUINO_NODE:
+								logger.info("Presentation from devideId : "+msg.sender+" sensorId : "+msg.sensor);
+								var device = repository.getDevice(msg.sender);
+								if(device == undefined){
+									repository.buildNewDevice("NRF24", "", function(device,err){
+										if(err){
+											logger.error(err);
+											callback();
+										}
+									});
 								}
 								
-								if(device){
-									replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,device.id);
-									if(replayMsg){
-										logger.info('SENDING REPLAY -> '+replayMsg.stringify());
-										callback(replayMsg.stringify());
-									}else callback();
-								}
-							});
+								break;
+							default:
+								logger.info("Unsupported type : " + msg.type);
+								callback();
+								break;
+						}
+							
+						break;
+					case Cmd.C_INTERNAL:
+						
+						switch(msg.type) {
+							
+							case InternalType.I_ID_REQUEST:
+								repository.buildNewDevice("NRF24", "", function(device,err){
+									if(err){
+										logger.error(err);
+										callback();
+									}
+									
+									if(device){
+										replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,device.id);
+										if(replayMsg){
+											logger.info('SENDING REPLAY -> '+replayMsg.stringify());
+											callback(replayMsg.stringify());
+										}else callback();
+									}
+								});
+								break;
+							case InternalType.I_LOG_MESSAGE:
+								callback();
+								break;
+							default:
+								logger.info("Unsupported type : " + msg.type);
+								callback();
+								break;
+						}
+					
 						break;
 						
-						default:
-							logger.info("Unsupported type : " + msg.type);
-							callback();
-					}
-				
-					break;
-					
-				default:
-					logger.info("Unsupported command : " + msg.command);
-					callback();
-			}					
+					default:
+						logger.info("Unsupported command : " + msg.command);
+						callback();
+						break;
+				};	
+			}else{
+				logger.info(msg);
+			}			
 		};
 };
 
@@ -365,16 +397,19 @@ Msg = function(sender, sensor, command, ack, type, rawpayload) {
 
 var msgBuilder = function(data) {
 			var datas = data.toString().split(";");
-			var sender = +datas[0];
-			var sensor = +datas[1];
-			var command = +datas[2];
-			var ack = +datas[3];
-			var type = +datas[4];
-			var rawpayload="";
-			if (datas[5]) {
-				rawpayload = datas[5].trim();
-			}
-			return new Msg(sender, sensor, command, ack, type, rawpayload);
+			if(datas.length > 5){
+				var sender = +datas[0];
+				var sensor = +datas[1];
+				var command = +datas[2];
+				var ack = +datas[3];
+				var type = +datas[4];
+				var rawpayload="";
+				if (datas[5]) {
+					rawpayload = datas[5].trim();
+				}
+				return new Msg(sender, sensor, command, ack, type, rawpayload);
+			}else return data;
+			
 		}
 
 
