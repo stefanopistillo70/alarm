@@ -200,12 +200,16 @@ class Repository {
 		
 		this.savePersistantEvent(event,callback);
 	};
+	
+	setBatteryLevel(deviceId, batteryLevel, callback){
+		savePersistantBatteryLevel(deviceId, batteryLevel, callback)
+	};
 
 
-	createZone(){
+	/*createZone(){
 		return new Zone();	
 	}
-
+*/
 	savePersistantEvent(event,callback){
 		callback();
 	};
@@ -219,6 +223,12 @@ class Repository {
 		logger.info("Repository -> savePersistantSensor "+deviceId);
 		callback(sensor);
 	};
+	
+	savePersistantBatteryLevel(deviceId, batteryLevel, callback){
+		logger.info("Repository -> savePersistantBatteryLevel "+deviceId);
+		callback(deviceId);
+	};
+
 
 			
 };

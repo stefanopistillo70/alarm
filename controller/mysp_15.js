@@ -46,8 +46,11 @@ var MYSP_15 = function(repository) {
 					********************/
 					case Cmd.C_SET:
 						switch(msg.type) {
-							case:
-							default;
+							case GetSetType.V_WATT:
+								callback();
+								break;
+							default:
+								break;
 						}
 						break;
 						
