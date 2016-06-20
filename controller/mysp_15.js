@@ -14,13 +14,16 @@ var MYSP_15 = function(repository) {
 				var replayMsg;
 				
 				switch(msg.command) {
+					/*******************
+					* 	PRESENTATION
+					********************/
 					case Cmd.C_PRESENTATION:
 						switch(msg.type) {
 							case SensorType.S_ARDUINO_NODE:
 								logger.info("Presentation from devideId : "+msg.sender+" sensorId : "+msg.sensor);
 								var device = repository.getDevice(msg.sender);
 								if(device == undefined){
-									repository.buildNewDevice("NRF24", "", function(device,err){
+									repository.buildNewDevice("NRF24", msg.sender, function(device,err){
 										if(err){
 											logger.error(err);
 											callback();
@@ -36,27 +39,63 @@ var MYSP_15 = function(repository) {
 						}
 							
 						break;
+						
+						
+					/*******************
+					* 	SET
+					********************/
+					case Cmd.C_SET:
+						switch(msg.type) {
+							case:
+							default;
+						}
+						break;
+						
+						
+					/*******************
+					* 	INTERNAL
+					********************/						
 					case Cmd.C_INTERNAL:
 						
 						switch(msg.type) {
 							
-							case InternalType.I_ID_REQUEST:
-								repository.buildNewDevice("NRF24", "", function(device,err){
-									if(err){
-										logger.error(err);
-										callback();
-									}
-									
-									if(device){
-										replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,device.id);
-										if(replayMsg){
-											logger.info('SENDING REPLAY -> '+replayMsg.stringify());
-											callback(replayMsg.stringify());
-										}else callback();
-									}
+							case InternalType.I_BATTERY_LEVEL: 
+								rep.setBatteryLevel(msg.sender,msg.rawpayload, function(device,err){
+									callback();
 								});
 								break;
+							case InternalType.I_ID_REQUEST:
+								var device = repository.getDevice(msg.sender);
+								if(device == undefined){
+									repository.buildNewDevice("NRF24", "", function(device,err){
+										if(err){
+											logger.error(err);
+											callback();
+										}
+										
+										if(device){
+											replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,device.id);
+											if(replayMsg){
+												logger.info('SENDING REPLAY -> '+replayMsg.stringify());
+												callback(replayMsg.stringify());
+											}else callback();
+										}
+									});
+								}else{
+									replayMsg = new Msg(255,255,Cmd.C_INTERNAL,0,InternalType.I_ID_RESPONSE,device.id);
+									if(replayMsg){
+										logger.info('SENDING REPLAY -> '+replayMsg.stringify());
+										callback(replayMsg.stringify());
+									}else callback();
+								}
+								break;
+							case InternalType.I_CONFIG:
+								callback();
+								break;
 							case InternalType.I_LOG_MESSAGE:
+								callback();
+								break;
+							case InternalType.I_SKETCH_NAME:
 								callback();
 								break;
 							default:
