@@ -63,7 +63,7 @@ var MYSP_15 = function(repository) {
 						switch(msg.type) {
 							
 							case InternalType.I_BATTERY_LEVEL: 
-								rep.setBatteryLevel(msg.sender,msg.rawpayload, function(device,err){
+								repository.setBatteryLevel(msg.sender,msg.rawpayload, function(device,err){
 									callback();
 								});
 								break;
@@ -99,6 +99,9 @@ var MYSP_15 = function(repository) {
 								callback();
 								break;
 							case InternalType.I_SKETCH_NAME:
+								callback();
+								break;
+							case InternalType.I_GATEWAY_READY:
 								callback();
 								break;
 							default:

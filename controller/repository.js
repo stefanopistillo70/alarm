@@ -202,7 +202,7 @@ class Repository {
 	};
 	
 	setBatteryLevel(deviceId, batteryLevel, callback){
-		savePersistantBatteryLevel(deviceId, batteryLevel, callback)
+		this.savePersistantBatteryLevel(deviceId, batteryLevel, callback)
 	};
 
 
