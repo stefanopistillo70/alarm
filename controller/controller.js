@@ -42,7 +42,7 @@ controller.start = function(){
 		});
 	});	
 	
-	controller.checkForZoneAlarm();
+	//controller.checkForZoneAlarm();
 
 }
 

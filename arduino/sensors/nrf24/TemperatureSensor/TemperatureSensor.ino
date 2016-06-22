@@ -6,6 +6,10 @@
 #include <MySigningAtsha204Soft.h>
 #include <PinChangeInt.h>
 
+
+#define USE_SIGNATURE
+#define USE_BATTERY_METER
+
 #include "NRF24BasicSensor.h"
 
 
@@ -65,11 +69,14 @@ void setup() {
 	// Send the sketch version information to the gateway and Controller
 	gw.sendSketchInfo("Temp/Hum Sensor", "1.0");
 	
+	gw.present(CHILD_ID_HUM, S_HUM);
+	gw.present(CHILD_ID_TEMP, S_TEMP);
+	
 	metric = gw.getConfig().isMetric;
 }
 
 void loop() {
-	processBasic();
+	//processBasic();
 	processSensor();
 	gw.sleep(SLEEP_TIME);
 }

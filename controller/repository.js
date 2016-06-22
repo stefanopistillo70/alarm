@@ -204,6 +204,16 @@ class Repository {
 	setBatteryLevel(deviceId, batteryLevel, callback){
 		this.savePersistantBatteryLevel(deviceId, batteryLevel, callback)
 	};
+	
+	setTemperature(deviceId, sensorId, temperature, callback){
+		this.savePersistantTemperature(deviceId, sensorId, temperature, callback);
+	};
+	
+	setHumidity(deviceId, sensorId, humidity, callback){
+		this.savePersistantHumidity(deviceId, sensorId, humidity, callback);
+	};
+
+
 
 
 	/*createZone(){
@@ -228,6 +238,18 @@ class Repository {
 		logger.info("Repository -> savePersistantBatteryLevel "+deviceId);
 		callback(deviceId);
 	};
+	
+	savePersistantTemperature(deviceId, sensorId, temperature, callback){
+		logger.info("Repository -> savePersistantTemperature "+deviceId);
+		callback(deviceId);
+	};
+	
+	savePersistantHumidity(deviceId, sensorId, humidity, callback){
+		logger.info("Repository -> savePersistantHumidity "+deviceId);
+		callback(deviceId);
+	};
+
+
 
 
 			

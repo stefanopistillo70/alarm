@@ -29,9 +29,42 @@ var MYSP_15 = function(repository) {
 											callback();
 										}
 									});
-								}
-								
+								}								
 								break;
+							case SensorType.S_TEMP:
+								logger.info("Presentation from devideId : "+msg.sender+" sensorId : "+msg.sensor);
+								var device = repository.getDevice(msg.sender);
+								if(device == undefined){
+									repository.buildNewDevice("NRF24", msg.sender, function(device,err){
+										if(err){
+											logger.error(err);
+											callback();
+										}else{
+											repository.addSensor(device.deviceId, msg.sensor, function(device, err){
+												if(err){
+													logger.error(err);
+													callback();
+												}else{
+													logger.info("sensor created");
+												}
+											});
+										};
+									});
+								}else{
+									var sensor = repository.getSensor(msg.sensor);
+									if(sensor == undefined){
+										repository.addSensor(device.deviceId, msg.sensor, function(device, err){
+											if(err){
+												logger.error(err);
+												callback();
+											}else{
+												logger.info("sensor created");
+											};
+										});
+									};
+								};								
+								break;
+
 							default:
 								logger.info("Unsupported type : " + msg.type);
 								callback();
@@ -46,10 +79,22 @@ var MYSP_15 = function(repository) {
 					********************/
 					case Cmd.C_SET:
 						switch(msg.type) {
+							case GetSetType.V_TEMP:
+								repository.setTemperature(msg.sender,msg.sensor,msg.payload, function(){
+									callback();
+								});
+								break;
+							case GetSetType.V_HUM:
+								repository.setHumidity(msg.sender,msg.sensor,msg.payload, function(){
+									callback();
+								});
+								break;
 							case GetSetType.V_WATT:
 								callback();
 								break;
 							default:
+								logger.info("Unsupported type : " + msg.type);
+								callback();
 								break;
 						}
 						break;
@@ -101,6 +146,9 @@ var MYSP_15 = function(repository) {
 							case InternalType.I_SKETCH_NAME:
 								callback();
 								break;
+							case InternalType.I_SKETCH_VERSION:
+								callback();
+								break;
 							case InternalType.I_GATEWAY_READY:
 								callback();
 								break;
@@ -118,7 +166,8 @@ var MYSP_15 = function(repository) {
 						break;
 				};	
 			}else{
-				logger.info(msg);
+				logger.info("MSG ->"+msg);
+				callback();
 			}			
 		};
 };
