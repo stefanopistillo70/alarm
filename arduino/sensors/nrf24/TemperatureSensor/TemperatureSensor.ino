@@ -7,7 +7,7 @@
 #include <PinChangeInt.h>
 
 
-#define USE_SIGNATURE
+//#define USE_SIGNATURE
 #define USE_BATTERY_METER
 
 #include "NRF24BasicSensor.h"

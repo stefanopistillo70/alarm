@@ -44,7 +44,7 @@ class Repository {
 		logger.debug("Get Device "+deviceId);
 		function exists(element) {
 			var ret = false;
-			if(deviceId === element.id) ret = true;
+			if(deviceId == element.id) ret = true;
 			else ret = false;
 			return ret;
 		};
@@ -57,7 +57,7 @@ class Repository {
 		logger.info("Get Sensor deviceId : "+device.id+"   sensorId : "+sensorId);
 		function exists(element) {
 			var ret = false;
-			if(sensorId === element.id) ret = true;
+			if(sensorId == element.id) ret = true;
 			else ret = false;
 			return ret;
 		};
@@ -68,22 +68,18 @@ class Repository {
 		return sensor;
 	};
 	
-	addSensor(deviceId, sensor, callback){
+	addSensor(deviceId, sensorId, callback){
 		var rep = this;
 		if(deviceId == undefined){
 			callback(undefined,"deviceId undefined.");
 			return;
 		}
-		if(sensor == undefined){
-			callback(undefined,"sensor undefined.");
-			return;
-		}
-		if(sensor.id == undefined){
+		if(sensorId == undefined){
 			callback(undefined,"sensor id undefined.");
 			return;
 		}
 		
-		logger.info("Add Sensor : "+deviceId+"   sensorId : "+sensor.id);
+		logger.info("Add Sensor : "+deviceId+"   sensorId : "+sensorId);
 
 		var device = rep.getDevice(deviceId);
 		if(device == undefined){
@@ -91,13 +87,13 @@ class Repository {
 			return;
 		}
 				
-		var sensor1 = this.getSensor(device,sensor.id);
+		var sensor1 = rep.getSensor(device,sensorId);
 		if(sensor1 != undefined){
 			callback(undefined,"duplicate sensor.")
 			return;
 		}
 
-		
+		var sensor = { id: sensorId };
 		rep.savePersistantSensor(deviceId, sensor, function(sensor, error){
 			if(error){
 				logger.error(error);
@@ -113,7 +109,7 @@ class Repository {
 	getFreeDeviceID(){
 		var nextDeviceId = 0;
 		for(var i=0, len = this.devices.length; i < len; i++){
-			if((this.devices[i].technology === "NF24") && (this.devices[i].id > nextDeviceId )) nextDeviceId = this.devices[i].id;
+			if((this.devices[i].technology == "NRF24") && (this.devices[i].id > nextDeviceId )) nextDeviceId = this.devices[i].id;
 		};	
 		return ++nextDeviceId;
 	}
@@ -121,8 +117,8 @@ class Repository {
 	buildNewDevice(technology, deviceId, callback){
 	
 		var rep = this;
-		if(technology === "433"){
-			if((deviceId == undefined) || (deviceId === "")) {
+		if(technology == "433"){
+			if((deviceId == undefined) || (deviceId == "")) {
 				callback(undefined, "device id empty or undefined");
 			} else {
 				var device = rep.getDevice(deviceId);
@@ -143,7 +139,7 @@ class Repository {
 					});
 				}
 			}
-		}else if(technology === "NRF24"){
+		}else if(technology == "NRF24"){
 			if((deviceId != undefined) && (deviceId != "")){ 
 				var device = new Device(deviceId,"","",technology,[]);
 				rep.savePersistantDevice(device, function(devices, error){

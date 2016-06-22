@@ -32,15 +32,16 @@ var MYSP_15 = function(repository) {
 								}								
 								break;
 							case SensorType.S_TEMP:
-								logger.info("Presentation from devideId : "+msg.sender+" sensorId : "+msg.sensor);
+								logger.info("Presentation from deviceId : "+msg.sender+" sensorId : "+msg.sensor);
 								var device = repository.getDevice(msg.sender);
 								if(device == undefined){
+									logger.info("undefined device create new");
 									repository.buildNewDevice("NRF24", msg.sender, function(device,err){
 										if(err){
 											logger.error(err);
 											callback();
 										}else{
-											repository.addSensor(device.deviceId, msg.sensor, function(device, err){
+											repository.addSensor(device.id, msg.sensor, function(device, err){
 												if(err){
 													logger.error(err);
 													callback();
@@ -51,9 +52,10 @@ var MYSP_15 = function(repository) {
 										};
 									});
 								}else{
-									var sensor = repository.getSensor(msg.sensor);
+									var sensor = repository.getSensor(device, msg.sensor);
 									if(sensor == undefined){
-										repository.addSensor(device.deviceId, msg.sensor, function(device, err){
+										logger.info("undefined sensor create new");
+										repository.addSensor(device.id, msg.sensor, function(device, err){
 											if(err){
 												logger.error(err);
 												callback();
