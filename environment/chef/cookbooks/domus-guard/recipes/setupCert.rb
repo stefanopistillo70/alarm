@@ -7,8 +7,8 @@ node.default["domusguard"]["ssl_key"]["source"] = "self-signed"
 certMongo = ssl_certificate 'mongodb' do
   namespace node['mongodb'] # optional but recommended
   common_name 'mongodb'
-  country 'IT'
-  city 'Rome'
+  country node['domusguard']['cert']['contry']
+  city node['domusguard']['cert']['city']
 end
 # you can now use the #cert_path and #key_path methods to use in your
 # web/mail/ftp service configurations
@@ -18,9 +18,9 @@ log "Mongodb private key is here: #{certMongo.key_path}"
 
 certDomus = ssl_certificate 'domusguard' do
   namespace node['domusguard'] # optional but recommended
-  common_name 'www.domusguard.com'
-  country 'IT'
-  city 'Rome'
+  common_name node['domusguard']['cert']['common_name']
+  country node['domusguard']['cert']['contry']
+  city node['domusguard']['cert']['city']
   key_path node['domusguard']['install_directory']+'/certs/domus.key'
   cert_path node['domusguard']['install_directory']+'/certs/domus.pem'
 end

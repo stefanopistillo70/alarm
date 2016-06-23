@@ -38,50 +38,50 @@ def readParameters():
 	secret = getRawParam('Password [' + secret + '] :', secret)
 	result.append(secret)
 	
-	print 'Insert parameters ( use <RETURN> for default, <SPACE> for blank value) \n'
+
+	cert_cn = "my.domus.com"
+	cert_cn = getRawParam('Web Cert Common Name [' + cert_cn + '] :', cert_cn)
+	result.append(cert_cn)
+	
+
+	cert_country = "county"
+	cert_country = getRawParam('Web Cert Country [' + cert_country + '] :', cert_country)
+	result.append(cert_country)
+	
+
+	cert_city = "city"
+	cert_city = getRawParam('Web Cert City [' + cert_city + '] :', cert_city)
+	result.append(cert_city)
+
 
 	googleClientID = "clientid"
-	googleClientID = getRawParam('Password [' + googleClientID + '] :', googleClientID)
+	googleClientID = getRawParam('Google Client ID [' + googleClientID + '] :', googleClientID)
 	result.append(googleClientID)
 
-	print 'Insert parameters ( use <RETURN> for default, <SPACE> for blank value) \n'
 
 	googleClientSecret = "googleClientSecret"
-	googleClientSecret = getRawParam('Password [' + googleClientSecret + '] :', googleClientSecret)
+	googleClientSecret = getRawParam('Google Client Secret [' + googleClientSecret + '] :', googleClientSecret)
 	result.append(googleClientSecret)
 
-
-	print 'Insert parameters ( use <RETURN> for default, <SPACE> for blank value) \n'
 
 	googleClientCallbackUrl = "googleClientCallbackUrl"
 	googleClientCallbackUrl = getRawParam('Password [' + googleClientCallbackUrl + '] :', googleClientCallbackUrl)
 	result.append(googleClientCallbackUrl)
 
 
-	print 'Insert parameters ( use <RETURN> for default, <SPACE> for blank value) \n'
-
 	googleClientGCM = "googleClientGCM"
-	googleClientGCM = getRawParam('Password [' + googleClientGCM + '] :', googleClientGCM)
+	googleClientGCM = getRawParam('Google Client GCM [' + googleClientGCM + '] :', googleClientGCM)
 	result.append(googleClientGCM)
 	
 	print '\n\n'
 	print 'Defined Values: \n'
 	print 'Password :' + secret
-	print '\n\n'
-	print '\n\n'
-	print 'Defined Values: \n'
+	print 'Web Cert Common Name :' + cert_cn
+	print 'Web Cert Country :' + cert_country
+	print 'Web Cert City :' + cert_city
 	print 'Google Client ID :' + googleClientID
-	print '\n\n'
-	print '\n\n'
-	print 'Defined Values: \n'
 	print 'Google Client Secret :' + googleClientSecret
-	print '\n\n'
-	print '\n\n'
-	print 'Defined Values: \n'
 	print 'Google Client Callback Url :' + googleClientCallbackUrl
-	print '\n\n'
-	print '\n\n'
-	print 'Defined Values: \n'
 	print 'Google Client GCM :' + googleClientGCM
 	print '\n\n'
 
@@ -120,6 +120,43 @@ def replaceSecret(sFileIn, sFileOut, secret):
 
 	replaceStringFile(sFileIn, sFileOut, sOldSecret, sNewSecret)
 	
+	
+####################################
+#
+# Substitute Web Cert Common Name string in file
+#
+####################################
+def replaceWebCertCN(sFileIn, sFileOut, web_cert_cn):
+
+	sOldWebCertCN = '#WEB_CERT_CN#'
+	sNewWebCertCN = web_cert_cn
+
+	replaceStringFile(sFileIn, sFileOut, sOldWebCertCN, sNewWebCertCN)
+	
+####################################
+#
+# Substitute Web Cert Country string in file
+#
+####################################
+def replaceWebCertCountry(sFileIn, sFileOut, web_cert_country):
+
+	sOldWebCertCountry = '#WEB_CERT_COUNTRY#'
+	sNewWebCertCountry = web_cert_country
+
+	replaceStringFile(sFileIn, sFileOut, sOldWebCertCountry, sNewWebCertCountry)
+
+####################################
+#
+# Substitute Web Cert City string in file
+#
+####################################
+def replaceWebCertCity(sFileIn, sFileOut, web_cert_city):
+
+	sOldWebCertCity = '#WEB_CERT_CITY#'
+	sNewWebCertCity = web_cert_city
+
+	replaceStringFile(sFileIn, sFileOut, sOldWebCertCity, sNewWebCertCity)
+
 
 ####################################
 #
@@ -200,29 +237,39 @@ def replaceFile(sFileIn, sFileOut, readParams):
 	copyFile(sFileIn,sFileTemp1);
 	
 	secret = readParams[0];
-	googleClientID = readParams[1];
-	googleClientSecret = readParams[2];
-	googleClientCallbackUrl = readParams[3];
-	googleClientGCM = readParams[4];
+	webCertCN = readParams[1];
+	webCertCountry = readParams[2];
+	webCertCity = readParams[3];
+	googleClientID = readParams[4];
+	googleClientSecret = readParams[5];
+	googleClientCallbackUrl = readParams[6];
+	googleClientGCM = readParams[7];
 	
-	replaceSecret(sFileTemp1, sFileTemp2, secret)
-	copyFile(sFileTemp2,sFileTemp1);
-	
-	replaceGoogleClientID(sFileTemp1, sFileTemp2, googleClientID)
-	copyFile(sFileTemp2,sFileTemp1);
-	
-	replaceGoogleClientSecret(sFileTemp1, sFileTemp2, googleClientSecret)
-	copyFile(sFileTemp2,sFileTemp1);
-
-	replaceGoogleClientCallbackUrl(sFileTemp1, sFileTemp2, googleClientCallbackUrl)
+	replaceSecret(sFileTemp1, sFileTemp2, secret);
 	copyFile(sFileTemp2,sFileTemp1);
 	
-	replaceGoogleClientGCM(sFileTemp1, sFileTemp2, googleClientGCM)
+	replaceWebCertCN(sFileTemp1, sFileTemp2, webCertCN);
+	copyFile(sFileTemp2,sFileTemp1);
+	
+	replaceWebCertCountry(sFileTemp1, sFileTemp2, webCertCountry);
 	copyFile(sFileTemp2,sFileTemp1);
 
+	replaceWebCertCity(sFileTemp1, sFileTemp2, webCertCity);
+	copyFile(sFileTemp2,sFileTemp1);
 
+	replaceGoogleClientID(sFileTemp1, sFileTemp2, googleClientID);
+	copyFile(sFileTemp2,sFileTemp1);
+	
+	replaceGoogleClientSecret(sFileTemp1, sFileTemp2, googleClientSecret);
+	copyFile(sFileTemp2,sFileTemp1);
 
-	#copyFile(sFileTemp1,sFileIn);
+	replaceGoogleClientCallbackUrl(sFileTemp1, sFileTemp2, googleClientCallbackUrl);
+	copyFile(sFileTemp2,sFileTemp1);
+	
+	replaceGoogleClientGCM(sFileTemp1, sFileTemp2, googleClientGCM);
+	copyFile(sFileTemp2,sFileTemp1);
+
+	copyFile(sFileTemp1,sFileIn);
 	
 		
 
