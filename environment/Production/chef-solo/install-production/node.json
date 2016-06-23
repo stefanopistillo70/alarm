@@ -6,14 +6,23 @@
 	,
 	"mongodb" : {
 		"config" : {
-			"auth" : "true"
-		},
-		"admin" : {
-			"username" : "admin",
-			"password" : "password"
+			"mongodb" : {
+				"security" : {
+					"authorization" : "enabled"
+				},
+				"net" : {
+					"ssl" : {
+						"mode" : "requireSSL",
+						"PEMKeyFile" : "/etc/ssl/mongodb.pem"
+					}
+				}
+			}
 		}
 	},
-	"run_list": [ 	"recipe[mongodb]",
-					"recipe[nodejs::install_from_binary]"
+	"run_list": [ 	
+		"recipe[ssl_certificate]",
+		"recipe[mongodb3]",
+		"recipe[nodejs::install_from_binary]",
+		"recipe[domus-guard]"
 	 ]
 }
