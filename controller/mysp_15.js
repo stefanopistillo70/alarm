@@ -47,6 +47,7 @@ var MYSP_15 = function(repository) {
 													callback();
 												}else{
 													logger.info("sensor created");
+													callback();
 												}
 											});
 										};
@@ -82,12 +83,12 @@ var MYSP_15 = function(repository) {
 					case Cmd.C_SET:
 						switch(msg.type) {
 							case GetSetType.V_TEMP:
-								repository.setTemperature(msg.sender,msg.sensor,msg.payload, function(){
+								repository.setSensorValue(msg.sender,msg.sensor,msg.payload, function(){
 									callback();
 								});
 								break;
 							case GetSetType.V_HUM:
-								repository.setHumidity(msg.sender,msg.sensor,msg.payload, function(){
+								repository.setSensorValue(msg.sender,msg.sensor,msg.payload, function(){
 									callback();
 								});
 								break;

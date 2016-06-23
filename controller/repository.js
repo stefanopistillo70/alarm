@@ -68,7 +68,16 @@ class Repository {
 		return sensor;
 	};
 	
-	addSensor(deviceId, sensorId, callback){
+	addSensor(deviceId, sensor, callback){
+		var sensorId = "";
+		var sensorType = "";
+		if(sensor.type == undefined){
+			sensorId = sensor;
+		}else{
+			sensorId = sensor.id;
+			sensorType = sensor.type
+		}
+			
 		var rep = this;
 		if(deviceId == undefined){
 			callback(undefined,"deviceId undefined.");
@@ -93,7 +102,7 @@ class Repository {
 			return;
 		}
 
-		var sensor = { id: sensorId };
+		var sensor = { id: sensorId , type : sensorType};
 		rep.savePersistantSensor(deviceId, sensor, function(sensor, error){
 			if(error){
 				logger.error(error);
@@ -201,14 +210,10 @@ class Repository {
 		this.savePersistantBatteryLevel(deviceId, batteryLevel, callback)
 	};
 	
-	setTemperature(deviceId, sensorId, temperature, callback){
-		this.savePersistantTemperature(deviceId, sensorId, temperature, callback);
+	setSensorValue(deviceId, sensorId, value, callback){
+		this.savePersistantSensorValue(deviceId, sensorId, value, callback);
 	};
 	
-	setHumidity(deviceId, sensorId, humidity, callback){
-		this.savePersistantHumidity(deviceId, sensorId, humidity, callback);
-	};
-
 
 
 
@@ -235,19 +240,10 @@ class Repository {
 		callback(deviceId);
 	};
 	
-	savePersistantTemperature(deviceId, sensorId, temperature, callback){
-		logger.info("Repository -> savePersistantTemperature "+deviceId);
+	savePersistantSensorValue(deviceId, sensorId, temperature, callback){
+		logger.info("Repository -> savePersistantSensorValue "+deviceId);
 		callback(deviceId);
 	};
-	
-	savePersistantHumidity(deviceId, sensorId, humidity, callback){
-		logger.info("Repository -> savePersistantHumidity "+deviceId);
-		callback(deviceId);
-	};
-
-
-
-
 			
 };
 

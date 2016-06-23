@@ -114,6 +114,29 @@ router.post('/sensor', function(req, res, next) {
 });
 
 
+router.put('/sensor', function(req, res, next) {
+		var deviceId = req.body.deviceId;
+		var sensor = req.body.sensor;
+		if(sensor == undefined){
+			res.status(400).send(new Response().error(400,"sensor is undefined"));
+			return;
+		}
+		
+		var query = { 'id' : deviceId, 'sensors.id' : sensor.id};
+		var updates = {'$set':  {'sensors.$.value': sensor.value }};
+		var opts = { runValidators: true };
+		Device.findOneAndUpdate(query, updates, opts, function(err, device) {
+			if (err) res.status(400).send(new Response().error(400,err.errors));
+			else if(device === undefined ){
+				res.status(400).send(new Response().error(400,"No update record done"));
+			}else{
+				res.json(new Response(device));
+			}
+		})	
+});
+
+
+
 router.delete('/:id', function(req, res, next) {
 		
 		logger.info('ID -> '+req.params.id)
