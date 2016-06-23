@@ -8,8 +8,8 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService',
 				{ name: 'id' },
 				{ name: 'name'},
 				{ name: 'deviceType', displayName: 'Device Type', allowCellFocus : false },
-				{ name: 'technology', displayName: 'tecnology',  allowCellFocus : false},
-				{ name: 'sensors' }
+				{ name: 'technology', displayName: 'Tecnology',  allowCellFocus : false},
+				{ name: 'sensors.id', displayName: 'Sensors' }
 			  ];
  
 		$scope.gridOptions.multiSelect = false;
@@ -77,6 +77,8 @@ dgModuleDevice.controller('DeviceCtrl', ['$scope', '$uibModal', 'DeviceService',
 		
 		deviceQuery.then(function(response) {
 			if (response.result) {
+				console.log("DATA");
+				console.log(response.result);
 				$scope.gridOptions.data = response.result;
 			}
 		}, function(reason) {

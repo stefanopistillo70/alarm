@@ -81,9 +81,9 @@ router.put('/:id', function(req, res, next) {
 		
 		var query = { '_id' : device._id}
 		var update = { 'name' : device.name, 'deviceType' : device.deviceType };
-		var opts = { strict: true };
-		Device.update(query, update, opts, function(error,raw) {
-			if (error){
+		var opts = { strict: true, runValidators: true };
+		Device.update(query, update, opts, function(err,raw) {
+			if (err){
 				res.status(400).send(new Response().error(400,err.errors));
 			}else{
 				res.json(new Response("Device Updated"));
@@ -102,7 +102,8 @@ router.post('/sensor', function(req, res, next) {
 		
 		var query = { 'id' : deviceId}
 		var updates = { $push: {sensors: sensor}};
-		Device.findOneAndUpdate(query, updates, function(err, device) {
+		var opts = { runValidators: true };
+		Device.findOneAndUpdate(query, updates, opts, function(err, device) {
 			if (err) res.status(400).send(new Response().error(400,err.errors));
 			else if(device === undefined ){
 				res.status(400).send(new Response().error(400,"No update record done"));
