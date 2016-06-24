@@ -19,8 +19,8 @@
 
 # Shamelessly borrowed from http://docs.opscode.com/dsl_recipe_method_platform.html
 # Surely there's a more canonical way to get arch?
-if node['kernel']['machine'] =~ /armv6l/
-  arch = "arm-pi" # assume a raspberry pi
+if node['kernel']['machine'] =~ /armv7l/
+  arch = "armv7l" # assume a raspberry pi
 else
   arch = node['kernel']['machine'] =~ /x86_64/ ? "x64" : "x86"
 end

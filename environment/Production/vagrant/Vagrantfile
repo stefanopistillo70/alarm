@@ -10,6 +10,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	config.vm.box = "debian-7.6"
 	config.vm.box_url = "https://github.com/jose-lpa/packer-debian_7.6.0/releases/download/1.0/packer_virtualbox-iso_virtualbox.box"
 	config.vm.box_check_update = false
+	
+	#config.vm.box = "CentoOs7Base"
+	#config.vm.box_url = "http://10.42.145.144:8080/VagrantBoxes/CentOs7-base.box"
+	#config.vm.box_check_update = false
+	#config.ssh.insert_key = false
+
 
 
 	config.vm.synced_folder "../../../", "/git", type: "virtualbox"

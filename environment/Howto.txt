@@ -22,6 +22,8 @@ sudo apt-get update
 sudo apt-get install rubygems
 gem install --http-proxy http://www-proxy.ericsson.se:8080 chef --no-ri --no-rdoc
 
+gem install chef --no-ri --no-rdoc
+
 
 
 
@@ -37,10 +39,16 @@ apt-get install build-essential libyaml-dev libssl-dev
 sudo apt-get install chef
 
 
+
+
 as pi user
 
 git clone https://github.com/stefanopistillo70/DomusGuard.git
 
+
+cd /home/pi/DomusGuard/utility
+chmod u+x setup.py
+./setup.py
 
 sudo su -
 cd /home/pi/DomusGuard/environment/Production/chef-solo/install-production
