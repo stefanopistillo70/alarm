@@ -1,4 +1,15 @@
 
+proxy settings
+
+
+vi /etc/apt/apt.conf
+
+
+Acquire::http::proxy "http://www-proxy.ericsson.se:8080/";
+Acquire::ftp::proxy "ftp://www-proxy.ericsson.se:8080/";
+Acquire::https::proxy "https://www-proxy.ericsson.se:8080/";
+
+
 sudo apt-get install git
 
 sudo apt-get install chef
@@ -6,6 +17,34 @@ sudo apt-get install chef
 
 
 
+
 sudo apt-get update
 sudo apt-get install rubygems
-gem install --http-proxy http://www-proxy.ericsson.se chef --no-ri --no-rdoc
+gem install --http-proxy http://www-proxy.ericsson.se:8080 chef --no-ri --no-rdoc
+
+
+
+
+
+
+
+============================================================================
+
+apt-get purge ruby1.9 -y
+
+apt-get install build-essential libyaml-dev libssl-dev
+
+sudo apt-get install chef
+
+
+as pi user
+
+git clone https://github.com/stefanopistillo70/DomusGuard.git
+
+
+sudo su -
+cd /home/pi/DomusGuard/environment/Production/chef-solo/install-production
+
+chef-solo -c ./solo.rb
+
+
