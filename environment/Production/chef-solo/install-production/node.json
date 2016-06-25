@@ -19,9 +19,11 @@
 			}
 		}
 	},
+    "domusguard" : {
+        "src_filepath" : "/home/pi/DomusGuard"
+    }, 
 	"run_list": [ 	
 		"recipe[ssl_certificate]",
-		"recipe[mongodb3]",
 		"recipe[nodejs::install_from_binary]",
 		"recipe[domus-guard]"
 	 ]
