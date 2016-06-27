@@ -82,37 +82,44 @@ app.factory('sessionInjector', ['$log', '$cookies', function($log, $cookies) {
     var sessionInjector = {
         request: function(config) {
 			
-			var token = $cookies.get('token');
-			var token_expire_at = $cookies.get('token_expire_at');
-			var refresh_token = $cookies.get('refresh_token');
-			var now = (new Date()).getTime();
-			if((token_expire_at - now) > 0){ 
-				console.log("inject token");
-				config.headers['x-access-token'] = token;
-				return config;
-			}else{
-				
-				if(refresh_token){
-					console.log("refresh token");
-					var data = "refresh_token="+refresh_token;
+			var url = config.url;
+			console.log("URL ->"+url);
+			
+			if(url.startsWith('/api')){
+				var token = $cookies.get('token');
+				var token_expire_at = $cookies.get('token_expire_at');
+				var refresh_token = $cookies.get('refresh_token');
+				var now = (new Date()).getTime();
+				if((token_expire_at - now) > 0){ 
+					console.log("inject token");
+					config.headers['x-access-token'] = token;
+					return config;
+				}else{
 					
-					var xhttp = new XMLHttpRequest();
-					xhttp.onreadystatechange = function() {
-						if (xhttp.readyState == 4) {
-							console.log("Respons arrived");
-							var new_token = $cookies.get('token');
-							console.log("inject token");
-							config.headers['x-access-token'] = new_token;
-							return config;
+					if(refresh_token){
+						console.log("refresh token");
+						var data = "refresh_token="+refresh_token;
+						
+						var xhttp = new XMLHttpRequest();
+						xhttp.onreadystatechange = function() {
+							if (xhttp.readyState == 4) {
+								console.log("Respons arrived");
+								var new_token = $cookies.get('token');
+								console.log("inject token");
+								config.headers['x-access-token'] = new_token;
+								return config;
+							}
 						}
-					}
-					xhttp.open("POST", apiVer+"auth/refresh", false);
-					xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-					xhttp.send(data);
-				};
-				return config;
+						xhttp.open("POST", apiVer+"auth/refresh", false);
+						xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+						xhttp.send(data);
+					};
+					return config;
+				}
+			}else{
+					config.headers['x-access-token'] = "";
+					return config;
 			}
-
             
         }
     };

@@ -4,7 +4,6 @@ var uuid = require('node-uuid');
 
 var secret = 'secret-pwd';
 var duration_time = 60000;
-//var expire_time = 36000000;
 
 
 
