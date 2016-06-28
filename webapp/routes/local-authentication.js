@@ -86,9 +86,9 @@ router.post('/token', function(req, res, next) {
 										res.status(400).send(new Response().error(400,"Internal Server Error"));
 									}else{
 										var sec_expire_time = jwtToken.duration_time/4;
-										res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
-										res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-										if(jwtToken.refresh_token) res.cookie('refresh_token',jwtToken.refresh_token);
+										//res.cookie('token',jwtToken.access_token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+										//res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+										//if(jwtToken.refresh_token) res.cookie('refresh_token',jwtToken.refresh_token);
 										res.json(new Response(jwtToken));
 									} 		  
 								});			
@@ -135,9 +135,9 @@ router.post('/token', function(req, res, next) {
 							} else {
 								logger.debug("New User Created : "+newUser.auth.local);
 								var sec_expire_time = jwtToken.duration_time/4;
-								res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
-								res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
-								if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
+								//res.cookie('token',newUser.auth.local.token, { maxAge: (jwtToken.duration_time - sec_expire_time) });
+								//res.cookie('token_expire_at',(jwtToken.expire_at - sec_expire_time), { maxAge: (jwtToken.duration_time - sec_expire_time) });
+								//if(newUser.auth.local.refresh_token) res.cookie('refresh_token',newUser.auth.local.refresh_token);
 								res.json(new Response(jwtToken));
 							}
 						});
@@ -230,8 +230,8 @@ router.post('/refresh', function(req, res, next) {
 								logger.debug(err);
 								res.status(400).send(new Response().error(400,"Internal Server Error"));
 							}else{
-								res.cookie('token',jwtToken.access_token, { maxAge: jwtToken.duration_time });
-								res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: jwtToken.duration_time });
+								//res.cookie('token',jwtToken.access_token, { maxAge: jwtToken.duration_time });
+								//res.cookie('token_expire_at',jwtToken.expire_at, { maxAge: jwtToken.duration_time });
 								res.json(new Response(jwtToken));
 							} 		  
 						});		

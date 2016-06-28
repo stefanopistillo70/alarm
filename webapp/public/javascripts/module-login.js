@@ -2,7 +2,7 @@
 var dgModuleLogin = angular.module('dgModuleLogin', ['ngResource','ui.bootstrap']);
 
 
-dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$location', '$uibModal', 'GoogleLoginService', 'LocalLoginService', function($log, $scope, $rootScope, $location, $uibModal, GoogleLoginService, LocalLoginService) {
+dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$cookies', '$location', '$uibModal', 'GoogleLoginService', 'LocalLoginService', function($log, $scope, $rootScope, $cookies, $location, $uibModal, GoogleLoginService, LocalLoginService) {
 		
 		$scope.local = false;
 		$scope.signup = false;
@@ -69,7 +69,13 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 
 						loginGetToken.then(function(response) {
 							if (response.result) {
-								console.log(response.result);
+								console.log(response.result.access_token);
+								console.log(response.result.refresh_token);
+								console.log(response.result.expire_at);
+								$cookies.put('token', response.result.access_token);
+								$cookies.put('refresh_token',response.result.refresh_token);
+								$cookies.put('token_expire_at',response.result.expire_at);
+
 								$rootScope.isLoggedIn = true;
 							}
 							$location.url('/');
@@ -137,7 +143,12 @@ dgModuleLogin.controller('LoginCtrl', ['$log', '$scope', '$rootScope', '$locatio
 				register.then(function(response) {
 					console.log(response);
 					if (response.result) {
-						console.log(response.result);
+						console.log(response.result.access_token);
+						console.log(response.result.refresh_token);
+						console.log(response.result.expire_at);
+						$cookies.put('token', response.result.access_token);
+						$cookies.put('refresh_token',response.result.refresh_token);
+						$cookies.put('token_expire_at',response.result.expire_at);
 						$rootScope.isLoggedIn = true;
 					}
 					$location.url('/');											
