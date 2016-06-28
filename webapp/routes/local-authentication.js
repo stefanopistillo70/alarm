@@ -264,7 +264,7 @@ router.post('/controller', function(req, res, next) {
 	logger.debug("controllerId ->"+controllerId);
 	
 	var query = { 'router_ip' : ip };
-	if!(ip =="::1" || ip =="::ffff:127.0.0.1"){
+	if (!(ip =="::1" || ip =="::ffff:127.0.0.1")){
 		query = { 'router_ip' : ip };
 	}else{
 		query = {};
