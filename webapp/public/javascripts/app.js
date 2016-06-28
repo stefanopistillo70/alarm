@@ -104,6 +104,12 @@ app.factory('sessionInjector', ['$log', '$cookies', function($log, $cookies) {
 						xhttp.onreadystatechange = function() {
 							if (xhttp.readyState == 4) {
 								console.log("Respons arrived");
+								console.log(xhttp.responseText.access_token);
+								console.log(xhttp.responseText.refresh_token);
+								console.log(xhttp.responseText.expire_at);
+								$cookies.put('token', xhttp.responseText.access_token);
+								$cookies.put('refresh_token',xhttp.responseText.refresh_token);
+								$cookies.put('token_expire_at',xhttp.responseText.expire_at);
 								var new_token = $cookies.get('token');
 								console.log("inject token");
 								config.headers['x-access-token'] = new_token;
