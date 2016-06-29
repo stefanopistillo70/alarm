@@ -104,7 +104,12 @@ mongo --ssl --sslAllowInvalidCertificates --username domus --password domus1 --a
 	
 	
 
+	
+=========================== Enable auto service  startup ======================
 
+ sudo update-rc.d domus-web defaults
+ sudo update-rc.d domus-web enable
 
-
+ sudo update-rc.d domus-ctr defaults
+ sudo update-rc.d domus-ctr enable
 
