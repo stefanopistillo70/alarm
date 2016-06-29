@@ -1,7 +1,7 @@
 #! /bin/sh
 ### BEGIN INIT INFO
-# Provides:          domus-web
-# Required-Start:    $mongod
+# Provides:          domus-ctr
+# Required-Start:    $domus-web
 # Required-Stop:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
@@ -14,7 +14,7 @@ PATH=/sbin:/bin
 
 do_start () {
         log_action_msg "Start DomusGuard Control"
-        su -c '/opt/domus/script/start.sh control' - domus
+        su -c '/opt/domus/script/start.sh controller' - domus
 }
 
 case "$1" in
@@ -27,7 +27,7 @@ case "$1" in
         ;;
   stop)
         log_action_msg "Stop DomusGuard Control"
-        su -c '/opt/domus/script/stop.sh control' - domus
+        su -c '/opt/domus/script/stop.sh controller' - domus
         ;;
   *)
         echo "Usage: $0 start|stop" >&2

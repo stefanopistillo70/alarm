@@ -1,7 +1,10 @@
 {
-  "name": "NodeJsController",
-  "version": "0.0.1",
+  "name": "Controller",
+  "version": "1.0.0",
   "description": "MySensors Controller based on Node JS",
+  "scripts": {
+    "start": "node controller.js"
+  },
   "dependencies": {
 	"body-parser": "^1.15.2",
     "config": "^1.20.1",

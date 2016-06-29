@@ -41,7 +41,11 @@ fi
 
 echo " `/bin/date` " > ${LOG_MODULE}
 
-nohup  node bin/www >> ${LOG_MODULE} &
+if [ "${MODULE_NAME}" == "webapp" ] ; then
+	nohup  node bin/www >> ${LOG_MODULE} &
+else
+	nohup  node controller.js >> ${LOG_MODULE} &
+fi
 
 pid=$!
 echo " Service Started with pid $pid " >> ${LOG_MODULE}

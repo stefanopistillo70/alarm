@@ -26,7 +26,7 @@ case "$1" in
         exit 3
         ;;
   stop)
-        su -c '/opt/domus/script/stop.sh control' - domus
+        su -c '/opt/domus/script/stop.sh webapp' - domus
         ;;
   *)
         echo "Usage: $0 start|stop" >&2
