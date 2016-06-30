@@ -1,4 +1,6 @@
 
+var env = process.env.NODE_ENV || 'dev';
+
 var winston = require('winston');
 
 var myFormatter = function(module,options){
@@ -25,98 +27,95 @@ var buildOptions = function(){
 	}
 };
 
-var transport = new winston.transports.Console(buildOptions());
- 
-// configure default transports for all loggers in default container 
-winston.loggers.options.transports = [transport];
+
+
+var buildTransports = function(moduleName, opt){
+	
+	opt.formatter = function(options) {
+        return myFormatter(moduleName,options);
+	}
+	
+	var transports = new Array();
+	transports.push(new winston.transports.Console(opt));
+	
+	//Log on file setup
+	var buildOptionsFile = buildOptions();
+	buildOptionsFile.formatter = function(options) {
+        return myFormatter(moduleName,options);
+	};
+	buildOptionsFile.filename = 'webapp';
+	buildOptionsFile.json = false;
+	buildOptionsFile.dirname = "C:/DOMUS/web/logs/";
+	
+	transports.push(new (require('winston-daily-rotate-file'))(buildOptionsFile));
+	
+	return transports;
+};
+
+
+// configure default transports for all loggers in default container
+var optDefault = buildOptions();
+var transports = buildTransports("",optDefault); 
+winston.loggers.options.transports = transports;
 
 
 
 //Web Config
-var optWeb = buildOptions();
-optWeb.formatter = function(options) {
-        return myFormatter('Web',options);
-}
-winston.loggers.add('Web', {
-		transports: [new winston.transports.Console(optWeb)]
+winston.loggers.add("Web", {
+		transports: buildTransports("Web",buildOptions())
 });
 
 
+//Authorization Config
+winston.loggers.add("Authorization", {
+		transports: buildTransports("Authorization",buildOptions())
+});
+
+
+
 //Google Auth Config
-var optGoogleAuth = buildOptions();
-optGoogleAuth.formatter = function(options) {
-        return myFormatter('GoogleAuth',options);
-}
-winston.loggers.add('GoogleAuth', {
-		transports: [new winston.transports.Console(optGoogleAuth)]
+winston.loggers.add("GoogleAuth", {
+		transports: buildTransports("GoogleAuth",buildOptions())
 });
 
 
 //Google  Config
-var optGoogle = buildOptions();
-optGoogle.formatter = function(options) {
-        return myFormatter('Google',options);
-}
-winston.loggers.add('Google', {
-		transports: [new winston.transports.Console(optGoogle)]
+winston.loggers.add("Google", {
+		transports: buildTransports("Google",buildOptions())
 });
 
 
 //Local Auth Config
-var optLocalAuth = buildOptions();
-optLocalAuth.formatter = function(options) {
-        return myFormatter('LocalAuth',options);
-}
-winston.loggers.add('LocalAuth', {
-		transports: [new winston.transports.Console(optLocalAuth)]
+winston.loggers.add("LocalAuth", {
+		transports: buildTransports("LocalAuth",buildOptions())
 });
 
 
 //UserLogic Config
-var optUserLogic = buildOptions();
-optUserLogic.formatter = function(options) {
-        return myFormatter('UserLogic',options);
-}
-winston.loggers.add('UserLogic', {
-		transports: [new winston.transports.Console(optUserLogic)]
+winston.loggers.add("UserLogic", {
+		transports: buildTransports("UserLogic",buildOptions())
 });
 
 
 //User Config
-var optUser = buildOptions();
-optUser.formatter = function(options) {
-        return myFormatter('User',options);
-}
-winston.loggers.add('User', {
-		transports: [new winston.transports.Console(optUser)]
+winston.loggers.add("User", {
+		transports: buildTransports("User",buildOptions())
 });
 
 //Controller Config
-var optController = buildOptions();
-optController.formatter = function(options) {
-        return myFormatter('Controller',options);
-}
 winston.loggers.add('Controller', {
-		transports: [new winston.transports.Console(optController)]
+		transports: buildTransports("Controller",buildOptions())
 });
 
 
 //Message Config
-var optMessage = buildOptions();
-optMessage.formatter = function(options) {
-        return myFormatter('Message',options);
-}
-winston.loggers.add('Message', {
-		transports: [new winston.transports.Console(optMessage)]
+winston.loggers.add("Message", {
+		transports: buildTransports("Message",buildOptions())
 });
 
 //Device Config
-var optDevice = buildOptions();
-optDevice.formatter = function(options) {
-        return myFormatter('Device',options);
-}
-winston.loggers.add('Device', {
-		transports: [new winston.transports.Console(optDevice)]
+winston.loggers.add("Device", {
+		transports: buildTransports("Device",buildOptions())
 });
 
 
