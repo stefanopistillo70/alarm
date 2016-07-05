@@ -14,6 +14,7 @@ app.config(['$routeProvider', function($routeProvider) {
 				when('/zones', { templateUrl: 'partials/zones.html', controller: 'ZoneCtrl' }).
 				when('/login', { templateUrl: 'partials/login.html' }).
 				when('/configuration', { templateUrl: 'partials/system.html' }).
+				when('/', { templateUrl: 'partials/mainStatus.html' }).
 				otherwise({ redirectTo: '/' });
           }]);
 
