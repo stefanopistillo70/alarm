@@ -75,7 +75,7 @@ class Repository {
 			sensorId = sensor;
 		}else{
 			sensorId = sensor.id;
-			sensorType = sensor.type
+			sensorType = sensor.type;
 		}
 			
 		var rep = this;
@@ -88,7 +88,7 @@ class Repository {
 			return;
 		}
 		
-		logger.info("Add Sensor : "+deviceId+"   sensorId : "+sensorId);
+		logger.info("Add Sensor : "+deviceId+"   sensorId : "+sensorId+" sensorType : "+sensorType);
 
 		var device = rep.getDevice(deviceId);
 		if(device == undefined){

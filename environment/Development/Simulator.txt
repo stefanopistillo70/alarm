@@ -37,3 +37,9 @@ cat -v < /dev/pts/2
 
 
 255;0;3;0;3;ciao
+
+
+11;0;0;0;17;     //presentation arduino node
+11;0;0;0;6;		// presentation temp sens
+11;1;0;0;7;		// presentation hum sens
+

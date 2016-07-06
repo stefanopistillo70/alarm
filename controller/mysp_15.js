@@ -26,13 +26,22 @@ var MYSP_15 = function(repository) {
 									repository.buildNewDevice("NRF24", msg.sender, function(device,err){
 										if(err){
 											logger.error(err);
-											callback();
 										}
+										logger.info("device created");
+										callback();
 									});
 								}								
 								break;
 							case SensorType.S_TEMP:
+							case SensorType.S_HUM:
+							
+								var sensType = "";
+								if(msg.type == SensorType.S_HUM) sensType = "Humidity";
+								else sensType = "Temperature";
 								logger.info("Presentation from deviceId : "+msg.sender+" sensorId : "+msg.sensor);
+								
+								var sen = { id : msg.sensor, type : sensType};
+								
 								var device = repository.getDevice(msg.sender);
 								if(device == undefined){
 									logger.info("undefined device create new");
@@ -41,7 +50,7 @@ var MYSP_15 = function(repository) {
 											logger.error(err);
 											callback();
 										}else{
-											repository.addSensor(device.id, msg.sensor, function(device, err){
+											repository.addSensor(device.id, sen, function(device, err){
 												if(err){
 													logger.error(err);
 													callback();
@@ -56,12 +65,13 @@ var MYSP_15 = function(repository) {
 									var sensor = repository.getSensor(device, msg.sensor);
 									if(sensor == undefined){
 										logger.info("undefined sensor create new");
-										repository.addSensor(device.id, msg.sensor, function(device, err){
+										repository.addSensor(device.id, sen, function(device, err){
 											if(err){
 												logger.error(err);
 												callback();
 											}else{
 												logger.info("sensor created");
+												callback();
 											};
 										});
 									};
