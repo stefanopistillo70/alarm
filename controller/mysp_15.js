@@ -93,12 +93,12 @@ var MYSP_15 = function(repository) {
 					case Cmd.C_SET:
 						switch(msg.type) {
 							case GetSetType.V_TEMP:
-								repository.setSensorValue(msg.sender,msg.sensor,msg.payload, function(){
+								repository.setSensorValue(msg.sender,msg.sensor,msg.rawpayload, function(){
 									callback();
 								});
 								break;
 							case GetSetType.V_HUM:
-								repository.setSensorValue(msg.sender,msg.sensor,msg.payload, function(){
+								repository.setSensorValue(msg.sender,msg.sensor,msg.rawpayload, function(){
 									callback();
 								});
 								break;
@@ -480,7 +480,7 @@ Msg = function(sender, sensor, command, ack, type, rawpayload) {
 			if (command == Cmd.C_PRESENTATION) sType = SensorType.toString(type);
 			else if (command == Cmd.C_INTERNAL) sType = InternalType.toString(type);
 			else if ((command == Cmd.C_SET) || (command == Cmd.C_REQ)) sType = GetSetType.toString(type);
-			return "Msg from node: " + sender + ", sensor child: " + sensor + ", command: " + Cmd.toString(command) + ", ack: " + ack + ", type: " + sType + ", payload: " + rawpayload;
+			return "Msg from node: " + sender + ", sensor child: " + sensor + ", command: " + Cmd.toString(command) + ", ack: " + ack + ", type: " + sType + ", rawpayload: " + rawpayload;
 		}
 		
 		//check command rang

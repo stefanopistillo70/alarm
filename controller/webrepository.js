@@ -433,7 +433,7 @@ class WebRepository extends Repository{
 				}
 			};
 
-			client.post(url+"/device/sensor", args, onResponseEvent).on('error', function (err) {
+			client.post(url+"/device/"+deviceId+"/sensor/"+sensor.id, args, onResponseEvent).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
 				callback();
 			});
@@ -448,7 +448,7 @@ class WebRepository extends Repository{
 		var webRep = this;
 		
 		var sensor = { id : sensorId, value : value};
-		
+				
 		webRep.checkCommonHeaders(function(){
 			
 			var args = {
@@ -464,11 +464,12 @@ class WebRepository extends Repository{
 						console.log(data.result);
 						callback(data.result);
 				}else{
+					logger.error(data.errors);
 					callback(undefined,data.errors);
 				}
 			};
 
-			client.put(url+"/device/sensor", args, onResponseEvent).on('error', function (err) {
+			client.put(url+"/device/"+deviceId+"/sensor/"+sensorId, args, onResponseEvent).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
 				callback();
 			});

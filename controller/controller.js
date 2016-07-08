@@ -23,8 +23,8 @@ controller.start = function(){
 	
 	//Select gateway comunication type
 	var GW;
-	//var gw_type = "serial";
-	var gw_type = "test";
+	var gw_type = "serial";
+	//var gw_type = "test";
 	if(gw_type === 'test') GW = require('./test/sim_gateway.js');
 	else if(gw_type === 'serial') GW = require('./serial_gateway.js');
 	else if(gw_type === 'i2c') GW = require('./i2c_gateway.js');
@@ -38,10 +38,12 @@ controller.start = function(){
 	controller.repository.waitForInit(function(err){
 		controller.repository.getRemoteUpdate(function(){
 			logger.log('info','Remote Update DONE.');
-			controller.repository.checkForRemoteUpdate();
+			//TODO uncomment
+			//controller.repository.checkForRemoteUpdate();
 		});
 	});	
 	
+	//TODO uncomment
 	//controller.checkForZoneAlarm();
 
 }

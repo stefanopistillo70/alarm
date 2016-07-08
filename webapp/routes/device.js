@@ -76,7 +76,7 @@ router.get('/:id', function(req, res, next) {
 
 
 router.put('/:id', function(req, res, next) {
-		
+		logger.info('Update Device ');
 		var device = req.body;
 		
 		var query = { '_id' : device._id}
@@ -92,7 +92,7 @@ router.put('/:id', function(req, res, next) {
 });
 
 
-router.post('/sensor', function(req, res, next) {
+router.post('/:deviceId/sensor/:id', function(req, res, next) {
 		var deviceId = req.body.deviceId;
 		var sensor = req.body.sensor;
 		if(sensor == undefined){
@@ -114,9 +114,10 @@ router.post('/sensor', function(req, res, next) {
 });
 
 
-router.put('/sensor', function(req, res, next) {
-		var deviceId = req.body.deviceId;
+router.put('/:deviceId/sensor/:id', function(req, res, next) {
+		var deviceId = req.params.deviceId;
 		var sensor = req.body.sensor;
+
 		if(sensor == undefined){
 			res.status(400).send(new Response().error(400,"sensor is undefined"));
 			return;

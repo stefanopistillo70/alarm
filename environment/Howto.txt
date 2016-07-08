@@ -113,3 +113,15 @@ mongo --ssl --sslAllowInvalidCertificates --username domus --password domus1 --a
  sudo update-rc.d domus-ctr defaults
  sudo update-rc.d domus-ctr enable
 
+
+
+
+
+=================== Touch screen ====================
+
+
+http://www.waveshare.com/5inch-hdmi-lcd.htm
+
+
+
+
