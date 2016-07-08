@@ -21,6 +21,7 @@ var deviceSchema = new Schema({
 		} 
   ],
   events: [ {date: Date}],
+  batteryLevel : String,
   insertDate: Date
 });
 

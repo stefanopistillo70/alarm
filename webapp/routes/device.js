@@ -79,8 +79,15 @@ router.put('/:id', function(req, res, next) {
 		logger.info('Update Device ');
 		var device = req.body;
 		
-		var query = { '_id' : device._id}
-		var update = { 'name' : device.name, 'deviceType' : device.deviceType };
+		var query = { '_id' : device._id};
+		var update = "";
+		if (device.batteryLevel){
+			update = { 'batteryLevel' : device.batteryLevel };
+			query = { 'id' : device.id};
+		} else{
+			 update = { 'name' : device.name, 'deviceType' : device.deviceType };
+			 query = { '_id' : device._id};
+		}
 		var opts = { strict: true, runValidators: true };
 		Device.update(query, update, opts, function(err,raw) {
 			if (err){

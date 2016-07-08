@@ -476,6 +476,37 @@ class WebRepository extends Repository{
 		});	
 	};
 	
+	savePersistantBatteryLevel(deviceId, batteryLevel, callback){
+		logger.info("WebRepository -> savePersistantBatteryLevel "+deviceId);
+		var webRep = this;
+						
+		webRep.checkCommonHeaders(function(){
+			
+			var args = {
+				data: { 'id' : deviceId, 'batteryLevel' : batteryLevel },
+				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
+			};
+
+			var onResponseEvent = function(data, response) {
+				logger.info('Save value arrived');
+			
+				if(response.statusCode == 200){	
+						console.log("OK");
+						//console.log(data.result);
+						callback(data.result);
+				}else{
+					logger.error(data.errors);
+					callback(undefined,data.errors);
+				}
+			};
+
+			client.put(url+"/device/"+deviceId, args, onResponseEvent).on('error', function (err) {
+				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
+				callback();
+			});
+		});	
+	};
+	
 	
 	saveConfig(id,config,result,error){
 
