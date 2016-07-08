@@ -426,7 +426,7 @@ class WebRepository extends Repository{
 			
 				if(response.statusCode == 200){	
 						console.log("OK");
-						console.log(data.result);
+						//console.log(data.result);
 						callback(data.result);
 				}else{
 					callback(undefined,data.errors);
@@ -461,7 +461,7 @@ class WebRepository extends Repository{
 			
 				if(response.statusCode == 200){	
 						console.log("OK");
-						console.log(data.result);
+						//console.log(data.result);
 						callback(data.result);
 				}else{
 					logger.error(data.errors);

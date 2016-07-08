@@ -41,6 +41,11 @@ class Repository {
 	
 	
 	getDevice(deviceId){
+//console.log("**************Get Device****************");
+//for (var i = 0; i < this.devices.length; i++) {
+//	console.log(this.devices[i]);
+//}
+//console.log("******************************");
 		logger.debug("Get Device "+deviceId);
 		function exists(element) {
 			var ret = false;
@@ -63,6 +68,8 @@ class Repository {
 		};
 		
 		var sensors = device.sensors;
+//console.log(device);
+		
 		var sensor;
 		if(sensors) sensor = sensors.find(exists);		
 		return sensor;
@@ -103,13 +110,17 @@ class Repository {
 		}
 
 		var sensor = { id: sensorId , type : sensorType};
-		rep.savePersistantSensor(deviceId, sensor, function(sensor, error){
+		rep.savePersistantSensor(deviceId, sensor, function(sen, error){
 			if(error){
 				logger.error(error);
 				callback(undefined,error);
-			}else{
+			}else if(sen){
 				device.sensors.push(sensor);
 				callback(device);
+//console.log("******************************");
+//console.log(rep.devices);
+//console.log(device.sensors[0]);
+//console.log("******************************");
 			}
 		});
 		
@@ -155,7 +166,7 @@ class Repository {
 						if(error){
 							logger.error(error);
 							callback(undefined,error);
-						}else{
+						}else if(devices){
 							rep.devices.push(device);
 							callback(device);
 						}
@@ -169,7 +180,7 @@ class Repository {
 							if(error){
 								logger.error(error);
 								callback(undefined,error);
-							}else{
+							}else if(devices){
 								rep.devices.push(device);
 								callback(device);
 							}

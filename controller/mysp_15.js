@@ -38,7 +38,7 @@ var MYSP_15 = function(repository) {
 								var sensType = "";
 								if(msg.type == SensorType.S_HUM) sensType = "Humidity";
 								else sensType = "Temperature";
-								logger.info("Presentation from deviceId : "+msg.sender+" sensorId : "+msg.sensor);
+								logger.info("Presentation Sensor from deviceId : "+msg.sender+" sensorId : "+msg.sensor);
 								
 								var sen = { id : msg.sensor, type : sensType};
 								
@@ -74,7 +74,10 @@ var MYSP_15 = function(repository) {
 												callback();
 											};
 										});
-									};
+									}else{
+										logger.info("sensor already exists");
+										callback();
+									}
 								};								
 								break;
 

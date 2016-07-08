@@ -40,6 +40,9 @@ cat -v < /dev/pts/2
 
 
 11;0;0;0;17;     //presentation arduino node
-11;0;0;0;6;		// presentation temp sens
-11;1;0;0;7;		// presentation hum sens
+11;1;0;0;6;		// presentation temp sens
+11;0;0;0;7;		// presentation hum sens
+
+11;1;1;0;0;30.7		// set temp sens
+11;0;1;0;0;70.3		// set temp sens
 
