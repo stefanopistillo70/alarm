@@ -30,6 +30,10 @@
 	<script src="/javascripts/module-zone.js"></script>
 	<script src="/javascripts/module-system.js"></script>
 	<script src="/javascripts/module-location.js"></script>
+	<script src="/javascripts/module-webcam.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/javascripts/liveStreaming.js"></script>
+
 </head>
 <body ng-controller="DomusGuardCtrl" >
 	<div ng-hide="isLoggedIn" class="ng-hide">
@@ -66,7 +70,7 @@
 					<p class="navbar-text">
 						<img src="images/glyphicons-730-temperature.png" > 30 - 68%
 					</p> 
-					<a href="#" class="navbar-brand">
+					<a href="#/webcam" class="navbar-brand" onclick="" >
 						<img src="images/glyphicons-302-webcam.png" >
 					</a> 
 

@@ -41,6 +41,8 @@ var urlLastMsg = apiVer + "/message/last";
 
 var app = express();
 
+
+
 var options = {
   server: { ssl: true, sslValidate: false }
 }
