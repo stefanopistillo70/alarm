@@ -46,7 +46,7 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 
-var io = require('../logic/liveStreaming.js')(server,fs,app);
+//var io = require('../logic/liveStreaming.js')(server,fs,app);
 
 
 /**

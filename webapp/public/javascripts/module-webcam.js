@@ -4,7 +4,7 @@ var socket;
 
 dgModuleWebCam.controller('WebCamCtrl', ['$scope',  function($scope) {
 		
-		$scope.image_src = "ciao";
+/*		$scope.image_src = "ciao";
 		if(socket) socket.disconnect();
 		socket = io();
 		socket.emit('start-stream');
@@ -14,7 +14,7 @@ dgModuleWebCam.controller('WebCamCtrl', ['$scope',  function($scope) {
 			$scope.image_src = url;
 		}); 
 		
-		
+*/		
 		
 }]);
 
