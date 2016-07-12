@@ -23,7 +23,6 @@ dgModuleMessage.controller('MessageCtrl', ['$scope', '$uibModal', 'MessageServic
 				console.log("DATA");
 				console.log(response.result);
 				$scope.gridOptions.data = response.result;
-				//$scope.gridOptions.data = { insertDate: '', message : "ciao", level : 'level'};
 			}
 		}, function(reason) {
 			  console.log('Failed ModifyCtrl: ' + reason);
