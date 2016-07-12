@@ -5,7 +5,7 @@ dgModuleMessage.controller('MessageCtrl', ['$scope', '$uibModal', 'MessageServic
 		$scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
 				 
 		$scope.gridOptions.columnDefs = [
-				{ name: 'insertDate' },
+				{ name: 'insertDate' , displayName: 'Date', sort: { direction: 'desc', priority: 0 }, cellFilter: 'date:\'yyyy-MM-dd hh:mm:ss\''},
 				{ name: 'message'},
 				{ name: 'level' }
 			  ];
