@@ -36,6 +36,7 @@ class Repository {
 	constructor(){
 		this.devices = new Array();
 		this.zones = [];
+		this.status = { alarm : false};
 		logger.info('Repository init');		
 	};
 	

@@ -29,9 +29,9 @@ controller.start = function(){
 	else if(gw_type === 'serial') GW = require('./serial_gateway.js');
 	else if(gw_type === 'i2c') GW = require('./i2c_gateway.js');
 	
-	//var gateway_433 = new GW(protocol_433,'\\\\.\\COM10',9600);
+	var gateway_433 = new GW(protocol_433,'\\\\.\\COM10',9600);
 	//var gateway_433 = new GW(protocol_433);
-	var gateway_NRF = new GW(mysp_15,'\\\\.\\COM10',115200);
+	//var gateway_NRF = new GW(mysp_15,'\\\\.\\COM10',115200);
 
 
 	
@@ -72,6 +72,7 @@ controller.checkForZoneAlarm = function() {
 							var now = new Date();
 							console.log((now.getTime() - dateEvent));
 							if((now.getTime() - dateEvent) < 60 * 1000) controller.fireAlarm();
+							else controller.stopFireAlarm();
 						}
 					}
 			});
@@ -83,8 +84,40 @@ controller.checkForZoneAlarm = function() {
 
 controller.fireAlarm = function(){
 	
-	logger.error("*********** ALARM IS FIRING !!!!!! *********");
+	if(controller.repository.status.alarm == false){
+	
+		logger.error("*********** FIRE ALARM !!!!!! *********");
+		
+		var msg = {};
+		msg.level = "alarm";
+		msg.message = "Alarm is Firing";
+		controller.repository.savePersistantMessage(msg, function(){
+			logger.info('Message Sent');	
+			controller.repository.status.alarm = true;
+			callback();
+		});
+	}else{
+		logger.error("*********** ALARM IS FIRING !!!!!! *********");
+	}
 } 
+
+controller.stopFireAlarm = function(){
+	
+	if(controller.repository.status.alarm == true){
+	
+		logger.error("*********** STOP FIRE ALARM !!!!!! *********");
+		
+		var msg = {};
+		msg.level = "alarm";
+		msg.message = "Stop Alarm";
+		controller.repository.savePersistantMessage(msg, function(){
+			logger.info('Message Sent');	
+			controller.repository.status.alarm = false;
+			callback();
+		});
+	}
+} 
+
 
 controller.start();
 

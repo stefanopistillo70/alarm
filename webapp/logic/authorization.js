@@ -51,10 +51,11 @@ var authorization = function(apiVer, role, method,  url){
 				}else if(_url.indexOf("/id/") > 0){
 					var re = /\/id/g;
 					_urlTmp = _url.replace(re, '');
-					//logger.info("REPLACE1 ->"+_urlTmp);
+					logger.info("REPLACE1 ->"+_urlTmp);
 					var n = _url.lastIndexOf("/id/");
-					urlTmp = url.substring(0, n)+url.substring(n+3, url.lastIndexOf("/"));
-					//logger.info("REPLACE2 ->"+urlTmp);
+					var n1 = url.indexOf("/",n+1);
+					urlTmp = url.substring(0, n)+url.substring(n1, url.lastIndexOf("/"));
+					logger.info("REPLACE2 ->"+urlTmp);
 					if(urlTmp == _urlTmp) return true;
 				}
 			}
