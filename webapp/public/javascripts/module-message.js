@@ -3,23 +3,19 @@ var dgModuleMessage = angular.module('dgModuleMessage', ['ngResource','ui.bootst
 dgModuleMessage.controller('MessageCtrl', ['$scope', '$uibModal', 'MessageService', function($scope, $uibModal, MessageService) {
 		
 		$scope.gridOptions = { enableRowSelection: true, enableRowHeaderSelection: false };
-		 
+				 
 		$scope.gridOptions.columnDefs = [
 				{ name: 'insertDate' },
 				{ name: 'message'},
-				{ name: 'level', displayName: 'Level', allowCellFocus : false }
+				{ name: 'level' }
 			  ];
  
 		$scope.gridOptions.multiSelect = false;
 		$scope.gridOptions.modifierKeysToMultiSelect = false;
 		$scope.gridOptions.noUnselect = true;
-		$scope.gridOptions.onRegisterApi = function( gridApi ) {
-			$scope.gridApi = gridApi;
-		}; 
 		
 		$scope.gridOptions.enableRowSelection = true;
 						
-		
 		modifyQuery = MessageService.query().$promise;
 		
 		modifyQuery.then(function(response) {
@@ -27,6 +23,7 @@ dgModuleMessage.controller('MessageCtrl', ['$scope', '$uibModal', 'MessageServic
 				console.log("DATA");
 				console.log(response.result);
 				$scope.gridOptions.data = response.result;
+				//$scope.gridOptions.data = { insertDate: '', message : "ciao", level : 'level'};
 			}
 		}, function(reason) {
 			  console.log('Failed ModifyCtrl: ' + reason);
