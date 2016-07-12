@@ -31,9 +31,7 @@
 	<script src="/javascripts/module-system.js"></script>
 	<script src="/javascripts/module-location.js"></script>
 	<script src="/javascripts/module-webcam.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script src="/javascripts/liveStreaming.js"></script>
-
+	<script src="/javascripts/module-message.js"></script>
 </head>
 <body ng-controller="DomusGuardCtrl" >
 	<div ng-hide="isLoggedIn" class="ng-hide">
@@ -52,7 +50,8 @@
 					<a class="navbar-brand" href="#">DomusGuard</a>
 				</div>
 				<ul class="nav navbar-nav">
-					<li class="active"><a href="#">Home</a></li>
+					<li class="active"><a href="#/">Home</a></li>
+					<li><a href="#/message">Messages</a></li>
 					<li><a href="#/zones">Zones</a></li>
 					<li><a href="#/devices">Devices</a></li> 
 					<li><a href="#/events">Events</a></li> 

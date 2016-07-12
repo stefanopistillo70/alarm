@@ -1,7 +1,7 @@
 
 var apiVer = "/api/1.0/";
 
-var app = angular.module('DomusGuard', ['ngResource', 'ngRoute', 'ngCookies', 'dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin','dgModuleSystem','dgModuleWebCam']);
+var app = angular.module('DomusGuard', ['ngResource', 'ngRoute', 'ngCookies', 'dgModuleDevice','dgModuleEvent','dgModuleConfig','dgModuleZone','dgModuleLogin','dgModuleSystem','dgModuleWebCam','dgModuleMessage']);
 
 
 
@@ -15,6 +15,7 @@ app.config(['$routeProvider', function($routeProvider) {
 				when('/login', { templateUrl: 'partials/login.html' }).
 				when('/configuration', { templateUrl: 'partials/system.html' }).
 				when('/webcam', { templateUrl: 'partials/webcam.html' }).
+				when('/message', { templateUrl: 'partials/message.html' }).
 				when('/', { templateUrl: 'partials/mainStatus.html' }).
 				otherwise({ redirectTo: '/' });
           }]);

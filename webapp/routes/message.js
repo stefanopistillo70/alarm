@@ -8,6 +8,17 @@ var Message = require('../models/message');
 var userLogic = require('../logic/userLogic');
 var logger = require('../config/logger.js')('Message');
 
+/* GET Messages listing. */
+router.get('/', function(req, res, next) {
+	var locations = req.locations.split("#");
+	query = { locationId : { $in: locations }};
+	
+	Message.find(query, function(err, eventLogs) {
+			if (err) res.status(400).send(new Response().error(400,err.errors));
+			else res.json(new Response(eventLogs));
+	});	
+});
+
 /* Insert new message */
 router.post('/', function(req, res, next) {
 	
