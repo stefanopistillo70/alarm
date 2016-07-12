@@ -44,7 +44,7 @@ controller.start = function(){
 	});	
 	
 	//TODO uncomment
-	//controller.checkForZoneAlarm();
+	controller.checkForZoneAlarm();
 
 }
 
@@ -94,7 +94,6 @@ controller.fireAlarm = function(){
 		controller.repository.savePersistantMessage(msg, function(){
 			logger.info('Message Sent');	
 			controller.repository.status.alarm = true;
-			callback();
 		});
 	}else{
 		logger.error("*********** ALARM IS FIRING !!!!!! *********");
@@ -113,7 +112,6 @@ controller.stopFireAlarm = function(){
 		controller.repository.savePersistantMessage(msg, function(){
 			logger.info('Message Sent');	
 			controller.repository.status.alarm = false;
-			callback();
 		});
 	}
 } 
