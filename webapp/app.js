@@ -20,6 +20,7 @@ var google = require('./routes/google');
 var main = require('./routes/main');
 var user = require('./routes/user');
 var authorization = require('./logic/authorization');
+var fileUpload = require('./routes/fileUpload');
 
 
 var Response = require('./routes/response');
@@ -266,6 +267,7 @@ app.use(apiVer+'/controller', controller);
 app.use(apiVer+'/google', google);
 app.use(apiVer+'/main', main);
 app.use(apiVer+'/user', user);
+app.use(apiVer+'/file', fileUpload);
 
 
 

@@ -40,6 +40,9 @@ controller.start = function(){
 			logger.log('info','Remote Update DONE.');
 			//TODO uncomment
 			//controller.repository.checkForRemoteUpdate();
+			
+			
+			controller.repository.uploadFile();
 		});
 	});	
 	

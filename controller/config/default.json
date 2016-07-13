@@ -1,5 +1,9 @@
 {
     "webConfig": {
       "url": "https://127.0.0.1:3000/"
-    }
+    },
+	"ssl": {
+		"keyFile" : "../environment/Development/resource/certs/server.key",
+		"pemFile" : "../environment/Development/resource/certs/server.crt"
+	}
 }

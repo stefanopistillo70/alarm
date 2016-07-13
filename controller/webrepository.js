@@ -572,6 +572,37 @@ class WebRepository extends Repository{
 		}
 	}
 	
+	
+	
+	
+	
+	uploadFile(){
+		console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$ upload FILE");
+		var request = require('request');
+		var sysConfig = require('config');
+		var sslConf = sysConfig.get('ssl'); 
+		
+		var options = {
+			url: url+'/file',
+			headers: {
+				"x-access-token" : controllerInfo.token
+			},
+			agentOptions: {
+				cert: fs.readFileSync(sslConf.pemFile),
+				key: fs.readFileSync(sslConf.keyFile),
+				rejectUnauthorized: false
+			}
+		};
+		
+		fs.createReadStream('test.mp4').pipe(request.post(options)
+			.on('response', function(response) {
+				console.log(response.statusCode) // 200
+			})		
+		);
+	}
+	
+	
+	
 };
 
 
