@@ -43,57 +43,80 @@
 
 	<div ng-show="isLoggedIn" class="ng-hide">
 
-		<nav class="navbar navbar-default">
-			<div class="container-fluid">
-			
-				<div class="navbar-header">
-					<a class="navbar-brand" href="#">DomusGuard</a>
-				</div>
-				<ul class="nav navbar-nav">
-					<li class="active"><a href="#/">Home</a></li>
-					<li><a href="#/message">Messages</a></li>
-					<li><a href="#/zones">Zones</a></li>
-					<li><a href="#/devices">Devices</a></li> 
-					<li><a href="#/events">Events</a></li> 
-				</ul>
+		<div id="desktopTest" class="hidden-xs visible-sm visible-md visible-lg">
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
 				
-				
-				
-				<div class="navbar-header pull-right" ng-controller="MenuHeaderCtrl" >
-					<a class="navbar-brand">
-						Welcome {{userName}}
-					</a>
-					<p class="navbar-text">
-						Location : {{location}} 
-					</p>
-					<p class="navbar-text">
-						<img src="images/glyphicons-730-temperature.png" > 30 - 68%
-					</p> 
-					<a href="#/webcam" class="navbar-brand" onclick="" >
-						<img src="images/glyphicons-302-webcam.png" >
-					</a> 
-
-
-									
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#">DomusGuard</a>
+					</div>
 					<ul class="nav navbar-nav">
-							<li uib-dropdown>
-										<a href="#" uib-dropdown-toggle>Menu<b class="caret"></b></a>
-										<ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
-										<li role="menuitem"><a href="" ng-click="configuration()">System</a></li>
-										<li role="menuitem"><a href="" ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></li>
-										</ul>
-							</li>
-					</ul>	
+						<li class="active"><a href="#/">Home</a></li>
+						<li><a href="#/message">Messages</a></li>
+						<li><a href="#/zones">Zones</a></li>
+						<li><a href="#/devices">Devices</a></li> 
+						<li><a href="#/events">Events</a></li> 
+					</ul>
 					
-					<a class="navbar-brand">
-						                       
-					</a>
-				</div>
-	 
+					
+					
+					<div class="navbar-header pull-right" ng-controller="MenuHeaderCtrl" >
+						<a class="navbar-brand">
+							Welcome {{userName}}
+						</a>
+						<p class="navbar-text">
+							Location : {{location}} 
+						</p>
+						<p class="navbar-text">
+							<img src="images/glyphicons-730-temperature.png" > 30 - 68%
+						</p> 
+						<a href="#/webcam" class="navbar-brand" onclick="" >
+							<img src="images/glyphicons-302-webcam.png" >
+						</a> 
+
+
+										
+						<ul class="nav navbar-nav">
+								<li uib-dropdown>
+											<a href="#" uib-dropdown-toggle>Menu<b class="caret"></b></a>
+											<ul uib-dropdown-menu role="menu" aria-labelledby="split-button">
+											<li role="menuitem"><a href="" ng-click="configuration()">System</a></li>
+											<li role="menuitem"><a href="" ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a></li>
+											</ul>
+								</li>
+						</ul>	
+						
+						<a class="navbar-brand">
+												   
+						</a>
+					</div>			
+				</div><!-- /.container-fluid -->
+			</nav>
+		</div>
+		
+		<!-- SmartPhone view -->
+		<div id="desktopTest" class="visible-xs hidden-sm hidden-md hidden-lg">
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
 				
-			
-			</div><!-- /.container-fluid -->
-		</nav>
+					<div class="navbar-header">
+						<a class="navbar-brand" href="#">DomusGuard</a>
+					</div>
+					<ul class="nav navbar-nav">
+						<a href="#/">Home</a>
+						<a href="#/message">Messages</a>
+						<img src="images/glyphicons-730-temperature.png" > 30 - 68%
+						<a href="#/webcam" class="navbar-brand" onclick="" >
+							<img src="images/glyphicons-302-webcam.png" >
+						</a> 
+						<a href="" ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span></a>
+
+					</ul>
+					
+				</div><!-- /.container-fluid -->
+			</nav>
+
+		</div>
 
 		<div class="container">
 			<div ng-view>

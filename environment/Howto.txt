@@ -123,5 +123,13 @@ mongo --ssl --sslAllowInvalidCertificates --username domus --password domus1 --a
 http://www.waveshare.com/5inch-hdmi-lcd.htm
 
 
+=============== Serial Port =========
+
+
+sudo usermod -a -G dialout domus
+
+groups domus
+ 
+
 
 
