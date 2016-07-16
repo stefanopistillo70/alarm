@@ -16,7 +16,7 @@ var serial_gateway = function(protocol, gwPort, gwBaud) {
 			
 			//const gwPort = '\\\\.\\COM10';
 			if(gwPort ===undefined) gwPort = '/dev/serial1';
-			if(gwBaud ===undefined) gwBaud = 115200;
+			if(gwBaud ===undefined) gwBaud = 9600;
 			//if(gwBaud ===undefined) gwBaud = 38400;
 		
 			var gw = new SerialPort(gwPort, { baudrate: gwBaud , parser: SerialPort.parsers.readline("\n"), autoOpen: false });
