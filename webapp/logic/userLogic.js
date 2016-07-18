@@ -14,6 +14,7 @@ var google = require('googleapis');
 var OAuth2 = google.auth.OAuth2;
 var oauth2Client = new OAuth2(googleConf.auth.clientID, googleConf.auth.clientSecret, googleConf.auth.callbackURL);
 var gmail = google.gmail('v1');
+var nodemailer = require('nodemailer');
 
 var logic = {
 	
