@@ -102,7 +102,8 @@ var logic = {
 				for(i = 0 ; i < users.length; i++ ){
 					sendPushNotification(users[i],function(success,user){
 						console.log("SUCCESS->"+success);
-						if(!success) sendGoogleMailToUsers(user,message);
+						//if(!success) sendGoogleMailToUsers(user,message);
+						if(!success) sendMailToUsers(user,message);
 					});
 				}
 			}
@@ -240,6 +241,38 @@ console.log(user);
 	}else{
 		logger.error("Google email not configured");
 	}
+};
+
+
+
+var	sendMailToUsers = function(user, msg){
+	
+	logger.info("Send Mail to ->"+user.auth.local.email);
+	
+	// create reusable transporter object using the default SMTP transport 
+	var smtpUser = "pistillo.stefano%40libero.it";
+	var smtpPwd = "Magacirce1";
+	var smtp = "smtps://"+smtpUser+":"+smtpPwd+"@smtp.libero.it";
+	//var transporter = nodemailer.createTransport('smtps://pistillo.stefano%40libero.it:Magacirce1@smtp.libero.it');
+	var transporter = nodemailer.createTransport(smtp);
+	 
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '<pistillo.stefano@libero.it>', // sender address 
+		to: user.auth.local.email, // list of receivers 
+		subject: 'DomusGuard', // Subject line 
+		text: msg, // plaintext body 
+		html: '<b>Hello world</b>' // html body 
+	};
+	 
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+			return console.log(error);
+		}
+		logger.info('Message sent: ' + info.response);
+	});
+
 };
 
 
