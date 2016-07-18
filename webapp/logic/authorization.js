@@ -18,7 +18,7 @@ var authValues = [
 	{key : {method : "*", url : "/location/id"}, roles : ["admin"]},
 	{key : {method : "*", url : "/main/logout"}, roles : ["admin"]},
 	{key : {method : "*", url : "/message"}, roles : ["admin"]},
-	{key : {method : "*", url : "/file"}, roles : ["admin","controller"]}
+	{key : {method : "*", url : "/file"}, roles : ["admin","controller"]},
 	{key : {method : "*", url : "/auth/google/updateConsensus"}, roles : ["admin"]}
 ];
 
