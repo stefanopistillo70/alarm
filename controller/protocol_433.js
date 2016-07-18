@@ -11,7 +11,7 @@ var Protocol_433 = function(repository) {
 				return;
 			}
 			
-			var decimal = msg.substring(1, (msg.length-1));
+			var decimal = msg.substring(1, (msg.length-2));
 			
 			var addresscode = (decimal >> 8) & 0xFFFF;
 			var commandcode = (decimal & 0xFF);
