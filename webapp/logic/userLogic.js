@@ -103,8 +103,8 @@ var logic = {
 				for(i = 0 ; i < users.length; i++ ){
 					sendPushNotification(users[i],function(success,user){
 						console.log("SUCCESS->"+success);
-						//if(!success) sendGoogleMailToUsers(user,message);
-						if(!success) sendMailToUsers(user,message);
+						if(!success) sendGoogleMailToUsers(user,message);
+						//if(!success) sendMailToUsers(user,message);
 					});
 				}
 			}
@@ -255,6 +255,8 @@ var	sendMailToUsers = function(user, msg){
 	var smtpPwd = "Magacirce1";
 	var smtp = "smtps://"+smtpUser+":"+smtpPwd+"@smtp.libero.it";
 	//var transporter = nodemailer.createTransport('smtps://pistillo.stefano%40libero.it:Magacirce1@smtp.libero.it');
+	
+	logger.info("URL ->"+smtp);
 	var transporter = nodemailer.createTransport(smtp);
 	 
 	// setup e-mail data with unicode symbols 
@@ -269,7 +271,7 @@ var	sendMailToUsers = function(user, msg){
 	// send mail with defined transport object 
 	transporter.sendMail(mailOptions, function(error, info){
 		if(error){
-			logger.info(error);
+			logger.error(error);
 			return;
 		}else if(info){
 			logger.info('Message sent: ' + info.response);
