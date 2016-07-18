@@ -268,9 +268,11 @@ var	sendMailToUsers = function(user, msg){
 	// send mail with defined transport object 
 	transporter.sendMail(mailOptions, function(error, info){
 		if(error){
-			return console.log(error);
+			logger.info(error);
+			return;
+		}else if(info){
+			logger.info('Message sent: ' + info.response);
 		}
-		logger.info('Message sent: ' + info.response);
 	});
 
 };
