@@ -32,7 +32,7 @@ router.post('/', function(req, res, next) {
 		query = { _id :  locations[0]}
 		Location.find(query, function(err, locations) {
 					if (err){
-						res.status(400).send(new Response().error(400,err.errors));
+						res.status(400).send(new Response().error(400,err));
 					}else{
 						if((locations != undefined) && (locations.length > 0)){
 							if(locations[0].config.enableNewDevice){
@@ -48,8 +48,8 @@ router.post('/', function(req, res, next) {
 									dbDevice.save(function(err) {
 										if (err){
 											logger.error("Error Create Device: ");
-											logger.error(err.errors);
-											res.status(400).send(new Response().error(400,err.errors));;
+											logger.error(err);
+											res.status(400).send(new Response().error(400,err));;
 										}else {
 											logger.info('Device Creation OK.');
 											res.json(new Response("Device Created"));
@@ -72,7 +72,7 @@ router.get('/:id', function(req, res, next) {
 	//TODO
 	Device.find({}, function(err, eventLogs) {
 				if (err){
-					res.status(400).send(new Response().error(400,err.errors));
+					res.status(400).send(new Response().error(400,err));
 				}else res.json(eventLogs);
 	});	
 });
@@ -96,8 +96,8 @@ router.put('/:id', function(req, res, next) {
 		Device.update(query, update, opts, function(err,raw) {
 			if (err){
 				logger.error("Error Update Device: ");
-				logger.error(err.errors);
-				res.status(400).send(new Response().error(400,err.errors));
+				logger.error(err);
+				res.status(400).send(new Response().error(400,err));
 			}else{
 				logger.info('Update Device OK.');
 				res.json(new Response("Device Updated"));
@@ -121,8 +121,8 @@ router.post('/:deviceId/sensor/:id', function(req, res, next) {
 		Device.findOneAndUpdate(query, updates, opts, function(err, device) {
 			if (err){ 
 				logger.error("Error Add Sensor: ");
-				logger.error(err.errors);
-				res.status(400).send(new Response().error(400,err.errors));
+				logger.error(err);
+				res.status(400).send(new Response().error(400,err));
 			}else if(device == undefined ){
 				logger.error("Error Add Sensor: No update record done");
 				res.status(400).send(new Response().error(400,"No update record done"));
@@ -151,8 +151,8 @@ router.put('/:deviceId/sensor/:id', function(req, res, next) {
 		Device.findOneAndUpdate(query, updates, opts, function(err, device) {
 			if (err){ 
 				logger.error("Error Update Sensor value : ");
-				logger.error(err.errors);
-				res.status(400).send(new Response().error(400,err.errors));
+				logger.error(err);
+				res.status(400).send(new Response().error(400,err));
 			}else if(device === undefined ){
 				logger.error("Error Update Sensor value : No update record done");
 				res.status(400).send(new Response().error(400,"No update record done"));
@@ -171,7 +171,7 @@ router.delete('/:id', function(req, res, next) {
 		
 		Device.remove({ _id: req.params.id }, function(error,raw) {
 			if (error) {
-				res.status(400).send(new Response().error(400,err.errors));
+				res.status(400).send(new Response().error(400,err));
 			} else {
 				logger.info('Delete Device OK.');
 				res.json(new Response("Device Removed"));	
