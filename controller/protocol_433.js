@@ -25,8 +25,11 @@ var Protocol_433 = function(repository) {
 				repository.addEventLog(event, function(err){
 					if(err){
 						logger.error(err);
-						callback(err);
-					}else callback(event);
+						callback();
+					}else {
+						logger.info("Event add ok");
+						callback();
+					}
 				});
 			}else{
 				logger.info("Create new device ...");
@@ -39,13 +42,16 @@ var Protocol_433 = function(repository) {
 						repository.addSensor(addresscode, sensorId, function(device, error){
 							if(error){ 
 								logger.error(error);
-								callback(device);
-							} else callback(device);
+								callback();
+							} else {
+								logger.info("Sensor add ok");
+								callback();
+							}
 						});
 						
 					}else{
 						logger.error(err);
-						callback(err);
+						callback();
 					}
 				});
 			}

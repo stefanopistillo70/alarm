@@ -4,20 +4,8 @@ var logger = require('./logger.js')('SrlGateway');
 
 var serial_gateway = function(protocol, gwPort, gwBaud) {
 	
-		//var instance;
-		//var protocol;
-		//var gw;
-		
-		/*var response = function(data){
-			
-		}
-		*/
-		//function init() {
-			
-			//const gwPort = '\\\\.\\COM10';
 			if(gwPort ===undefined) gwPort = '/dev/serial0';
-			if(gwBaud ===undefined) gwBaud = 4800;
-			//if(gwBaud ===undefined) gwBaud = 38400;
+			if(gwBaud ===undefined) gwBaud = 9600;
 		
 			var gw = new SerialPort(gwPort, { baudrate: gwBaud , parser: SerialPort.parsers.readline("\n"), autoOpen: false });
 		
@@ -40,22 +28,6 @@ var serial_gateway = function(protocol, gwPort, gwBaud) {
 				setTimeout(function(){gw.open()}, 5 * 1000);
 			});
 						
-			//return {}
-		//};
-		
-		/*return {
-			getInstance: function (protocol) {
-		 
-			  if ( !instance ) {
-				logger.log('info','Initialize Serial Gataway...');
-				this.protocol = protocol;
-				instance = init();
-				logger.log('info','Done'); 
-			  }
-			  return instance;
-			}
-		};
- */
 };
 
 
