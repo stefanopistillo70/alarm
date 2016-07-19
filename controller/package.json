@@ -18,6 +18,7 @@
     "requestify": ">=0.1.16",
     "serialport": ">=1.4.5",
     "winston": ">=2.1.1",
+    "winston-daily-rotate-file": "^1.1.5",
     "xoauth2": "^1.1.0"
   }
 }

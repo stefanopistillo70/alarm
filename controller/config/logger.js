@@ -40,7 +40,7 @@ var buildTransports = function(moduleName, opt){
 	buildOptionsFile.formatter = function(options) {
         return myFormatter(moduleName,options);
 	};
-	buildOptionsFile.filename = 'webapp';
+	buildOptionsFile.filename = 'controller';
 	buildOptionsFile.json = false;
 	buildOptionsFile.dirname = "C:/DOMUS/web/logs/";
 	

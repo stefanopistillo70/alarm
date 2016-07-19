@@ -27,37 +27,37 @@ var authValues = [
 
 var authorization = function(apiVer, role, method,  url){
 	
-	logger.info("Check authorization method :"+method+" for url :"+url);
+	logger.verbose("Check authorization method :"+method+" for url :"+url);
 	
 	var key = {method : method, url : url};
 	
 	var arrayLength = authValues.length;
 	for (var i = 0; i < arrayLength; i++) {
-		//logger.info(authValues[i].key);
+		//logger.debug(authValues[i].key);
 		var _url = apiVer+authValues[i].key.url;
 		if((method == authValues[i].key.method) || (authValues[i].key.method == '*')){
 			if(_url == '*'){
 				if (role in authValues[i].roles) return true;
 			}else{
-				logger.info(_url);
+				logger.debug(_url);
 				if(_url == url ){
 					if (authValues[i].roles.indexOf(role) != -1) return true;
 				}else if(_url.endsWith("/id")){
 					var re = /\/id/g;
 					_urlTmp = _url.replace(re, '');
-					//logger.info("REPLACE1 ->"+_urlTmp);
+					//logger.debug("REPLACE1 ->"+_urlTmp);
 					var n = url.lastIndexOf("/");
 					urlTmp = url.substring(0, n);
-					//logger.info("REPLACE2 ->"+urlTmp);
+					//logger.debug("REPLACE2 ->"+urlTmp);
 					if(urlTmp == _urlTmp) return true;
 				}else if(_url.indexOf("/id/") > 0){
 					var re = /\/id/g;
 					_urlTmp = _url.replace(re, '');
-					logger.info("REPLACE1 ->"+_urlTmp);
+					logger.debug("REPLACE1 ->"+_urlTmp);
 					var n = _url.lastIndexOf("/id/");
 					var n1 = url.indexOf("/",n+1);
 					urlTmp = url.substring(0, n)+url.substring(n1, url.lastIndexOf("/"));
-					logger.info("REPLACE2 ->"+urlTmp);
+					logger.debug("REPLACE2 ->"+urlTmp);
 					if(urlTmp == _urlTmp) return true;
 				}
 			}
