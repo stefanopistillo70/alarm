@@ -1,7 +1,7 @@
 
 "use strict";
 
-var logger = require('./logger.js')('Repository');
+var logger = require('./config/logger.js')('Repository');
 
 var Device = function(id_in, name_in, deviceType_in, technology_in, sensors_in){
 		

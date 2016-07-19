@@ -1,13 +1,11 @@
 
-var env = process.env.NODE_ENV || 'dev';
-
 var winston = require('winston');
 
 var myFormatter = function(module,options){
 	return options.timestamp() +'\t'+ options.level.toUpperCase() +'\t['+module+']  '+ (undefined !== options.message ? options.message : '') +
           (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
 	
-}
+};
 
 
 //Default Config
@@ -23,10 +21,9 @@ var buildOptions = function(){
 			// Return string will be passed to logger. 
 			return myFormatter('',options);
 	  },
-	  level: 'debug'
+	  level: 'info'
 	}
 };
-
 
 
 var buildTransports = function(moduleName, opt){
@@ -60,67 +57,38 @@ winston.loggers.options.transports = transports;
 
 
 
-//Web Config
-winston.loggers.add("Web", {
-		transports: buildTransports("Web",buildOptions())
-});
 
-
-//Authorization Config
-winston.loggers.add("Authorization", {
-		transports: buildTransports("Authorization",buildOptions())
-});
-
-
-
-//Google Auth Config
-winston.loggers.add("GoogleAuth", {
-		transports: buildTransports("GoogleAuth",buildOptions())
-});
-
-
-//Google  Config
-winston.loggers.add("Google", {
-		transports: buildTransports("Google",buildOptions())
-});
-
-
-//Local Auth Config
-winston.loggers.add("LocalAuth", {
-		transports: buildTransports("LocalAuth",buildOptions())
-});
-
-
-//UserLogic Config
-winston.loggers.add("UserLogic", {
-		transports: buildTransports("UserLogic",buildOptions())
-});
-
-
-//User Config
-winston.loggers.add("User", {
-		transports: buildTransports("User",buildOptions())
-});
-
-//Controller Config
 winston.loggers.add('Controller', {
 		transports: buildTransports("Controller",buildOptions())
 });
 
-
-//Message Config
-winston.loggers.add("Message", {
-		transports: buildTransports("Message",buildOptions())
+winston.loggers.add('Gateway', {
+		transports: buildTransports("Gateway",buildOptions())
 });
 
-//Device Config
-winston.loggers.add("Device", {
-		transports: buildTransports("Device",buildOptions())
+winston.loggers.add('WebRepository', {
+		transports: buildTransports("WebRepository",buildOptions())
 });
 
+winston.loggers.add('Repository', {
+		transports: buildTransports("Repository",buildOptions())
+});
+
+winston.loggers.add('MSP15', {
+		transports: buildTransports("MSP15",buildOptions())
+});
+
+winston.loggers.add('P433', {
+		transports: buildTransports("P433",buildOptions())
+});
+
+
+winston.loggers.add('SrlGateway', {
+		transports: buildTransports("SrlGateway",buildOptions())
+});
 
 
 module.exports = function(arg) {
 	return winston.loggers.get(arg);
-}
+};
 

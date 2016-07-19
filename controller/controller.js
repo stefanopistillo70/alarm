@@ -1,6 +1,6 @@
 
 
-var logger = require('./logger.js')('Controller');
+var logger = require('./config/logger.js')('Controller');
 var MYSP_15 = require('./mysp_15.js');
 var Protocol_433 = require('./protocol_433.js');
 var Webrepository = require('./webrepository');

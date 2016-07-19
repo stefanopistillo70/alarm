@@ -1,6 +1,6 @@
 
 var SerialPort = require("serialport");
-var logger = require('./logger.js')('SrlGateway');
+var logger = require('./config/logger.js')('SrlGateway');
 
 var serial_gateway = function(protocol, gwPort, gwBaud) {
 	

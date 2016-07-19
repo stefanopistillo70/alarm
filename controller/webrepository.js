@@ -10,7 +10,7 @@
 
 var fs = require('fs');
 var uuid = require('node-uuid');
-var logger = require('./logger.js')('WebRepository');
+var logger = require('./config/logger.js')('WebRepository');
 var Repository = require('./repository.js');
 
 var Client = require('node-rest-client').Client;

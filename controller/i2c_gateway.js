@@ -1,5 +1,5 @@
 
-var logger = require('./logger.js')('I2CGateway');
+var logger = require('./config/logger.js')('I2CGateway');
 var i2c = require('i2c-bus');
 
 var i2c_gateway = function(protocol, gwPort, gwBaud) {
