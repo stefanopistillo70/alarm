@@ -13,7 +13,7 @@ var deviceSchema = new Schema({
   locationId : { type: Schema.Types.ObjectId, required: true}, 
   sensors: [
 		{ 
-			id: { type: String, required: true, unique: true, dropDups: true},
+			id: { type: String, required: true},
 			name: { type: String},
 			description: { type: String},
 			type:  { type: String},
