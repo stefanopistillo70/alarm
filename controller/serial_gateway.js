@@ -13,7 +13,7 @@ var serial_gateway = function(protocol, gwPort, gwBaud) {
 			gw.on('open', function() {
 				logger.info("connected to serial gateway at serial : " + gwPort+"     baund rates : "+gwBaud);
 			}).on('data', function(rd) {
-				logger.info("RECIEVING ->"+rd.toString());
+				logger.info("RECEIVING ->"+rd.toString());
 								
 				protocol.onMsg(rd,function(msg){
 					if(msg) logger.info("Sending response ->"+msg.toString());

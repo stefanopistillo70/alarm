@@ -8,7 +8,7 @@
 
 /* RCSwitch */
 
-#define TIMER_INTERVAL_SKIPSAMEVALUE_MS	250
+#define TIMER_INTERVAL_SKIPSAMEVALUE_MS	500
 
 RCSwitch mySwitch = RCSwitch();
 
