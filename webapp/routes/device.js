@@ -22,10 +22,8 @@ router.get('/', function(req, res, next) {
 /* create Device. */
 router.post('/', function(req, res, next) {
 	
-	console.log(req.locations);
 	var device  = req.body.device;
-	console.log(device);
-	
+	logger.info('Create Device :'+device.id);
 	
 	var locations = req.locations.split("#");
 	if(locations.length > 1) res.status(400).send(new Response().error(400,"More than one location specified"));
@@ -50,7 +48,10 @@ router.post('/', function(req, res, next) {
 									dbDevice.save(function(err) {
 										if (err){
 											res.status(400).send(new Response().error(400,err.errors));;
-										}else res.json(new Response("Device Created"));
+										}else {
+											logger.info('Device Creation OK.');
+											res.json(new Response("Device Created"));
+										}
 									});
 								
 							}
@@ -76,8 +77,9 @@ router.get('/:id', function(req, res, next) {
 
 
 router.put('/:id', function(req, res, next) {
-		logger.info('Update Device ');
+		
 		var device = req.body;
+		logger.info('Update Device : '+device.id);
 		
 		var query = { '_id' : device._id};
 		var update = "";
@@ -93,6 +95,7 @@ router.put('/:id', function(req, res, next) {
 			if (err){
 				res.status(400).send(new Response().error(400,err.errors));
 			}else{
+				logger.info('Update Device OK.');
 				res.json(new Response("Device Updated"));
 			} 		  
 		});			
@@ -106,6 +109,7 @@ router.post('/:deviceId/sensor/:id', function(req, res, next) {
 			res.status(400).send(new Response().error(400,"sensor is undefined"));
 			return;
 		}
+		logger.info('Add Sensor '+sensor.id+' to Device : '+deviceId);
 		
 		var query = { 'id' : deviceId}
 		var updates = { $push: {sensors: sensor}};
@@ -115,6 +119,7 @@ router.post('/:deviceId/sensor/:id', function(req, res, next) {
 			else if(device === undefined ){
 				res.status(400).send(new Response().error(400,"No update record done"));
 			}else{
+				logger.info('Add Sensor OK.');
 				res.json(new Response(device));
 			}
 		})	
@@ -130,6 +135,8 @@ router.put('/:deviceId/sensor/:id', function(req, res, next) {
 			return;
 		}
 		
+		logger.info('Update Sensor value '+sensor.id+' to Device : '+deviceId);
+		
 		var query = { 'id' : deviceId, 'sensors.id' : sensor.id};
 		var updates = {'$set':  {'sensors.$.value': sensor.value }};
 		var opts = { runValidators: true };
@@ -138,6 +145,7 @@ router.put('/:deviceId/sensor/:id', function(req, res, next) {
 			else if(device === undefined ){
 				res.status(400).send(new Response().error(400,"No update record done"));
 			}else{
+				logger.info('Update Sensor OK.');
 				res.json(new Response(device));
 			}
 		})	
@@ -147,12 +155,13 @@ router.put('/:deviceId/sensor/:id', function(req, res, next) {
 
 router.delete('/:id', function(req, res, next) {
 		
-		logger.info('ID -> '+req.params.id)
+		logger.info('Delete Device with ID -> '+req.params.id)
 		
 		Device.remove({ _id: req.params.id }, function(error,raw) {
 			if (error) {
 				res.status(400).send(new Response().error(400,err.errors));
 			} else {
+				logger.info('Delete Device OK.');
 				res.json(new Response("Device Removed"));	
 			}
 		});
