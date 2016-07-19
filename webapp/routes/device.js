@@ -47,6 +47,8 @@ router.post('/', function(req, res, next) {
 										
 									dbDevice.save(function(err) {
 										if (err){
+											logger.error("Error Create Device: ");
+											logger.error(err.errors);
 											res.status(400).send(new Response().error(400,err.errors));;
 										}else {
 											logger.info('Device Creation OK.');
@@ -93,6 +95,8 @@ router.put('/:id', function(req, res, next) {
 		var opts = { strict: true, runValidators: true };
 		Device.update(query, update, opts, function(err,raw) {
 			if (err){
+				logger.error("Error Update Device: ");
+				logger.error(err.errors);
 				res.status(400).send(new Response().error(400,err.errors));
 			}else{
 				logger.info('Update Device OK.');
@@ -115,8 +119,12 @@ router.post('/:deviceId/sensor/:id', function(req, res, next) {
 		var updates = { $push: {sensors: sensor}};
 		var opts = { runValidators: true };
 		Device.findOneAndUpdate(query, updates, opts, function(err, device) {
-			if (err) res.status(400).send(new Response().error(400,err.errors));
-			else if(device === undefined ){
+			if (err){ 
+				logger.error("Error Add Sensor: ");
+				logger.error(err.errors);
+				res.status(400).send(new Response().error(400,err.errors));
+			}else if(device == undefined ){
+				logger.error("Error Add Sensor: No update record done");
 				res.status(400).send(new Response().error(400,"No update record done"));
 			}else{
 				logger.info('Add Sensor OK.');
@@ -141,8 +149,12 @@ router.put('/:deviceId/sensor/:id', function(req, res, next) {
 		var updates = {'$set':  {'sensors.$.value': sensor.value }};
 		var opts = { runValidators: true };
 		Device.findOneAndUpdate(query, updates, opts, function(err, device) {
-			if (err) res.status(400).send(new Response().error(400,err.errors));
-			else if(device === undefined ){
+			if (err){ 
+				logger.error("Error Update Sensor value : ");
+				logger.error(err.errors);
+				res.status(400).send(new Response().error(400,err.errors));
+			}else if(device === undefined ){
+				logger.error("Error Update Sensor value : No update record done");
 				res.status(400).send(new Response().error(400,"No update record done"));
 			}else{
 				logger.info('Update Sensor OK.');
