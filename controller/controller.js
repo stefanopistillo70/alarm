@@ -59,6 +59,7 @@ controller.checkForZoneAlarm = function() {
 	zones.forEach(function(zone) {
 		logger.info("Check zone : "+zone.name+"   armed : "+zone.armed);
 		if(zone.armed){
+			var deviceIdAlarm = -1;
 			zone.devices.forEach(function(device) {
 					logger.info("Check device : "+device.id);
 					device = controller.repository.getDevice(device.id);
@@ -73,8 +74,13 @@ controller.checkForZoneAlarm = function() {
 							
 							var now = new Date();
 							logger.info("Time to event : "+(now.getTime() - dateEvent));
-							if((now.getTime() - dateEvent) < (60 * 1000)) controller.fireAlarm(device.name);
-							else controller.stopFireAlarm();
+							if((now.getTime() - dateEvent) < (60 * 1000)){ 
+								deviceIdAlarm = device.id;
+								controller.fireAlarm(device.name);
+								break;
+							} else{
+								if(deviceIdAlarm == device.id) controller.stopFireAlarm();
+							}
 						}
 					}
 			});
