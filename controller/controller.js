@@ -68,13 +68,13 @@ controller.checkForZoneAlarm = function() {
 						logger.info("Device events : "+(device.events.length));
 						if((device.events[device.events.length-1]) && (device.events[device.events.length-1].date)){
 							var d = device.events[device.events.length-1].date;
-							console.log(d);
+							//console.log(d);
 							var dateEvent = Date.parse(d);
-							console.log(dateEvent);
+							//console.log(dateEvent);
 							
 							var now = new Date();
-							console.log((now.getTime() - dateEvent));
-							if((now.getTime() - dateEvent) < 60 * 1000) controller.fireAlarm();
+							logger.info("Time to event : "+(now.getTime() - dateEvent));
+							if((now.getTime() - dateEvent) < (60 * 1000)) controller.fireAlarm(device.name);
 							else controller.stopFireAlarm();
 						}
 					}
@@ -85,7 +85,7 @@ controller.checkForZoneAlarm = function() {
 	setTimeout(controller.checkForZoneAlarm,10000);
 }
 
-controller.fireAlarm = function(){
+controller.fireAlarm = function(deviceName){
 	
 	if(controller.repository.status.alarm == false){
 	
@@ -93,7 +93,7 @@ controller.fireAlarm = function(){
 		
 		var msg = {};
 		msg.level = "alarm";
-		msg.message = "Alarm is Firing";
+		msg.message = "Alarm is Firing : "+deviceName;
 		controller.repository.savePersistantMessage(msg, function(){
 			logger.info('Message Sent');	
 			controller.repository.status.alarm = true;
@@ -108,13 +108,13 @@ controller.stopFireAlarm = function(){
 	if(controller.repository.status.alarm == true){
 	
 		logger.error("*********** STOP FIRE ALARM !!!!!! *********");
+		controller.repository.status.alarm = false;
 		
 		var msg = {};
 		msg.level = "alarm";
 		msg.message = "Stop Alarm";
 		controller.repository.savePersistantMessage(msg, function(){
 			logger.info('Message Sent');	
-			controller.repository.status.alarm = false;
 		});
 	}
 } 
