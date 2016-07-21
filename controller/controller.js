@@ -77,7 +77,6 @@ controller.checkForZoneAlarm = function() {
 							if((now.getTime() - dateEvent) < (60 * 1000)){ 
 								deviceIdAlarm = device.id;
 								controller.fireAlarm(device.name);
-								break;
 							} else{
 								if(deviceIdAlarm == device.id) controller.stopFireAlarm();
 							}
