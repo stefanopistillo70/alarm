@@ -4,7 +4,7 @@ dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'Goo
 			
 			$log.info("Init Controller");
 			
-			$scope.users = [{email : "pippo@pippo.i"},{email : "violamandal@gmail.com"}];
+			$scope.user = { email : ""};
 			
 			$scope.accordionIsOpen = { users :  false };
 			
@@ -25,21 +25,26 @@ dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'Goo
 					}, function(reason) {
 						  console.log('Failed get users: ' + reason);
 					});
-					
 				}    
 			});
 			
+			$scope.addUser = function () {
+				console.log("add new user "+$scope.user.email);
+				
+				var data = {email : $scope.user.email};
+				userCreate = UserService.post(data).$promise;
 			
+				userCreate.then(function(response) {
+					if (response.result) {
+						console.log(response.result);
+					}
+				}, function(reason) {
+					  console.log('Failed Add new User: ' + reason);
+				});
+				
+				
+			}
 
-			
-			//$scope.users = [{email : "pippo@pippo.i"},{email : "violamandal@gmail.com"}];
-			
-			/*$scope.data = {
-				repeatSelect: null,
-				availableOptions: $scope.users
-			};
-			*/
-			
 			$scope.saveNotification = function () {
 				
 				var $accordionNotificationScope = $scope.accordion.groups[1].$$childHead;
@@ -57,8 +62,7 @@ dgModuleSystem.controller('SystemCtrl', ['$log', '$scope', 'SystemService', 'Goo
 						}, function(reason) {
 							console.log('Failed get google Client ID: ' + reason);
 					});
-				}
-								
+				}				
 			}
 }]);
 
