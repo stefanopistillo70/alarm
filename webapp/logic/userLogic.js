@@ -103,7 +103,7 @@ var logic = {
 				
 				//search admin user
 				var adminUser;
-				for (var i = 0; i < 9; i++) {
+				for (var i = 0; i < users.length; i++) {
 					if(users[i].auth.role == "admin"){
 						adminUser = users[i];
 					}
