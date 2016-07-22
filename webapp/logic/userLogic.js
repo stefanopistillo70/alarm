@@ -100,10 +100,19 @@ var logic = {
 
 			if (users) {
 				logger.info("Users ->"+users.length);
+				
+				//search admin user
+				var adminUser;
+				for (var i = 0; i < 9; i++) {
+					if(users[i].auth.role == "admin"){
+						adminUser = users[i];
+					}
+				}
+				
 				for(i = 0 ; i < users.length; i++ ){
 					sendPushNotification(users[i],function(success,user){
 						console.log("SUCCESS->"+success);
-						if(!success) sendGoogleMailToUsers(user,message);
+						if(!success) sendGoogleMailToUsers(adminUser,user,message);
 						//if(!success) sendMailToUsers(user,message);
 					});
 				}
@@ -149,13 +158,10 @@ var sendPushNotification = function(user, callback){
 	
 
 	
-var	sendGoogleMailToUsers = function(user, msg){
+var	sendGoogleMailToUsers = function(adminUser, user, msg){
 console.log(user);
 	logger.info("Send Google Mail to ->"+user.auth.local.email);
-	
-	//TODO find admin user in location
-	var adminUser = user;
-	
+		
 	if(adminUser.auth.google.refresh_token){
 	
 		//Prepare email
