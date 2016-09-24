@@ -308,3 +308,9 @@ app.use(function(err, req, res, next) {
 */
 
 module.exports = app;
+
+
+
+
+var crontab = require('./logic/crontab');
+logger.info(crontab);

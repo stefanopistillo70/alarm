@@ -36,7 +36,7 @@ router.post('/', function(req, res, next) {
 		else{
 			
 			var query = { 'id' : deviceId };
-			var updates = { $push: {events: {date : new Date()}}};
+			var updates = { $push: {events :{$each: [{date : new Date()}],$sort: { date: -1 },$slice: 3}}};
 			Device.findOneAndUpdate(query, updates, function(err, device) {
 				if (err) res.status(400).send(new Response().error(400,err.errors));
 				else{
