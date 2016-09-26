@@ -132,4 +132,12 @@ groups domus
  
 
 
+ 
+ 
+ //Sync time
+ 
+ 
+ openntpd -s
+ 
+ 
 
