@@ -112,12 +112,103 @@ var logic = {
 				for(i = 0 ; i < users.length; i++ ){
 					sendPushNotification(users[i],function(success,user){
 						console.log("SUCCESS->"+success);
-						if(!success) sendGoogleMailToUsers(adminUser,user,message);
+						var subject = 'DomusGuard '+message.level+' Message';
+						if(!success) sendGoogleMailToUser(adminUser,user,subject,message.message);
 						//if(!success) sendMailToUsers(user,message);
 					});
 				}
 			}
 		});
+	},
+	
+	sendGoogleMailToUser : function(adminUser, user, subject, msg){
+		logger.info("Send Google Mail to ->"+user.auth.local.email);
+			
+		if(adminUser.auth.google.refresh_token){
+		
+			//Prepare email
+			var to = user.auth.local.email,
+			content = msg;
+
+			var buff = new Buffer(
+				"Content-Type:  text/plain; charset=\"UTF-8\"\n" +
+				"Content-length: 5000\n" +
+				"Content-Transfer-Encoding: message/rfc2822\n" +
+				"to: "+to+"\n" +
+				"from: <"+adminUser.auth.local.email+">\n" +
+				"subject: "+subject+"\n\n" +
+				content
+			);
+						
+			var base64EncodedEmail = buff.toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
+
+			var mail = base64EncodedEmail;
+			
+			
+			oauth2Client.setCredentials({
+				access_token: adminUser.auth.google.token,
+				refresh_token: adminUser.auth.google.refresh_token
+			}); 
+
+			var now = (new Date()).getTime();
+				
+			if(!((adminUser.auth.google.expiry_date) && ((adminUser.auth.google.expiry_date - now) > 0))){
+				logger.info("Token is expired. refresh");
+				oauth2Client.refreshAccessToken(function(err, tokens) {
+					
+					if (err){
+							logger.error(err);
+					}else{
+					
+						var query = { '_id' : adminUser._id };
+						var updates = { 'auth.google.expiry_date' : tokens.expiry_date, 'auth.google.token' : tokens.access_token};
+						User.findOneAndUpdate(query, updates, function(err, user) {
+							if (err){
+								logger.error(err.errors);
+							}else{
+								
+								gmail.users.messages.send({
+									'auth': oauth2Client,
+									'userId' : 'me',
+									//uploadType : 'media',
+									'resource': {
+										  'raw': mail
+										}
+									}, function(err, response) {
+										if (err) {
+										  logger.error(err);
+										}
+										if(response){
+											logger.info("Email sent.");
+										}
+								});	
+
+							}	
+						});
+					}
+
+				});
+			}else{
+				
+				gmail.users.messages.send({
+					'auth': oauth2Client,
+					'userId' : 'me',
+					'resource': {
+						  'raw': mail
+						}
+					}, function(err, response) {
+						if (err) {
+						  logger.error(err);
+						}
+						if(response){
+							logger.info("Email sent.");
+						}
+				});
+				
+			}	
+		}else{
+			logger.error("Google email not configured");
+		}
 	}
 }
 
@@ -158,7 +249,7 @@ var sendPushNotification = function(user, callback){
 	
 
 	
-var	sendGoogleMailToUsers = function(adminUser, user, msg){
+/*var	sendGoogleMailToUser = function(adminUser, user, subject, msg){
 console.log(user);
 	logger.info("Send Google Mail to ->"+user.auth.local.email);
 		
@@ -166,8 +257,7 @@ console.log(user);
 	
 		//Prepare email
 		var to = user.auth.local.email,
-		subject = 'DomusGuard '+msg.level+' Message',
-		content = msg.message;
+		content = msg;
 
 		var buff = new Buffer(
 			"Content-Type:  text/plain; charset=\"UTF-8\"\n" +
@@ -249,7 +339,7 @@ console.log(user);
 		logger.error("Google email not configured");
 	}
 };
-
+*/
 
 
 var	sendMailToUsers = function(user, msg){

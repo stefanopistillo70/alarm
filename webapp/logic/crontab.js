@@ -7,6 +7,8 @@ var Device = require('../models/device');
 var Location = require('../models/location');
 var User = require('../models/user');
 
+var userLogic = require('./userLogic');
+
 var jobSendAlarmReport = function() {
 		console.log('check event');
 		const DAYS = 1;
@@ -37,7 +39,7 @@ var jobSendAlarmReport = function() {
 										status = "NOK";
 									}
 								}
-								var deviceStatus = { name : device.name, status : status};
+								var deviceStatus = { name : device.name, status : status, event : (device.events[0] != undefined)? device.events[0].date: "" };
 								console.log(deviceStatus);
 								deviceStatusArray.push(deviceStatus);
 							}
@@ -64,7 +66,8 @@ var jobSendAlarmReport = function() {
 									
 									for(i = 0 ; i < users.length; i++ ){
 											console.log("Send mail to user ->"+users[i].auth.local.email);
-											//sendGoogleMailToUsers(adminUser,user,message);
+											var subject = "Sensor Report";
+											userLogic.sendGoogleMailToUser(adminUser,users[i],subject,msg);
 									}
 
 								}
@@ -84,12 +87,14 @@ var buildStatusReportMail = function(deviceStatusArray){
 	msg += '<tr>';
     msg += '<th>Device</th>';
     msg += '<th>Status</th>';
+	msg += '<th>Last Event</th>';
 	msg += '</tr>';
 	
 	for(i = 0 ; i < deviceStatusArray.length; i++ ){
 		msg += '<tr>';
 		msg += '<td>'+deviceStatusArray[i].name+'</td>';
 		msg += '<td>'+deviceStatusArray[i].status+'</td>';
+		msg += '<td>'+deviceStatusArray[i].event+'</td>';
 		msg += '</tr>';
 	}
  
@@ -101,7 +106,7 @@ var crontab = function(){
 	
 	logger.info("Start Crontab Jobs");
 	
-	new CronJob('0 * * * * *', jobSendAlarmReport, null, true, 'America/Los_Angeles');
+	new CronJob('0 0 8 * * *', jobSendAlarmReport, null, true, 'America/Los_Angeles');
 	
 	return false;
 }
