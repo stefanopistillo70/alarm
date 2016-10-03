@@ -66,7 +66,7 @@ controller.checkForZoneAlarm = function() {
 					logger.info("Check device : "+device.id+"["+device.name+"]");
 					device = controller.repository.getDevice(device.id);
 					logger.debug(device);
-					if(device.events.length > 0){
+					if((device != undefined) && (device.events != undefined) && (device.events.length > 0)){
 						logger.info("Device events : "+(device.events.length));
 						if((device.events[0]) && (device.events[0].date)){
 							var d = device.events[0].date;

@@ -83,7 +83,7 @@ var jobSendAlarmReport = function() {
 
 var buildStatusReportMail = function(deviceStatusArray){
 
-	var msg = '<table style="width:100%">'
+	var msg = '<html><head></head><body><table style="width:100%">'
 	msg += '<tr>';
     msg += '<th>Device</th>';
     msg += '<th>Status</th>';
@@ -98,7 +98,7 @@ var buildStatusReportMail = function(deviceStatusArray){
 		msg += '</tr>';
 	}
  
-	msg += '</table>';
+	msg += '</table></body></html>';
 	return msg;
 }
 
