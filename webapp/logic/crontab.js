@@ -106,7 +106,7 @@ var crontab = function(){
 	
 	logger.info("Start Crontab Jobs");
 	
-	new CronJob('0 0 8 * * *', jobSendAlarmReport, null, true, 'America/Los_Angeles');
+	new CronJob('0 0 8 * * *', jobSendAlarmReport, null, true, 'Europe/Rome');
 	
 	return false;
 }
