@@ -3,7 +3,7 @@ var jwtSimple = require('jwt-simple');
 var uuid = require('node-uuid');
 
 var secret = 'secret-pwd';
-var duration_time = 60000;
+var duration_time = 3600000;
 
 
 

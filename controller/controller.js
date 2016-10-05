@@ -24,7 +24,8 @@ controller.start = function(){
 	//Select gateway comunication type
 	var GW;
 	//var gw_type = "i2c";
-	var gw_type = "serial";
+	//var gw_type = "serial";
+	var gw_type = "test";
 	if(gw_type === 'test') GW = require('./test/sim_gateway.js');
 	else if(gw_type === 'serial') GW = require('./serial_gateway.js');
 	else if(gw_type === 'i2c') GW = require('./i2c_gateway.js');

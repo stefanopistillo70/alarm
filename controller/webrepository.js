@@ -35,7 +35,7 @@ var url = webConfig.url+apiVersion;
 *****************************************/
 var controllerInfo = {};
 var systemIsRegistered = false;
-const timeoutCheckForUpdate = 3000;
+const timeoutCheckForUpdate = 60000;
 
 
 
@@ -242,6 +242,7 @@ class WebRepository extends Repository{
 					err = data.errors;
 				}else{
 					logger.info('Event successful saved');
+					WebRepository.prototype.checkForRemoteUpdate(false);
 				}
 				callback(err);
 			}).on('error', function (err) {
@@ -284,9 +285,9 @@ class WebRepository extends Repository{
 	*	Check for any changes on Web
 	*
 	*****************************************/	
-	checkForRemoteUpdate(){
+	checkForRemoteUpdate(loop){
 		
-		logger.debug('CHECK Web remote update');
+		logger.info('CHECK Web remote update');
 		
 		var webRep = this;
 		
@@ -304,16 +305,16 @@ class WebRepository extends Repository{
 								logger.log('info','Remote Update DONE.');
 							});
 						};
-						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep),timeoutCheckForUpdate);
+						if(loop) setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
 				}else{
 					logger.error(data.errors);
-					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep),timeoutCheckForUpdate);
+					if(loop) setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
 				};
 			};
 
 			client.get(url+"/controller", args, onResponseEvent).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,url),timeoutCheckForUpdate);
+				if(loop) setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
 			});
 		});	
 	}
