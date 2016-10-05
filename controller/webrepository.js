@@ -230,7 +230,9 @@ class WebRepository extends Repository{
 	
 		logger.info('Save Event');
 		
-		this.checkCommonHeaders(function(){
+		var webRep = this;
+		
+		webRep.checkCommonHeaders(function(){
 			var args = {
 				data: { event },
 				headers: { "Content-Type" : "application/json", "x-access-token" : controllerInfo.token }
@@ -242,7 +244,9 @@ class WebRepository extends Repository{
 					err = data.errors;
 				}else{
 					logger.info('Event successful saved');
-					WebRepository.prototype.checkForRemoteUpdate(false);
+					webRep.getRemoteUpdate(function(){
+						logger.log('info','Remote Update DONE.');
+					});
 				}
 				callback(err);
 			}).on('error', function (err) {
@@ -285,7 +289,7 @@ class WebRepository extends Repository{
 	*	Check for any changes on Web
 	*
 	*****************************************/	
-	checkForRemoteUpdate(loop){
+	checkForRemoteUpdate(){
 		
 		logger.info('CHECK Web remote update');
 		
@@ -305,16 +309,16 @@ class WebRepository extends Repository{
 								logger.log('info','Remote Update DONE.');
 							});
 						};
-						if(loop) setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
+						setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
 				}else{
 					logger.error(data.errors);
-					if(loop) setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
+					setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
 				};
 			};
 
 			client.get(url+"/controller", args, onResponseEvent).on('error', function (err) {
 				logger.error("Connection problem for "+err.address+":"+err.port+" -> "+ err.code);
-				if(loop) setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
+				setTimeout(WebRepository.prototype.checkForRemoteUpdate.bind(webRep,true),timeoutCheckForUpdate);
 			});
 		});	
 	}
