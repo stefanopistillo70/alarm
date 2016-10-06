@@ -9,11 +9,65 @@ var User = require('../models/user');
 
 var userLogic = require('./userLogic');
 
+
+var jobCheckControllerAlive = function() {
+		console.log('Job Check Controller Alive');
+		var query = {};
+		Location.find(query, function(err, locations) {
+			if (err) {
+				console.log(err);
+			}else{
+				for (i = 0; i < locations.length; i++) { 
+					var locationID = locations[i]._id;
+					console.log("Location ->"+locationID);
+					var now = new Date();
+					if(((now - locations[i].controller.lastCheck) > 70 * 1000) && (locations[i].controller.connectionAlarm == false)){
+							var msg = "Your Location :"+locations[i].name+" is unreachable";
+														
+							query = { "locations._id" : locationID}
+							User.find(query,function(err, users){
+								if(err){
+									console.log(err);
+								}else{
+									//console.log(users);
+
+									//search admin user
+									var adminUser;
+									for (var i = 0; i < users.length; i++) {
+										if(users[i].auth.role == "admin"){
+											adminUser = users[i];
+										}
+									}
+									
+									for(i = 0 ; i < users.length; i++ ){
+											console.log("Send mail to user ->"+users[i].auth.local.email);
+											var subject = "DomusGuard Alarm Location Unreachable";
+											userLogic.sendGoogleMailToUser(adminUser,users[i],subject,msg);
+									}
+									
+									query = {_id : locationID};
+									update = {"controller.connectionAlarm" : true}
+									Location.update(query,update, function(err, locations) {
+										if(err) console.log(err);
+										else{
+											console.log("Last check date updated.");
+										}
+									});
+
+								}
+							});
+					}		
+				}
+			} 
+		});
+};
+
+
+
+
 var jobSendAlarmReport = function() {
-		console.log('check event');
+		console.log('Job Send Alarm Report');
 		const DAYS = 1;
-		var date1 = new Date() - 1000;
-		console.log(date1);
 		var query = {};
 		Location.find(query, function(err, locations) {
 			if (err) {
@@ -66,9 +120,10 @@ var jobSendAlarmReport = function() {
 									
 									for(i = 0 ; i < users.length; i++ ){
 											console.log("Send mail to user ->"+users[i].auth.local.email);
-											var subject = "Sensor Report";
+											var subject = "DomusGuard Daily Sensor Report";
 											userLogic.sendGoogleMailToUser(adminUser,users[i],subject,msg);
 									}
+									
 
 								}
 							});
@@ -107,6 +162,8 @@ var crontab = function(){
 	logger.info("Start Crontab Jobs");
 	
 	new CronJob('0 0 8 * * *', jobSendAlarmReport, null, true, 'Europe/Rome');
+	
+	new CronJob('0 * * * * *', jobCheckControllerAlive, null, true, 'Europe/Rome');
 	
 	return false;
 }

@@ -12,7 +12,8 @@ var locationSchema = new Schema({
 	controller : { controllerId : String,
 				   token : String,
 				   refresh_token : String,
-				   lastCheck : Date
+				   lastCheck : Date,
+				   connectionAlarm : Boolean
 				},
 	config : {enableNewDevice: { type: Boolean, default: false }, hasNewUpdates : { type: Boolean, default: false }},
 	insertDate: Date
