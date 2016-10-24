@@ -20,7 +20,9 @@ import java.util.Random;
 public class BeaconEddystone {
 
     private static final String TAG = BeaconEddystone.class.getSimpleName();
-    private static String namespace = "41414141414141414141";
+
+    private static String namespace = hex("domus".getBytes());
+    //private static String namespace = "41414141414141414141";
     private static final String instance = "414243414243";
     private static final byte txPowerLevel = AdvertiseSettings.ADVERTISE_TX_POWER_MEDIUM;
     private static final int advertiseMode = AdvertiseSettings.ADVERTISE_MODE_LOW_POWER;
@@ -51,7 +53,7 @@ public class BeaconEddystone {
         if (!isValidHex(namespace, 10)) {
             //namespace.setError("not 10-byte hex");
             ///txSwitch.setChecked(false);
-            Log.e(TAG, "not 10-byte hex");
+            Log.e(TAG, "not 10-byte hex : "+namespace);
             return;
         }
         if (!isValidHex(instance, 6)) {
@@ -155,6 +157,19 @@ public class BeaconEddystone {
                     + Character.digit(hexString.charAt(i + 1), 16));
         }
         return bytes;
+    }
+
+    private static String hex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (int i=0; i<bytes.length; i++) {
+            sb.append(String.format("%02X",bytes[i]));
+        }
+
+        for (int j=bytes.length; j < 10; j++) {
+            sb.append("00");
+        }
+
+        return sb.toString();
     }
 /*
     private String randomHexString(int length) {

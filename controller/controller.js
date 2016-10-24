@@ -10,7 +10,7 @@ var Webrepository = require('./webrepository');
 var controller = {}
 controller.repository;
 
-
+var env = process.env.NODE_ENV || 'dev';
 
 controller.start = function(){
 	
@@ -127,6 +127,24 @@ controller.stopFireAlarm = function(){
 		});
 	}
 } 
+
+
+
+
+controller.checkForAutomaticActDea = function(){
+	logger.info('Check for Automatic Activ/Deac');
+	
+	var BTle;
+	
+	console.log("ENV ->"+env);
+	if(env === 'dev') BTle = require('./test/BTle_test.js');
+	else BTle = require('./BTle.js');
+	
+	BTle.onDiscovery(new function(namespace, instance){
+		
+	}
+	
+}
 
 
 controller.start();
