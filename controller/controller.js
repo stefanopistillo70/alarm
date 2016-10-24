@@ -48,6 +48,9 @@ controller.start = function(){
 	//TODO uncomment
 	controller.checkForZoneAlarm();
 
+
+	controller.checkForAutomaticActDea();
+
 }
 
 var deviceIdAlarm = -1;
@@ -140,10 +143,11 @@ controller.checkForAutomaticActDea = function(){
 	if(env === 'dev') BTle = require('./test/BTle_test.js');
 	else BTle = require('./BTle.js');
 	
-	BTle.onDiscovery(new function(namespace, instance){
-		
-	}
-	
+	BTle.onDiscover(function(namespace, instance){
+		logger.info("namespace : "+namespace);
+		logger.info("instance : "+instance);
+	});
+
 }
 
 

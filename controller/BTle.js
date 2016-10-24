@@ -31,24 +31,23 @@ noble.on('scanStop', function() {
 });
 
 
-var BTle = function(){
+var BTle = {
 
-	var onDiscover = function(onDiscover) {
-		
+	onDiscover : function(callback) {
 		noble.on('discover', function(peripheral) {
 			logger.info('on -> discover: ' + peripheral);
-			console.log('btaddr ->' + peripheral.address);
-			console.log(peripheral.advertisement.serviceData[0].data.toString('hex'));
+			//console.log('btaddr ->' + peripheral.address);
+			//console.log(peripheral.advertisement.serviceData[0].data.toString('hex'));
 
 			var data = peripheral.advertisement.serviceData[0].data;
 			var namespace = data.toString('ascii', 2, 12);
 			var instance = data.toString('ascii',12,18);
-			onDiscover(namespace,instance);
+			callback(namespace,instance);
 
 		});	
-	};
+	}
 
-};
+}
 
 
 
