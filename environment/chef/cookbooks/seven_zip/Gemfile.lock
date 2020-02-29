@@ -81,8 +81,8 @@ GEM
       multipart-post (>= 1.2, < 3)
     fauxhai (3.1.0)
       net-ssh
-    ffi (1.9.10)
-    ffi-yajl (2.2.3)
+    ffi (1.12.2)
+    ffi-yajl (2.3.3)
       libyajl2 (~> 1.2)
     foodcritic (6.0.0)
       erubis
@@ -98,7 +98,7 @@ GEM
     highline (1.7.8)
     hitimes (1.2.3)
     httpclient (2.6.0.1)
-    ipaddress (0.8.2)
+    ipaddress (0.8.3)
     json (1.8.3)
     libyajl2 (1.2.0)
     mini_portile2 (2.0.0)
@@ -108,10 +108,11 @@ GEM
       rspec-core (~> 3.2)
       rspec-expectations (~> 3.2)
       rspec-mocks (~> 3.2)
-    mixlib-cli (1.5.0)
-    mixlib-config (2.2.1)
-    mixlib-log (1.6.0)
-    mixlib-shellout (2.2.6)
+    mixlib-cli (1.7.0)
+    mixlib-config (2.2.18)
+      tomlrb
+    mixlib-log (1.7.1)
+    mixlib-shellout (2.4.4)
     molinillo (0.2.3)
     multi_json (1.11.2)
     multipart-post (2.0.0)
@@ -129,16 +130,16 @@ GEM
       mini_portile2 (~> 2.0.0.rc2)
     octokit (4.2.0)
       sawyer (~> 0.6.0, >= 0.5.3)
-    ohai (8.10.0)
-      chef-config (>= 12.5.0.alpha.1, < 13)
+    ohai (8.26.1)
+      chef-config (>= 12.5.0.alpha.1, < 14)
       ffi (~> 1.9)
       ffi-yajl (~> 2.2)
       ipaddress
       mixlib-cli
       mixlib-config (~> 2.0)
-      mixlib-log
+      mixlib-log (>= 1.7.1, < 2.0)
       mixlib-shellout (~> 2.0)
-      rake (~> 10.1)
+      plist (~> 3.1)
       systemu (~> 2.6.4)
       wmi-lite (~> 1.0)
     parser (2.3.0.6)
@@ -149,7 +150,7 @@ GEM
     proxifier (1.0.3)
     rack (1.6.4)
     rainbow (2.1.0)
-    rake (10.5.0)
+    rake (12.3.3)
     retryable (2.0.3)
     ridley (4.4.2)
       addressable
@@ -219,6 +220,7 @@ GEM
     thor (0.19.1)
     timers (4.0.4)
       hitimes
+    tomlrb (1.2.9)
     treetop (1.6.3)
       polyglot (~> 0.3)
     unicode-display_width (0.3.1)
@@ -226,7 +228,7 @@ GEM
     varia_model (0.4.1)
       buff-extensions (~> 1.0)
       hashie (>= 2.0.2, < 4.0.0)
-    wmi-lite (1.0.0)
+    wmi-lite (1.0.5)
     yajl-ruby (1.2.1)
 
 PLATFORMS
