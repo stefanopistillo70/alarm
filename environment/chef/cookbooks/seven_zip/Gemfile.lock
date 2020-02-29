@@ -81,7 +81,7 @@ GEM
       multipart-post (>= 1.2, < 3)
     fauxhai (3.1.0)
       net-ssh
-    ffi (1.9.10)
+    ffi (1.11.3)
     ffi-yajl (2.2.3)
       libyajl2 (~> 1.2)
     foodcritic (6.0.0)
